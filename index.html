@@ -6,8 +6,7 @@
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f6fb;color:#18233b;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 header{background:linear-gradient(120deg,#2457d6,#5682ee);color:white;padding:22px 16px}header h1{margin:0;font-size:27px}header p{margin:4px 0 0;opacity:.9}
-main{max-width:850px;margin:16px auto;padding:0 12px 30px}.tabs{display:flex;gap:8px;background:white;border:1px solid #dce3ef;border-radius:14px;padding:6px;margin-bottom:14px}
-.tabs button{flex:1;padding:12px;border:0;border-radius:10px;background:transparent;color:#5d6980;font-weight:700}.tabs button.active{background:#eaf0ff;color:#2457d6}
+main{max-width:850px;margin:16px auto;padding:0 12px 30px}
 .card{background:white;border:1px solid #dce3ef;border-radius:17px;padding:16px;margin-bottom:13px;box-shadow:0 4px 16px #1a32600a}
 h2{font-size:19px;margin:0 0 10px}p{line-height:1.45}.muted{color:#65718a;font-size:13px}
 label{display:block;color:#65718a;font-size:13px;font-weight:700;margin:10px 0 5px}
@@ -22,16 +21,34 @@ button.primary,button.soft,button.warn{border:0;border-radius:10px;padding:12px 
 canvas{display:block;width:100%;height:470px;touch-action:none;cursor:crosshair}
 .tip{background:#fff8e7;color:#775514;padding:10px;border-radius:10px;font-size:13px;margin:10px 0}
 .scorebox{background:#eaf0ff;color:#2457d6;padding:12px;border-radius:12px;margin-top:12px;font-weight:700;text-align:center}
+.login-box{max-width:400px;margin:40px auto;text-align:center}
 @media(max-width:520px){.row{grid-template-columns:1fr}canvas{height:440px}}
 </style></head>
 <body>
-<header><h1>📘 Reforço da Sofia</h1><p>Treino de Multiplicação, Divisão e Subtração</p></header>
+<header><h1>📘 Reforço da Sofia</h1><p>Sistema de Estudo Seguro</p></header>
 <main>
-<nav class="tabs"><button id="pTab" class="active" onclick="switchTab('parent')">👨‍👧 Meu painel (Pai)</button><button id="sTab" onclick="switchTab('student')">⭐ Caderno da Sofia</button></nav>
-<section id="parent">
+<!-- TELA DE LOGIN -->
+<section id="loginScreen" class="card login-box">
+  <h2>🔒 Quem vai entrar?</h2>
+  <p class="muted">Digite a senha de acesso para continuar.</p>
+  <div style="text-align:left; margin-top:15px;">
+    <label>Senha de Acesso</label>
+    <input id="accessPass" type="password" placeholder="Digite a senha...">
+  </div>
+  <div class="actions" style="margin-top:15px;">
+    <button class="primary" style="width:100%" onclick="tryLogin()">Entrar</button>
+  </div>
+  <p class="muted" id="loginMsg" style="color:#d92d20; margin-top:10px;"></p>
+</section>
+
+<!-- PAINEL DO PAI -->
+<section id="parentPanel" class="hidden">
+  <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+    <div><h2>👨‍👧 Painel do Pai</h2><p class="muted" style="margin:0;">Gerencie as continhas da Sofia</p></div>
+    <button class="warn" onclick="logout()">Sair</button>
+  </div>
  <div class="card">
   <h2>Preparar uma continha</h2>
-  <p class="muted">Escolha a operação, digite a conta e a resposta correta para ela conferir.</p>
   <div class="row">
     <div>
       <label>Tipo de Operação</label>
@@ -44,14 +61,20 @@ canvas{display:block;width:100%;height:470px;touch-action:none;cursor:crosshair}
     <div><label>A Conta (ex: 540 ÷ 4)</label><input id="a" type="text" placeholder="Ex.: 540 ÷ 4"></div>
   </div>
   <div style="margin-top:10px;">
-    <label>Resposta Correta (para a correção automática)</label><input id="expected" type="text" placeholder="Ex.: 135">
+    <label>Resposta Correta</label><input id="expected" type="text" placeholder="Ex.: 135">
   </div>
   <div class="actions"><button class="primary" onclick="add()">Enviar continha</button></div>
   <p class="muted" id="msg" aria-live="polite"></p>
  </div>
  <div class="card"><h2>Continhas preparadas</h2><div id="parentList"></div></div>
 </section>
-<section id="student" class="hidden">
+
+<!-- CADERNO DA SOFIA -->
+<section id="studentPanel" class="hidden">
+  <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+    <div><h2>⭐ Caderno da Sofia</h2><p class="muted" style="margin:0;">Resolva suas continhas aqui!</p></div>
+    <button class="warn" onclick="logout()">Sair</button>
+  </div>
  <div class="card"><h2>Escolha sua continha 🌟</h2><div id="studentList"></div></div>
  <div id="notebook" class="card hidden">
   <h2>Quadro Negro / Rascunho</h2>
@@ -72,13 +95,48 @@ canvas{display:block;width:100%;height:470px;touch-action:none;cursor:crosshair}
 </section>
 </main>
 <script>
-const KEY='reforco_sofia_livre_v4';let state=JSON.parse(localStorage.getItem(KEY)||'{"items":[]}');let active=null,canvas,ctx,strokes=[],current=[],drawing=false,last=null;
+const KEY='reforco_sofia_livre_v5';
+const PASS_PAI='1234'; // Mude aqui se quiser a sua senha do pai
+const PASS_SOFIA='5678'; // Mude aqui se quiser a senha da Sofia
+
+let state=JSON.parse(localStorage.getItem(KEY)||'{"items":[]}');let active=null,canvas,ctx,strokes=[],current=[],drawing=false,last=null;
+
+function tryLogin(){
+  let val=document.getElementById('accessPass').value.trim();
+  let msg=document.getElementById('loginMsg');
+  if(val===PASS_PAI){
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('parentPanel').classList.remove('hidden');
+    renderLists();
+  }else if(val===PASS_SOFIA){
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('studentPanel').classList.remove('hidden');
+    renderLists();
+  }else{
+    msg.textContent='Senha incorreta! Tente novamente.';
+  }
+}
+function logout(){
+  document.getElementById('accessPass').value='';
+  document.getElementById('loginMsg').textContent='';
+  document.getElementById('parentPanel').classList.add('hidden');
+  document.getElementById('studentPanel').classList.add('hidden');
+  document.getElementById('notebook').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+}
 function persist(){localStorage.setItem(KEY,JSON.stringify(state));renderLists()}
-function switchTab(t){document.getElementById('parent').classList.toggle('hidden',t!=='parent');document.getElementById('student').classList.toggle('hidden',t!=='student');document.getElementById('pTab').classList.toggle('active',t==='parent');document.getElementById('sTab').classList.toggle('active',t==='student');renderLists()}
 function add(){let type=document.getElementById('opType').value;let a=document.getElementById('a').value.trim();let expected=document.getElementById('expected').value.trim();if(!a||!expected){document.getElementById('msg').textContent='Preencha a continha e a resposta correta.';return}state.items.push({id:Date.now()+Math.random(),type,a,expected,work:[],solved:false,correct:false});document.getElementById('a').value='';document.getElementById('expected').value='';document.getElementById('msg').textContent='Continha enviada para o caderno dela!';persist()}
-function renderLists(){let p=document.getElementById('parentList'),s=document.getElementById('studentList');if(!p)return;if(!state.items.length){p.innerHTML='<p class="muted">Nenhuma conta cadastrada ainda.</p>';s.innerHTML='<p class="muted">Peça ao responsável para preparar uma continha.</p>';return}
-p.innerHTML=state.items.map((x,i)=>`<div class="listitem"><b>${i+1}. [${x.type}] ${x.a}</b> (Resp: ${x.expected}) <button class="warn" onclick="removeItem(${x.id})">Remover</button></div>`).join('');
-s.innerHTML=state.items.map((x,i)=>`<div class="listitem"><div><b>${i+1}. [${x.type}] ${x.a}</b><div class="muted">${x.solved?(x.correct?'⭐ Acertou!':'❌ Tente de novo'):'Aguardando'}</div></div><button class="primary" onclick="openNotebook(${x.id})">Resolver</button></div>`).join('')}
+function renderLists(){
+  let p=document.getElementById('parentList'),s=document.getElementById('studentList');
+  if(p){
+    if(!state.items.length){p.innerHTML='<p class="muted">Nenhuma conta cadastrada ainda.</p>';}
+    else{p.innerHTML=state.items.map((x,i)=>`<div class="listitem"><b>${i+1}. [${x.type}] ${x.a}</b> (Resp: ${x.expected}) <button class="warn" onclick="removeItem(${x.id})">Remover</button></div>`).join('');}
+  }
+  if(s){
+    if(!state.items.length){s.innerHTML='<p class="muted">Nenhuma conta disponível no momento.</p>';}
+    else{s.innerHTML=state.items.map((x,i)=>`<div class="listitem"><div><b>${i+1}. [${x.type}] ${x.a}</b><div class="muted">${x.solved?(x.correct?'⭐ Acertou!':'❌ Tente de novo'):'Aguardando'}</div></div><button class="primary" onclick="openNotebook(${x.id})">Resolver</button></div>`).join('');}
+  }
+}
 function removeItem(id){state.items=state.items.filter(x=>x.id!==id);if(active===id){document.getElementById('notebook').classList.add('hidden');active=null}persist()}
 function setupCanvas(){canvas=document.getElementById('paper');ctx=canvas.getContext('2d');let rect=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;canvas.width=Math.round(rect.width*dpr);canvas.height=Math.round(rect.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=3;ctx.strokeStyle='#17233b';drawAll();canvas.onpointerdown=e=>{drawing=true;canvas.setPointerCapture(e.pointerId);let r=canvas.getBoundingClientRect();last={x:e.clientX-r.left,y:e.clientY-r.top};current=[last];ctx.beginPath();ctx.moveTo(last.x,last.y)};canvas.onpointermove=e=>{if(!drawing)return;let r=canvas.getBoundingClientRect(),pt={x:e.clientX-r.left,y:e.clientY-r.top};ctx.lineTo(pt.x,pt.y);ctx.stroke();current.push(pt);last=pt};canvas.onpointerup=canvas.onpointercancel=()=>{if(drawing){drawing=false;if(current.length)strokes.push(current);current=[];saveSilently()}}}
 function drawAll(){if(!ctx)return;let w=canvas.clientWidth,h=canvas.clientHeight;ctx.clearRect(0,0,w,h);ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.strokeStyle='#e8edf5';ctx.lineWidth=1;for(let y=34;y<h;y+=38){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}ctx.strokeStyle='#17233b';ctx.lineWidth=3;ctx.lineCap='round';ctx.lineJoin='round';strokes.forEach(st=>{if(!st.length)return;ctx.beginPath();ctx.moveTo(st[0].x,st[0].y);st.slice(1).forEach(pt=>ctx.lineTo(pt.x,pt.y));ctx.stroke()})}
@@ -87,5 +145,4 @@ function saveSilently(){if(active===null)return;let x=state.items.find(v=>v.id==
 function undo(){strokes.pop();drawAll();saveSilently()}
 function clearPaper(){if(!confirm('Quer apagar o rascunho?'))return;strokes=[];drawAll();saveSilently()}
 function checkAnswer(){if(active===null)return;let x=state.items.find(v=>v.id===active);let val=document.getElementById('studentAnswer').value.trim();let fb=document.getElementById('resultFeedback');x.solved=true;if(val===x.expected){x.correct=true;fb.innerHTML='<div class="scorebox" style="background:#e4f7eb;color:#15934e;">🎉 Parabéns, Sofia! Você acertou em cheio! Ganhou 3 estrelinhas! ⭐⭐⭐</div>'}else{x.correct=false;fb.innerHTML='<div class="scorebox" style="background:#ffebea;color:#d92d20;">❌ Ops! O resultado não está correto. Apague o rascunho e tente de novo!</div>'}persist()}
-renderLists();
 </script></body></html>
