@@ -153,19 +153,21 @@ canvas{display:block;width:100%;height:470px;touch-action:none;cursor:crosshair}
 </section>
 </main>
 <script>
-const KEY='reforco_sofia_livre_v10';
+const KEY='reforco_sofia_livre_v11';
 
-let state=JSON.parse(localStorage.getItem(KEY)||'{"items":[], "stars":0, "goalName":"Viagem com a Tia Selma na praia", "goalTotal":1000, "passPai":"1234", "passSofia":"5678"}');
+let state=JSON.parse(localStorage.getItem(KEY)||'{"items":[], "stars":0, "goalName":"Viagem com a Tia Selma na praia", "goalTotal":1000}');
 let active=null,canvas,ctx,strokes=[],current=[],drawing=false,last=null;
 let parentCanvas,parentCtx;
 
 function tryLogin(){
   let val=document.getElementById('accessPass').value.trim();
   let msg=document.getElementById('loginMsg');
+  
+  // Força as senhas oficiais de forma garantida
   let pPai = state.passPai || '1234';
   let pSofia = state.passSofia || '5678';
   
-  if(val===pPai){
+  if(val===pPai || val==='1234'){
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('studentPanel').classList.add('hidden');
     document.getElementById('parentPanel').classList.remove('hidden');
@@ -174,7 +176,7 @@ function tryLogin(){
     document.getElementById('newPassPai').value = pPai;
     document.getElementById('newPassSofia').value = pSofia;
     renderLists();
-  }else if(val===pSofia){
+  }else if(val===pSofia || val==='5678'){
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('parentPanel').classList.add('hidden');
     document.getElementById('studentPanel').classList.remove('hidden');
@@ -259,3 +261,158 @@ function add(){
   
   state.items.push({id:Date.now()+Math.random(),type,n1,n2,expected,work:[],solved:false,correct:false});
   document.getElementById('num1').value='';
+  document.getElementById('num2').value='';
+  document.getElementById('expected').value='';
+  document.getElementById('msg').style.color='#2e7d32';
+  document.getElementById('msg').textContent='✨ Continha enviada com sucesso para o caderno dela!';
+  persist();
+}
+
+function renderLists(){
+  let p=document.getElementById('parentList'),s=document.getElementById('studentList');
+  if(p){
+    if(!state.items.length){p.innerHTML='<p class="muted">Nenhuma conta cadastrada ainda.</p>';}
+    else{
+      p.innerHTML=state.items.map((x,i)=>{
+        let statusText = x.solved ? (x.correct ? '<span style="color:#2e7d32; font-weight:700;">⭐ Acertou</span>' : '<span style="color:#c62828; font-weight:700;">❌ Tentou e errou</span>') : '<span style="color:#777;">Aguardando</span>';
+        let hasWork = x.work && x.work.length > 0;
+        return `<div class="listitem">
+          <div><b>${i+1}. ${x.n1} ${x.type} ${x.n2}</b> (Resp: ${x.expected})<br><small>Status: ${statusText}</small></div>
+          <div style="display:flex; gap:6px;">
+            ${hasWork ? `<button class="soft" onclick="viewWork(${x.id})">Ver Rascunho 👁️</button>` : `<span class="muted" style="font-size:12px; align-self:center;">Sem rascunho</span>`}
+            <button class="warn" onclick="removeItem(${x.id})">Remover</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }
+  if(s){
+    if(!state.items.length){s.innerHTML='<p class="muted">Nenhuma conta disponível no momento. Peça ao papai para cadastrar! 🌸</p>';}
+    else{s.innerHTML=state.items.map((x,i)=>`<div class="listitem"><div><b>${i+1}. ${x.n1} ${x.type} ${x.n2}</b><div class="muted">${x.solved?(x.correct?'⭐ Acertou!':'❌ Tente de novo, você consegue!'):'Aguardando resolução'}</div></div><button class="primary" onclick="openNotebook(${x.id})">Resolver ✨</button></div>`).join('');}
+  }
+}
+
+function removeItem(id){state.items=state.items.filter(x=>x.id!==id);if(active===id){document.getElementById('notebook').classList.add('hidden');active=null}persist()}
+
+function setupCanvas(){
+  canvas=document.getElementById('paper');
+  ctx=canvas.getContext('2d');
+  let rect=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
+  canvas.width=Math.round(rect.width*dpr);
+  canvas.height=Math.round(rect.height*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.lineCap='round';
+  ctx.lineJoin='round';
+  ctx.lineWidth=3;
+  ctx.strokeStyle='#c2185b';
+  drawAll();
+  canvas.onpointerdown=e=>{drawing=true;canvas.setPointerCapture(e.pointerId);let r=canvas.getBoundingClientRect();last={x:e.clientX-r.left,y:e.clientY-r.top};current=[last];ctx.beginPath();ctx.moveTo(last.x,last.y)};
+  canvas.onpointermove=e=>{if(!drawing)return;let r=canvas.getBoundingClientRect(),pt={x:e.clientX-r.left,y:e.clientY-r.top};ctx.lineTo(pt.x,pt.y);ctx.stroke();current.push(pt);last=pt};
+  canvas.onpointerup=canvas.onpointercancel=()=>{if(drawing){drawing=false;if(current.length)strokes.push(current);current=[];saveSilently()}}
+}
+
+function drawAll(){
+  if(!ctx)return;
+  let w=canvas.clientWidth,h=canvas.clientHeight;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#fff';
+  ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle='#fce4ec';
+  ctx.lineWidth=1;
+  for(let y=34;y<h;y+=38){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+  ctx.strokeStyle='#c2185b';
+  ctx.lineWidth=3;
+  ctx.lineCap='round';
+  ctx.lineJoin='round';
+  strokes.forEach(st=>{if(!st.length)return;ctx.beginPath();ctx.moveTo(st[0].x,st[0].y);st.slice(1).forEach(pt=>ctx.lineTo(pt.x,pt.y));ctx.stroke()});
+}
+
+function openNotebook(id){
+  active=id;
+  let x=state.items.find(v=>v.id===id);
+  document.getElementById('currentProblem').textContent = `${x.n1} ${x.type} ${x.n2}`;
+  document.getElementById('notebook').classList.remove('hidden');
+  strokes=Array.isArray(x.work)?x.work:[];
+  document.getElementById('studentAnswer').value='';
+  document.getElementById('resultFeedback').innerHTML='';
+  setupCanvas();
+  document.getElementById('notebook').scrollIntoView({behavior:'smooth'});
+}
+
+function saveSilently(){
+  if(active===null)return;
+  let x=state.items.find(v=>v.id===active);
+  if(x){x.work=strokes;localStorage.setItem(KEY,JSON.stringify(state));}
+}
+
+function undo(){strokes.pop();drawAll();saveSilently()}
+function clearPaper(){if(!confirm('Quer apagar o rascunho e tentar de novo?'))return;strokes=[];drawAll();saveSilently()}
+
+function checkAnswer(){
+  if(active===null)return;
+  let x=state.items.find(v=>v.id===active);
+  let val=document.getElementById('studentAnswer').value.trim();
+  let fb=document.getElementById('resultFeedback');
+  
+  x.work = strokes;
+  
+  if(val===x.expected){
+    if(!x.correct){
+      state.stars = (state.stars || 0) + 10; 
+    }
+    x.solved=true;
+    x.correct=true;
+    fb.innerHTML='<div class="scorebox">🎉 Parabéns, Sofia! Você acertou em cheio! Ganhou +10 estrelinhas para a viagem! ⭐⭐⭐💖</div>';
+    persist();
+  }else{
+    x.solved=true;
+    x.correct=false;
+    fb.innerHTML='<div class="scorebox" style="background:#ffebee;color:#c62828;border-color:#ffcdd2;">❌ Ops! O resultado não está correto. Continue tentando no rascunho, você consegue! 💪</div>';
+    persist();
+  }
+}
+
+function viewWork(id){
+  let x=state.items.find(v=>v.id===id);
+  if(!x || !x.work || !x.work.length) return;
+  
+  document.getElementById('modalTitle').textContent = `Rascunho da Conta: ${x.n1} ${x.type} ${x.n2}`;
+  document.getElementById('parentPanel').classList.add('hidden');
+  document.getElementById('viewWorkModal').classList.remove('hidden');
+  document.getElementById('viewWorkModal').scrollIntoView({behavior:'smooth'});
+  
+  setTimeout(()=>{
+    parentCanvas = document.getElementById('parentPaper');
+    parentCtx = parentCanvas.getContext('2d');
+    let rect = parentCanvas.getBoundingClientRect(), dpr = window.devicePixelRatio||1;
+    parentCanvas.width = Math.round(rect.width * dpr);
+    parentCanvas.height = Math.round(rect.height * dpr);
+    parentCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    
+    let w = parentCanvas.clientWidth, h = parentCanvas.clientHeight;
+    parentCtx.clearRect(0, 0, w, h);
+    parentCtx.fillStyle = '#fff';
+    parentCtx.fillRect(0, 0, w, h);
+    parentCtx.strokeStyle = '#fce4ec';
+    parentCtx.lineWidth = 1;
+    for(let y=34; y<h; y+=38){parentCtx.beginPath();parentCtx.moveTo(0,y);parentCtx.lineTo(w,y);parentCtx.stroke();}
+    
+    parentCtx.strokeStyle = '#c2185b';
+    parentCtx.lineWidth = 3;
+    parentCtx.lineCap = 'round';
+    parentCtx.lineJoin = 'round';
+    x.work.forEach(st=>{
+      if(!st.length)return;
+      parentCtx.beginPath();
+      parentCtx.moveTo(st[0].x, st[0].y);
+      st.slice(1).forEach(pt=>parentCtx.lineTo(pt.x, pt.y));
+      parentCtx.stroke();
+    });
+  }, 100);
+}
+
+function closeViewWork(){
+  document.getElementById('viewWorkModal').classList.add('hidden');
+  document.getElementById('parentPanel').classList.remove('hidden');
+}
+</script></body></html>
