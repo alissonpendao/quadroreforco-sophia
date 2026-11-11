@@ -20,12 +20,13 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 .soft{background:#e8f4fd;color:#0277bd}.warn{background:#ffebee;color:#c62828}
 .problem-box{background:linear-gradient(135deg,#fff9fb,#fff0f3);border:2px dashed #ffb6c1;border-radius:16px;padding:20px;text-align:center;margin:15px 0}
 
-/* CHAVE EM "L" CLÁSSICA */
-.division-paper{background:#fff;border:2px solid #ffccd5;border-radius:16px;padding:25px;margin:15px auto;max-width:500px;font-family:monospace;font-size:26px;font-weight:bold;color:#c2185b;text-align:left;box-shadow:0 4px 12px rgba(0,0,0,0.02)}
-.div-row{display:flex;align-items:center;gap:12px;margin:8px 0}
-.div-bracket{border-left:3px solid #c2185b;border-bottom:3px solid #c2185b;padding-left:10px;padding-bottom:2px}
-.step-input{width:45px;height:42px;text-align:center;font-size:22px;font-weight:bold;color:#c2185b;border:2px solid #ffb6c1;border-radius:8px;background:#fffbfd}
-.step-input:focus{border-color:#ff758c;background:#fff;outline:none}
+/* ESTILO DA CHAVE EM L E PASSOS */
+.division-sheet{background:#fff;border:2px solid #ffccd5;border-radius:16px;padding:25px;margin:15px auto;max-width:500px;font-family:monospace;font-size:26px;font-weight:bold;color:#c2185b;text-align:left;box-shadow:0 4px 12px rgba(0,0,0,0.02)}
+.div-row{display:flex;align-items:center;gap:15px;margin:10px 0}
+.div-bracket{border-left:3px solid #c2185b;border-bottom:3px solid #c2185b;padding-left:12px;padding-bottom:2px}
+.calc-input{width:45px;height:42px;text-align:center;font-size:22px;font-weight:bold;color:#c2185b;border:2px solid #ffb6c1;border-radius:8px;background:#fffbfd}
+.calc-input:focus{border-color:#ff758c;background:#fff;outline:none}
+.math-line{border-bottom:2px solid #c2185b;width:120px;margin:5px 0}
 
 .listitem{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 15px;background:#fffdfd;border:1px solid #ffccd5;border-radius:14px;margin:10px 0}
 .hidden{display:none!important}
@@ -119,7 +120,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
     <h2 id="modalTitle" style="margin:0;">Resolução da Sofia</h2>
     <button class="warn" onclick="closeViewWork()">Fechar ❌</button>
   </div>
-  <p class="muted">Veja abaixo o que ela preencheu na divisão:</p>
+  <p class="muted">Veja abaixo o que ela preencheu:</p>
   <div id="parentWorkPreview" class="card" style="background:#fffbfd; font-family:monospace; font-size:22px; color:#c2185b;"></div>
   <div class="actions" style="margin-top:15px;"><button class="soft" onclick="closeViewWork()">Voltar ao Painel</button></div>
 </section>
@@ -143,10 +144,10 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
   <h2>Chave de Divisão 📝</h2>
   
   <div class="problem-box">
-    <div class="tip" style="margin:0:0 15px;">💡 Digite os números da divisão na chave abaixo. Conforme você coloca o número da multiplicação, o sinal de menos e o traço aparecem automaticamente!</div>
+    <div class="tip" style="margin-bottom:15px;">💡 Arme a divisão na chave abaixo. Conforme você digita o número da multiplicação embaixo, o aplicativo coloca o sinal de menos e o traço automático para você subtrair!</div>
     
-    <!-- ÁREA DA CHAVE EM L INTERATIVA -->
-    <div id="divisionWorkspace" style="text-align:center;"></div>
+    <!-- CHAVE EM L INTERATIVA -->
+    <div id="divisionBuilder" style="text-align:center;"></div>
   </div>
 
   <div style="margin-top:18px;">
@@ -161,7 +162,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 </section>
 </main>
 <script>
-const KEY='reforco_sofia_livre_v25';
+const KEY='reforco_sofia_livre_v26';
 
 let state=JSON.parse(localStorage.getItem(KEY)||'{"items":[], "stars":0, "rewards":[{"name":"Viagem com a Tia Selma na praia", "total":1000}]}');
 if(!state.rewards) state.rewards = [{"name":"Viagem com a Tia Selma na praia", "total":1000}];
@@ -311,7 +312,7 @@ function add(){
     return;
   }
 
-  // Inicializa com linhas de rascunho em texto livre para ela digitar tudo à vontade
+  // Começa com rascunho totalmente em branco para ela digitar tudo sozinha
   state.items.push({id:Date.now()+Math.random(), type, n1, n2, expected, workText:'', solved:false, correct:false});
   document.getElementById('num1').value='';
   document.getElementById('num2').value='';
@@ -332,7 +333,7 @@ function renderLists(){
         return `<div class="listitem">
           <div><b>${i+1}. ${x.n1} ${x.type} ${x.n2}</b> (Resp: ${x.expected})<br><small>Status: ${statusText}</small></div>
           <div style="display:flex; gap:6px;">
-            ${hasWork ? `<button class="soft" onclick="viewWork(${x.id})">Ver Rascunho 👁️</button>` : `<span class="muted" style="font-size:12px; align-self:center;">Vazio</span>`}
+            ${hasWork ? `<button class="soft" onclick="viewWork(${x.id})">Ver Resolução 👁️</button>` : `<span class="muted" style="font-size:12px; align-self:center;">Vazio</span>`}
             <button class="warn" onclick="removeItem(${x.id})">Remover</button>
           </div>
         </div>`;
@@ -354,20 +355,20 @@ function openNotebook(id){
   document.getElementById('studentAnswer').value='';
   document.getElementById('resultFeedback').innerHTML='';
   
-  let workspace = document.getElementById('divisionWorkspace');
-  workspace.innerHTML = `
-    <div style="margin-bottom:10px; font-weight:bold; font-size:24px;">Conta: ${x.n1} ${x.type} ${x.n2}</div>
-    <div class="muted" style="margin-bottom:10px;">Digite seus cálculos passo a passo (multiplicações, subtrações e restos):</div>
-    <textarea id="studentManualWork" style="width:100%; height:200px; font-family:monospace; font-size:22px; padding:12px; border:2px solid #ffb6c1; border-radius:12px; background:#fffbfd; color:#c2185b;" placeholder="Ex:&#10;540 |_ 4&#10;-4   135&#10;--&#10;14&#10;-12&#10;---&#10;20&#10;-20&#10;---&#10; 0" oninput="saveManualWork()">${x.workText || ''}</textarea>
+  let builder = document.getElementById('divisionBuilder');
+  builder.innerHTML = `
+    <div style="font-size:24px; font-weight:bold; margin-bottom:10px;">${x.n1} <span style="border-left:3px solid #c2185b; border-bottom:3px solid #c2185b; padding-left:10px;">${x.n2}</span></div>
+    <div class="muted" style="margin-bottom:10px;">Faça a conta embaixo exatamente como no papel (quociente, multiplicações, traço de menos, subtrações e descidas):</div>
+    <textarea id="studentWork" style="width:100%; height:220px; font-family:monospace; font-size:24px; padding:12px; border:2px solid #ffb6c1; border-radius:12px; background:#fffbfd; color:#c2185b;" placeholder="Digite aqui o passo a passo..." oninput="saveWork()">${x.workText || ''}</textarea>
   `;
   
   document.getElementById('notebook').scrollIntoView({behavior:'smooth'});
 }
 
-function saveManualWork(){
+function saveWork(){
   if(active===null)return;
   let x=state.items.find(v=>v.id===active);
-  let el = document.getElementById('studentManualWork');
+  let el = document.getElementById('studentWork');
   if(x && el){
     x.workText = el.value;
     localStorage.setItem(KEY,JSON.stringify(state));
@@ -379,8 +380,8 @@ function checkAnswer(){
   let val=document.getElementById('studentAnswer').value.trim();
   let fb=document.getElementById('resultFeedback');
   
-  let manualEl = document.getElementById('studentManualWork');
-  if(manualEl && x) x.workText = manualEl.value;
+  let workEl = document.getElementById('studentWork');
+  if(workEl && x) x.workText = workEl.value;
 
   if(val===String(x.expected)){
     if(!x.correct) state.stars = (state.stars || 0) + 10;
