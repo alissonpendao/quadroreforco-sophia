@@ -20,12 +20,11 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 .soft{background:#e8f4fd;color:#0277bd}.warn{background:#ffebee;color:#c62828}
 .problem-box{background:linear-gradient(135deg,#fff9fb,#fff0f3);border:2px dashed #ffb6c1;border-radius:16px;padding:20px;text-align:center;margin:15px 0}
 
-/* TABELA DE ALINHAMENTO COLUNA POR COLUNA */
-.math-table-container{background:#fff;border:2px solid #ffccd5;border-radius:16px;padding:20px;margin:15px auto;max-width:500px;overflow-x:auto;box-shadow:0 4px 12px rgba(0,0,0,0.02)}
-.math-row{display:flex;justify-content:center;gap:10px;margin-bottom:8px;align-items:center}
-.math-item{width:45px;height:45px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#c2185b}
-.math-input{width:45px;height:45px;text-align:center;font-size:24px;font-weight:800;border:2px solid #ffb6c1;border-radius:10px;background:#fffbfd;color:#c2185b}
-.math-input:focus{border-color:#ff758c;background:#fff;outline:none}
+/* ESTILO DA TABELA LIMPA EM GRID (SEM CAIXAS VERMELHAS) */
+.math-grid{display:grid;grid-template-columns:repeat(8, 45px);justify-content:center;gap:6px;margin:15px auto;background:#fff;padding:20px;border-radius:16px;border:2px solid #ffd1dc;box-shadow:0 4px 12px rgba(0,0,0,0.02);overflow-x:auto}
+.math-static{display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#c2185b;height:45px}
+.math-input{width:100%;height:45px;text-align:center;font-size:24px;font-weight:800;color:#c2185b;background:#fff;border:none;border-bottom:2px solid #cbd5e1;border-radius:0;transition:border-color 0.2s}
+.math-input:focus{border-bottom-color:#ff758c;background:#fffbfd;outline:none}
 
 .listitem{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 15px;background:#fffdfd;border:1px solid #ffccd5;border-radius:14px;margin:10px 0}
 .hidden{display:none!important}
@@ -119,8 +118,8 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
     <h2 id="modalTitle" style="margin:0;">Resolução da Sofia</h2>
     <button class="warn" onclick="closeViewWork()">Fechar ❌</button>
   </div>
-  <p class="muted">Veja abaixo como ela preencheu alinhadinho na tabela:</p>
-  <div id="parentTablePreview" class="math-table-container"></div>
+  <p class="muted">Veja abaixo como ela preencheu alinhadinho coluna por coluna:</p>
+  <div id="parentTablePreview"></div>
   <div class="actions" style="margin-top:15px;"><button class="soft" onclick="closeViewWork()">Voltar ao Painel</button></div>
 </section>
 
@@ -143,12 +142,12 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
   <h2>Quadro de Cálculo Alinhado 📝</h2>
   
   <div class="problem-box">
-    <div class="tip" style="margin:0 0 15px;">💡 Os números da conta já estão armados em cima. Clique exatamente embaixo de cada número para colocar o seu cálculo alinhado!</div>
+    <div class="tip" style="margin:0 0 15px;">💡 A conta já está armada em cima. Clique exatamente embaixo de cada número para preencher seu cálculo perfeitamente alinhado!</div>
     
-    <!-- TABELA ALINHADA COLUNA POR COLUNA -->
-    <div class="math-table-container" id="studentMathTable"></div>
+    <!-- TABELA LIMPA ALINHADA COLUNA POR COLUNA -->
+    <div id="studentMathTable"></div>
     
-    <div class="actions" style="justify-content:center;"><button class="warn" onclick="clearTable()">Limpar tabela</button></div>
+    <div class="actions" style="justify-content:center; margin-top:15px;"><button class="warn" onclick="clearTable()">Limpar rascunho</button></div>
   </div>
 
   <div style="margin-top:18px;">
@@ -163,7 +162,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 </section>
 </main>
 <script>
-const KEY='reforco_sofia_livre_v20';
+const KEY='reforco_sofia_livre_v21';
 
 let state=JSON.parse(localStorage.getItem(KEY)||'{"items":[], "stars":0, "rewards":[{"name":"Viagem com a Tia Selma na praia", "total":1000}]}');
 if(!state.rewards) state.rewards = [{"name":"Viagem com a Tia Selma na praia", "total":1000}];
@@ -313,19 +312,15 @@ function add(){
     return;
   }
   
-  // Cria uma estrutura padrão de tabela alinhada (6 linhas por colunas baseadas nos dígitos do n1)
-  let cols = Math.max(n1.length, n2.length) + 4;
+  // 6 linhas de rascunho por 8 colunas perfeitamente alinhadas
   let defaultRows = [];
-  
-  // Linha 0: A conta principal armada (ex: 5 4 0 | 4)
-  // Linhas 1 a 5: Espaços em branco clicáveis alinhados por coluna
   for(let r=0; r<6; r++){
     let row = [];
-    for(let c=0; c<cols; c++){ row.push(''); }
+    for(let c=0; c<8; c++){ row.push(''); }
     defaultRows.push(row);
   }
 
-  state.items.push({id:Date.now()+Math.random(), type, n1, n2, expected, rows: defaultRows, cols: cols, solved:false, correct:false});
+  state.items.push({id:Date.now()+Math.random(), type, n1, n2, expected, rows: defaultRows, solved:false, correct:false});
   document.getElementById('num1').value='';
   document.getElementById('num2').value='';
   document.getElementById('expected').value='';
@@ -341,7 +336,7 @@ function renderLists(){
     else{
       p.innerHTML=state.items.map((x,i)=>{
         let statusText = x.solved ? (x.correct ? '<span style="color:#2e7d32; font-weight:700;">⭐ Acertou</span>' : '<span style="color:#c62828; font-weight:700;">❌ Tentou e errou</span>') : '<span style="color:#777;">Aguardando</span>';
-        let hasWork = x.rows && x.rows.some((row, rIdx) => rIdx > 0 && row.some(cell => cell !== ''));
+        let hasWork = x.rows && x.rows.some(row => row.some(cell => cell !== ''));
         return `<div class="listitem">
           <div><b>${i+1}. ${x.n1} ${x.type} ${x.n2}</b> (Resp: ${x.expected})<br><small>Status: ${statusText}</small></div>
           <div style="display:flex; gap:6px;">
@@ -375,70 +370,61 @@ function buildMathTable(x, isParentView){
   let containerId = isParentView ? 'parentTablePreview' : 'studentMathTable';
   let container = document.getElementById(containerId);
   container.innerHTML = '';
-  
-  // Monta a linha da conta principal armada no topo da tabela
-  let topRow = document.createElement('div');
-  topRow.className = 'math-row';
-  
-  if(x.type === '÷'){
-    // Ex: 5 4 0 | 4
-    let digits = x.n1.split('');
-    digits.forEach(d => {
-      let item = document.createElement('div');
-      item.className = 'math-item';
-      item.textContent = d;
-      topRow.appendChild(item);
-    });
-    // Símbolo da chave da divisão
-    let divider = document.createElement('div');
-    divider.className = 'math-item';
-    divider.style.borderLeft = '3px solid #c2185b';
-    divider.style.borderBottom = '3px solid #c2185b';
-    divider.style.paddingLeft = '6px';
-    divider.textContent = x.n2;
-    topRow.appendChild(divider);
+
+  let gridDiv = document.createElement('div');
+  gridDiv.className = 'math-grid';
+
+  let cols = 8;
+  let n1 = String(x.n1);
+  let n2 = String(x.n2);
+  let type = x.type;
+
+  // Linha 0: Cabeçalho fixo da conta armada
+  let headerCells = new Array(cols).fill('');
+  if (type === '÷') {
+    for(let i=0; i<n1.length; i++){
+      headerCells[i] = n1[i];
+    }
+    headerCells[n1.length] = '│';
+    headerCells[n1.length + 1] = n2;
   } else {
-    // Para x, +, - (ex: 5 0 x 5 0)
-    let fullStr = `${x.n1} ${x.type} ${x.n2}`;
-    fullStr.split('').forEach(ch => {
-      let item = document.createElement('div');
-      item.className = 'math-item';
-      item.textContent = ch === ' ' ? '' : ch;
-      topRow.appendChild(item);
-    });
+    headerCells[3] = n1;
+    headerCells[4] = type;
+    headerCells[5] = n2;
   }
-  container.appendChild(topRow);
-  
-  // Linhas abaixo para ela preencher número embaixo de número
-  x.rows.forEach((row, rIdx)=>{
-    if(rIdx === 0) return; // pula a linha 0 que é o cabeçalho fixo da conta
-    let rowDiv = document.createElement('div');
-    rowDiv.className = 'math-row';
-    
-    row.forEach((val, cIdx)=>{
-      if(isParentView){
+
+  headerCells.forEach(val => {
+    let cell = document.createElement('div');
+    cell.className = 'math-static';
+    cell.textContent = val;
+    gridDiv.appendChild(cell);
+  });
+
+  // Linhas interativas de rascunho alinhadas coluna por coluna
+  x.rows.forEach((row, rIdx) => {
+    row.forEach((val, cIdx) => {
+      if (isParentView) {
         let cell = document.createElement('div');
-        cell.className = 'math-item';
-        cell.style.border = '1px solid #ffccd5';
-        cell.style.borderRadius = '8px';
-        cell.style.backgroundColor = '#fffbfd';
+        cell.className = 'math-static';
+        cell.style.borderBottom = '1px solid #cbd5e1';
         cell.textContent = val;
-        rowDiv.appendChild(cell);
+        gridDiv.appendChild(cell);
       } else {
         let input = document.createElement('input');
         input.type = 'text';
         input.maxLength = 1;
         input.className = 'math-input';
         input.value = val;
-        input.oninput = (e)=>{
+        input.oninput = (e) => {
           x.rows[rIdx][cIdx] = e.target.value;
           saveTableSilently();
         };
-        rowDiv.appendChild(input);
+        gridDiv.appendChild(input);
       }
     });
-    container.appendChild(rowDiv);
   });
+
+  container.appendChild(gridDiv);
 }
 
 function saveTableSilently(){
@@ -451,8 +437,8 @@ function clearTable(){
   if(!confirm('Quer limpar todos os números preenchidos?'))return;
   let x=state.items.find(v=>v.id===active);
   if(x){
-    x.rows.forEach((row, rIdx)=>{
-      if(rIdx > 0) row.forEach((val, cIdx)=>{ x.rows[rIdx][cIdx] = ''; });
+    x.rows.forEach(row => {
+      row.forEach((val, cIdx) => { row[cIdx] = ''; });
     });
     buildMathTable(x, false);
     localStorage.setItem(KEY,JSON.stringify(state));
