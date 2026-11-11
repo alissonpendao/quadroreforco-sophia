@@ -20,11 +20,12 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 .soft{background:#e8f4fd;color:#0277bd}.warn{background:#ffebee;color:#c62828}
 .problem-box{background:linear-gradient(135deg,#fff9fb,#fff0f3);border:2px dashed #ffb6c1;border-radius:16px;padding:20px;text-align:center;margin:15px 0}
 
-/* TABELA ADAPTÁVEL QUE NÃO CORTA NADA NA TELA */
-.math-grid{display:grid;gap:4px;margin:15px auto;background:#fff;padding:15px;border-radius:16px;border:2px solid #ffd1dc;box-shadow:0 4px 12px rgba(0,0,0,0.02);width:100%;max-width:450px}
-.math-static{display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#c2185b;height:42px}
-.math-input{width:100%;height:42px;text-align:center;font-size:22px;font-weight:800;color:#c2185b;background:#fff;border:none;border-bottom:2px solid #cbd5e1;border-radius:0;transition:border-color 0.2s}
-.math-input:focus{border-bottom-color:#ff758c;background:#fffbfd;outline:none}
+/* CHAVE EM "L" CLÁSSICA */
+.division-paper{background:#fff;border:2px solid #ffccd5;border-radius:16px;padding:25px;margin:15px auto;max-width:500px;font-family:monospace;font-size:26px;font-weight:bold;color:#c2185b;text-align:left;box-shadow:0 4px 12px rgba(0,0,0,0.02)}
+.div-row{display:flex;align-items:center;gap:12px;margin:8px 0}
+.div-bracket{border-left:3px solid #c2185b;border-bottom:3px solid #c2185b;padding-left:10px;padding-bottom:2px}
+.step-input{width:45px;height:42px;text-align:center;font-size:22px;font-weight:bold;color:#c2185b;border:2px solid #ffb6c1;border-radius:8px;background:#fffbfd}
+.step-input:focus{border-color:#ff758c;background:#fff;outline:none}
 
 .listitem{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 15px;background:#fffdfd;border:1px solid #ffccd5;border-radius:14px;margin:10px 0}
 .hidden{display:none!important}
@@ -118,8 +119,8 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
     <h2 id="modalTitle" style="margin:0;">Resolução da Sofia</h2>
     <button class="warn" onclick="closeViewWork()">Fechar ❌</button>
   </div>
-  <p class="muted">Veja abaixo como ela preencheu alinhadinho coluna por coluna:</p>
-  <div id="parentTablePreview"></div>
+  <p class="muted">Veja abaixo o que ela preencheu na divisão:</p>
+  <div id="parentWorkPreview" class="card" style="background:#fffbfd; font-family:monospace; font-size:22px; color:#c2185b;"></div>
   <div class="actions" style="margin-top:15px;"><button class="soft" onclick="closeViewWork()">Voltar ao Painel</button></div>
 </section>
 
@@ -139,19 +140,17 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 
  <div class="card"><h2>Escolha sua continha 🌟</h2><div id="studentList"></div></div>
  <div id="notebook" class="card hidden">
-  <h2>Quadro de Cálculo Alinhado 📝</h2>
+  <h2>Chave de Divisão 📝</h2>
   
   <div class="problem-box">
-    <div class="tip" style="margin:0 0 15px;">💡 A conta já está armada em cima. Clique exatamente embaixo de cada número para preencher seu cálculo perfeitamente alinhado!</div>
+    <div class="tip" style="margin:0:0 15px;">💡 Digite os números da divisão na chave abaixo. Conforme você coloca o número da multiplicação, o sinal de menos e o traço aparecem automaticamente!</div>
     
-    <!-- TABELA LIMPA ALINHADA COLUNA POR COLUNA -->
-    <div id="studentMathTable"></div>
-    
-    <div class="actions" style="justify-content:center; margin-top:15px;"><button class="warn" onclick="clearTable()">Limpar rascunho</button></div>
+    <!-- ÁREA DA CHAVE EM L INTERATIVA -->
+    <div id="divisionWorkspace" style="text-align:center;"></div>
   </div>
 
   <div style="margin-top:18px;">
-    <label>Qual foi o resultado final da conta?</label>
+    <label>Qual foi o resultado final da conta (Quociente)?</label>
     <div class="row">
       <input id="studentAnswer" type="text" placeholder="Digite o resultado aqui">
       <button class="primary" onclick="checkAnswer()">Conferir Resposta ⭐</button>
@@ -162,7 +161,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 </section>
 </main>
 <script>
-const KEY='reforco_sofia_livre_v22';
+const KEY='reforco_sofia_livre_v25';
 
 let state=JSON.parse(localStorage.getItem(KEY)||'{"items":[], "stars":0, "rewards":[{"name":"Viagem com a Tia Selma na praia", "total":1000}]}');
 if(!state.rewards) state.rewards = [{"name":"Viagem com a Tia Selma na praia", "total":1000}];
@@ -311,17 +310,9 @@ function add(){
     document.getElementById('msg').textContent='Preencha os números da continha!';
     return;
   }
-  
-  // Número dinâmico de colunas baseado no tamanho do número 1 + divisor + margem (ex: 540 dá 3 dígitos + 3 colunas extras = 6 colunas proporcionais)
-  let cols = Math.max(n1.length + 3, 6);
-  let defaultRows = [];
-  for(let r=0; r<6; r++){
-    let row = [];
-    for(let c=0; c<cols; c++){ row.push(''); }
-    defaultRows.push(row);
-  }
 
-  state.items.push({id:Date.now()+Math.random(), type, n1, n2, expected, cols: cols, rows: defaultRows, solved:false, correct:false});
+  // Inicializa com linhas de rascunho em texto livre para ela digitar tudo à vontade
+  state.items.push({id:Date.now()+Math.random(), type, n1, n2, expected, workText:'', solved:false, correct:false});
   document.getElementById('num1').value='';
   document.getElementById('num2').value='';
   document.getElementById('expected').value='';
@@ -336,12 +327,12 @@ function renderLists(){
     if(!state.items.length){p.innerHTML='<p class="muted">Nenhuma conta cadastrada ainda.</p>';}
     else{
       p.innerHTML=state.items.map((x,i)=>{
-        let statusText = x.solved ? (x.correct ? '<span style="color:#2e7d32; font-weight:700;">⭐ Acertou</span>' : '<span style="color:#c62828; font-weight:700;">❌ Tentou e errou</span>') : '<span style="color:#777;">Aguardando</span>';
-        let hasWork = x.rows && x.rows.some(row => row.some(cell => cell !== ''));
+        let statusText = x.solved ? (x.correct ? '<span style="color:#2e7d32; font-weight:700;">⭐ Acertou</span>' : '<span style="color:#c62828; font-weight:700;">❌ Errou</span>') : '<span style="color:#777;">Aguardando</span>';
+        let hasWork = x.workText && x.workText.trim().length > 0;
         return `<div class="listitem">
           <div><b>${i+1}. ${x.n1} ${x.type} ${x.n2}</b> (Resp: ${x.expected})<br><small>Status: ${statusText}</small></div>
           <div style="display:flex; gap:6px;">
-            ${hasWork ? `<button class="soft" onclick="viewWork(${x.id})">Ver Alinhamento 👁️</button>` : `<span class="muted" style="font-size:12px; align-self:center;">Vazio</span>`}
+            ${hasWork ? `<button class="soft" onclick="viewWork(${x.id})">Ver Rascunho 👁️</button>` : `<span class="muted" style="font-size:12px; align-self:center;">Vazio</span>`}
             <button class="warn" onclick="removeItem(${x.id})">Remover</button>
           </div>
         </div>`;
@@ -350,7 +341,7 @@ function renderLists(){
   }
   if(s){
     if(!state.items.length){s.innerHTML='<p class="muted">Nenhuma conta disponível no momento. Peça ao papai para cadastrar! 🌸</p>';}
-    else{s.innerHTML=state.items.map((x,i)=>`<div class="listitem"><div><b>${i+1}. ${x.n1} ${x.type} ${x.n2}</b><div class="muted">${x.solved?(x.correct?'⭐ Acertou!':'❌ Tente de novo, você consegue!'):'Aguardando resolução'}</div></div><button class="primary" onclick="openNotebook(${x.id})">Resolver ✨</button></div>`).join('');}
+    else{s.innerHTML=state.items.map((x,i)=>`<div class="listitem"><div><b>${i+1}. ${x.n1} ${x.type} ${x.n2}</b><div class="muted">${x.solved?(x.correct?'⭐ Acertou!':'❌ Tente de novo!'):'Aguardando resolução'}</div></div><button class="primary" onclick="openNotebook(${x.id})">Resolver ✨</button></div>`).join('');}
   }
 }
 
@@ -363,126 +354,58 @@ function openNotebook(id){
   document.getElementById('studentAnswer').value='';
   document.getElementById('resultFeedback').innerHTML='';
   
-  buildMathTable(x, false);
+  let workspace = document.getElementById('divisionWorkspace');
+  workspace.innerHTML = `
+    <div style="margin-bottom:10px; font-weight:bold; font-size:24px;">Conta: ${x.n1} ${x.type} ${x.n2}</div>
+    <div class="muted" style="margin-bottom:10px;">Digite seus cálculos passo a passo (multiplicações, subtrações e restos):</div>
+    <textarea id="studentManualWork" style="width:100%; height:200px; font-family:monospace; font-size:22px; padding:12px; border:2px solid #ffb6c1; border-radius:12px; background:#fffbfd; color:#c2185b;" placeholder="Ex:&#10;540 |_ 4&#10;-4   135&#10;--&#10;14&#10;-12&#10;---&#10;20&#10;-20&#10;---&#10; 0" oninput="saveManualWork()">${x.workText || ''}</textarea>
+  `;
+  
   document.getElementById('notebook').scrollIntoView({behavior:'smooth'});
 }
 
-function buildMathTable(x, isParentView){
-  let containerId = isParentView ? 'parentTablePreview' : 'studentMathTable';
-  let container = document.getElementById(containerId);
-  container.innerHTML = '';
-
-  let gridDiv = document.createElement('div');
-  gridDiv.className = 'math-grid';
-  let cols = x.cols || Math.max(String(x.n1).length + 3, 6);
-  gridDiv.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-
-  let n1 = String(x.n1);
-  let n2 = String(x.n2);
-  let type = x.type;
-
-  // Linha 0: Cabeçalho fixo da conta armada perfeitamente dimensionado
-  let headerCells = new Array(cols).fill('');
-  if (type === '÷') {
-    for(let i=0; i<n1.length && i<cols; i++){
-      headerCells[i] = n1[i];
-    }
-    if(n1.length < cols) headerCells[n1.length] = '│';
-    if(n1.length + 1 < cols) headerCells[n1.length + 1] = n2;
-  } else {
-    headerCells[1] = n1;
-    headerCells[2] = type;
-    headerCells[3] = n2;
-  }
-
-  headerCells.forEach(val => {
-    let cell = document.createElement('div');
-    cell.className = 'math-static';
-    cell.textContent = val;
-    gridDiv.appendChild(cell);
-  });
-
-  // Linhas interativas de rascunho alinhadas coluna por coluna na proporção exata da tela
-  x.rows.forEach((row, rIdx) => {
-    // Garante que a linha tem o tamanho correto de colunas
-    while(row.length < cols) row.push('');
-    
-    for(let cIdx=0; cIdx<cols; cIdx++){
-      let val = row[cIdx];
-      if (isParentView) {
-        let cell = document.createElement('div');
-        cell.className = 'math-static';
-        cell.style.borderBottom = '1px solid #cbd5e1';
-        cell.textContent = val;
-        gridDiv.appendChild(cell);
-      } else {
-        let input = document.createElement('input');
-        input.type = 'text';
-        input.maxLength = 1;
-        input.className = 'math-input';
-        input.value = val;
-        input.oninput = (e) => {
-          x.rows[rIdx][cIdx] = e.target.value;
-          saveTableSilently();
-        };
-        gridDiv.appendChild(input);
-      }
-    }
-  });
-
-  container.appendChild(gridDiv);
-}
-
-function saveTableSilently(){
+function saveManualWork(){
   if(active===null)return;
   let x=state.items.find(v=>v.id===active);
-  if(x){ localStorage.setItem(KEY,JSON.stringify(state)); }
-}
-
-function clearTable(){
-  if(!confirm('Quer limpar todos os números preenchidos?'))return;
-  let x=state.items.find(v=>v.id===active);
-  if(x){
-    x.rows.forEach(row => {
-      row.forEach((val, cIdx) => { row[cIdx] = ''; });
-    });
-    buildMathTable(x, false);
+  let el = document.getElementById('studentManualWork');
+  if(x && el){
+    x.workText = el.value;
     localStorage.setItem(KEY,JSON.stringify(state));
   }
 }
 
 function checkAnswer(){
-  if(active===null)return;
   let x=state.items.find(v=>v.id===active);
   let val=document.getElementById('studentAnswer').value.trim();
   let fb=document.getElementById('resultFeedback');
   
+  let manualEl = document.getElementById('studentManualWork');
+  if(manualEl && x) x.workText = manualEl.value;
+
   if(val===String(x.expected)){
-    if(!x.correct){
-      state.stars = (state.stars || 0) + 10; 
-    }
-    x.solved=true;
-    x.correct=true;
-    fb.innerHTML='<div class="scorebox">🎉 Parabéns, Sofia! Você acertou em cheio! Ganhou +10 estrelinhas para as metas! ⭐⭐⭐💖</div>';
+    if(!x.correct) state.stars = (state.stars || 0) + 10;
+    x.solved = true;
+    x.correct = true;
+    fb.innerHTML = '<div class="scorebox">🎉 Parabéns, Sofia! Você acertou em cheio! Ganhou +10 estrelinhas! ⭐⭐⭐💖</div>';
     persist();
-  }else{
-    x.solved=true;
-    x.correct=false;
-    fb.innerHTML='<div class="scorebox" style="background:#ffebee;color:#c62828;border-color:#ffcdd2;">❌ Ops! O resultado não está correto. Revise o alinhamento e tente de novo! 💪</div>';
+  } else {
+    x.solved = true;
+    x.correct = false;
+    fb.innerHTML = '<div class="scorebox" style="background:#ffebee;color:#c62828;border-color:#ffcdd2;">❌ Ops! O resultado final não está correto. Tente de novo! 💪</div>';
     persist();
   }
 }
 
 function viewWork(id){
   let x=state.items.find(v=>v.id===id);
-  if(!x || !x.rows) return;
+  if(!x) return;
   
   document.getElementById('modalTitle').textContent = `Resolução da Conta: ${x.n1} ${x.type} ${x.n2}`;
   document.getElementById('parentPanel').classList.add('hidden');
   document.getElementById('viewWorkModal').classList.remove('hidden');
   document.getElementById('viewWorkModal').scrollIntoView({behavior:'smooth'});
   
-  buildMathTable(x, true);
+  document.getElementById('parentWorkPreview').textContent = x.workText || '(Nenhum cálculo registrado)';
 }
 
 function closeViewWork(){
