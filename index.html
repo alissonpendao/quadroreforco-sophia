@@ -20,10 +20,10 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 .soft{background:#e8f4fd;color:#0277bd}.warn{background:#ffebee;color:#c62828}
 .problem-box{background:linear-gradient(135deg,#fff9fb,#fff0f3);border:2px dashed #ffb6c1;border-radius:16px;padding:20px;text-align:center;margin:15px 0}
 
-/* ESTILO DA TABELA LIMPA EM GRID (SEM CAIXAS VERMELHAS) */
-.math-grid{display:grid;grid-template-columns:repeat(8, 45px);justify-content:center;gap:6px;margin:15px auto;background:#fff;padding:20px;border-radius:16px;border:2px solid #ffd1dc;box-shadow:0 4px 12px rgba(0,0,0,0.02);overflow-x:auto}
-.math-static{display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#c2185b;height:45px}
-.math-input{width:100%;height:45px;text-align:center;font-size:24px;font-weight:800;color:#c2185b;background:#fff;border:none;border-bottom:2px solid #cbd5e1;border-radius:0;transition:border-color 0.2s}
+/* TABELA ADAPTÁVEL QUE NÃO CORTA NADA NA TELA */
+.math-grid{display:grid;gap:4px;margin:15px auto;background:#fff;padding:15px;border-radius:16px;border:2px solid #ffd1dc;box-shadow:0 4px 12px rgba(0,0,0,0.02);width:100%;max-width:450px}
+.math-static{display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#c2185b;height:42px}
+.math-input{width:100%;height:42px;text-align:center;font-size:22px;font-weight:800;color:#c2185b;background:#fff;border:none;border-bottom:2px solid #cbd5e1;border-radius:0;transition:border-color 0.2s}
 .math-input:focus{border-bottom-color:#ff758c;background:#fffbfd;outline:none}
 
 .listitem{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 15px;background:#fffdfd;border:1px solid #ffccd5;border-radius:14px;margin:10px 0}
@@ -162,7 +162,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 </section>
 </main>
 <script>
-const KEY='reforco_sofia_livre_v21';
+const KEY='reforco_sofia_livre_v22';
 
 let state=JSON.parse(localStorage.getItem(KEY)||'{"items":[], "stars":0, "rewards":[{"name":"Viagem com a Tia Selma na praia", "total":1000}]}');
 if(!state.rewards) state.rewards = [{"name":"Viagem com a Tia Selma na praia", "total":1000}];
@@ -312,15 +312,16 @@ function add(){
     return;
   }
   
-  // 6 linhas de rascunho por 8 colunas perfeitamente alinhadas
+  // Número dinâmico de colunas baseado no tamanho do número 1 + divisor + margem (ex: 540 dá 3 dígitos + 3 colunas extras = 6 colunas proporcionais)
+  let cols = Math.max(n1.length + 3, 6);
   let defaultRows = [];
   for(let r=0; r<6; r++){
     let row = [];
-    for(let c=0; c<8; c++){ row.push(''); }
+    for(let c=0; c<cols; c++){ row.push(''); }
     defaultRows.push(row);
   }
 
-  state.items.push({id:Date.now()+Math.random(), type, n1, n2, expected, rows: defaultRows, solved:false, correct:false});
+  state.items.push({id:Date.now()+Math.random(), type, n1, n2, expected, cols: cols, rows: defaultRows, solved:false, correct:false});
   document.getElementById('num1').value='';
   document.getElementById('num2').value='';
   document.getElementById('expected').value='';
@@ -373,24 +374,25 @@ function buildMathTable(x, isParentView){
 
   let gridDiv = document.createElement('div');
   gridDiv.className = 'math-grid';
+  let cols = x.cols || Math.max(String(x.n1).length + 3, 6);
+  gridDiv.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
 
-  let cols = 8;
   let n1 = String(x.n1);
   let n2 = String(x.n2);
   let type = x.type;
 
-  // Linha 0: Cabeçalho fixo da conta armada
+  // Linha 0: Cabeçalho fixo da conta armada perfeitamente dimensionado
   let headerCells = new Array(cols).fill('');
   if (type === '÷') {
-    for(let i=0; i<n1.length; i++){
+    for(let i=0; i<n1.length && i<cols; i++){
       headerCells[i] = n1[i];
     }
-    headerCells[n1.length] = '│';
-    headerCells[n1.length + 1] = n2;
+    if(n1.length < cols) headerCells[n1.length] = '│';
+    if(n1.length + 1 < cols) headerCells[n1.length + 1] = n2;
   } else {
-    headerCells[3] = n1;
-    headerCells[4] = type;
-    headerCells[5] = n2;
+    headerCells[1] = n1;
+    headerCells[2] = type;
+    headerCells[3] = n2;
   }
 
   headerCells.forEach(val => {
@@ -400,9 +402,13 @@ function buildMathTable(x, isParentView){
     gridDiv.appendChild(cell);
   });
 
-  // Linhas interativas de rascunho alinhadas coluna por coluna
+  // Linhas interativas de rascunho alinhadas coluna por coluna na proporção exata da tela
   x.rows.forEach((row, rIdx) => {
-    row.forEach((val, cIdx) => {
+    // Garante que a linha tem o tamanho correto de colunas
+    while(row.length < cols) row.push('');
+    
+    for(let cIdx=0; cIdx<cols; cIdx++){
+      let val = row[cIdx];
       if (isParentView) {
         let cell = document.createElement('div');
         cell.className = 'math-static';
@@ -421,7 +427,7 @@ function buildMathTable(x, isParentView){
         };
         gridDiv.appendChild(input);
       }
-    });
+    }
   });
 
   container.appendChild(gridDiv);
