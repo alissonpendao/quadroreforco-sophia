@@ -38,12 +38,12 @@ canvas{display:block;width:100%;height:470px;touch-action:none;cursor:crosshair}
   <p class="muted">Digite a senha para entrar no seu painel:</p>
   <div style="text-align:left; margin-top:15px;">
     <label>Senha de Acesso</label>
-    <input id="accessPass" type="password" placeholder="Digite a senha...">
+    <input id="accessPass" type="password" placeholder="Digite a senha..." onkeydown="if(event.key==='Enter')tryLogin()">
   </div>
   <div class="actions" style="margin-top:18px;">
     <button class="primary" style="width:100%" onclick="tryLogin()">Entrar 💖</button>
   </div>
-  <p class="muted" id="loginMsg" style="color:#d92d20; margin-top:10px;"></p>
+  <p class="muted" id="loginMsg" style="color:#d92d20; margin-top:10px; font-weight:700;"></p>
 </section>
 
 <!-- PAINEL DO PAI -->
@@ -141,7 +141,7 @@ function add(){
   let expected=document.getElementById('expected').value.trim();
   
   if(!n1||!n2||!expected){
-    document.getElementById('msgstyle').style.color='#c62828';
+    document.getElementById('msg').style.color='#c62828';
     document.getElementById('msg').textContent='Preencha todos os campos da continha!';
     return;
   }
@@ -169,9 +169,6 @@ function renderLists(){
 function removeItem(id){state.items=state.items.filter(x=>x.id!==id);if(active===id){document.getElementById('notebook').classList.add('hidden');active=null}persist()}
 function setupCanvas(){canvas=document.getElementById('paper');ctx=canvas.getContext('2d');let rect=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;canvas.width=Math.round(rect.width*dpr);canvas.height=Math.round(rect.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=3;ctx.strokeStyle='#c2185b';drawAll();canvas.onpointerdown=e=>{drawing=true;canvas.setPointerCapture(e.pointerId);let r=canvas.getBoundingClientRect();last={x:e.clientX-r.left,y:e.clientY-r.top};current=[last];ctx.beginPath();ctx.moveTo(last.x,last.y)};canvas.onpointermove=e=>{if(!drawing)return;let r=canvas.getBoundingClientRect(),pt={x:e.clientX-r.left,y:e.clientY-r.top};ctx.lineTo(pt.x,pt.y);ctx.stroke();current.push(pt);last=pt};canvas.onpointerup=canvas.onpointercancel=()=>{if(drawing){drawing=false;if(current.length)strokes.push(current);current=[];saveSilently()}}}
 function drawAll(){if(!ctx)return;let w=canvas.clientWidth,h=canvas.clientHeight;ctx.clearRect(0,0,w,h);ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.strokeStyle='#fce4ec';ctx.lineWidth=1;for(let y=34;y<h;y+=38){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}ctx.strokeStyle='#c2185b';ctx.lineWidth=3;ctx.lineCap='round';ctx.lineJoin='round';strokes.forEach(st=>{if(!st.length)return;ctx.beginPath();ctx.moveTo(st[0].x,st[0].y);st.slice(1).forEach(pt=>ctx.lineTo(pt.x,pt.y));ctx.stroke()})}
-function openNotebook(id){active=id;let x=state.items.find(v=>v.id===id);document.getElementById('currentProblem.textContent`=${x.n1} ${x.type} ${x.n2}`;document.getElementById('notebook').classList.remove('hidden');strokes=Array.isArray(x.work)?x.work:[];document.getElementById('studentAnswer').value='';document.getElementById('resultFeedback').innerHTML='';setupCanvas();document.getElementById('notebook').scrollIntoView({behavior:'smooth'})}
-
-// Correção pontual para exibir a conta bonitinha no caderno dela
 function openNotebook(id){
   active=id;
   let x=state.items.find(v=>v.id===id);
@@ -183,7 +180,6 @@ function openNotebook(id){
   setupCanvas();
   document.getElementById('notebook').scrollIntoView({behavior:'smooth'});
 }
-
 function saveSilently(){if(active===null)return;let x=state.items.find(v=>v.id===active);if(x){x.work=strokes;localStorage.setItem(KEY,JSON.stringify(state))}}
 function undo(){strokes.pop();drawAll();saveSilently()}
 function clearPaper(){if(!confirm('Quer apagar o rascunho e começar de novo?'))return;strokes=[];drawAll();saveSilently()}
