@@ -7,7 +7,7 @@
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#fff0f5,#f0f4ff);color:#333;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 header{background:linear-gradient(120deg,#ff758c,#ff7eb3);color:white;padding:22px 16px;text-align:center;border-bottom-left-radius:25px;border-bottom-right-radius:25px;box-shadow:0 4px 15px rgba(255,117,140,0.3)}
 header h1{margin:0;font-size:28px;text-shadow:0 2px 4px rgba(0,0,0,0.1)}header p{margin:6px 0 0;opacity:.95;font-size:15px}
-main{max-width:900px;margin:16px auto;padding:0 12px 30px}
+main{max-width:950px;margin:16px auto;padding:0 12px 30px}
 .card{background:white;border:2px solid #ffd1dc;border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:0 6px 20px rgba(255,182,193,0.15)}
 h2{font-size:20px;margin:0 0 12px;color:#d81b60}p{line-height:1.45}.muted{color:#777;font-size:13px}
 label{display:block;color:#555;font-size:13px;font-weight:700;margin:10px 0 5px}
@@ -20,11 +20,11 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 .soft{background:#e8f4fd;color:#0277bd}.warn{background:#ffebee;color:#c62828}
 .problem-box{background:linear-gradient(135deg,#fff9fb,#fff0f3);border:2px dashed #ffb6c1;border-radius:16px;padding:20px;text-align:center;margin:15px 0}
 
-/* LOUSA GIGANTE COM SCROLL PARA NAVEGAR À VONTADE */
-.canvas-scroll-container{width:100%;height:450px;overflow:auto;border:2px solid #b0bec5;border-radius:14px;background:white;box-shadow:inset 0 2px 8px rgba(0,0,0,0.05);position:relative}
+/* LOUSA GIGANTE COM ALTURA AMPLIADA E SCROLL SUAVE */
+.canvas-scroll-container{width:100%;height:600px;overflow:auto;border:2px solid #b0bec5;border-radius:14px;background:white;box-shadow:inset 0 2px 8px rgba(0,0,0,0.05);position:relative}
 canvas{display:block;touch-action:none;cursor:crosshair;background:#fff}
 
-.color-btn{width:36px;height:36px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,0.2);cursor:pointer}
+.color-btn{width:40px;height:40px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,0.2);cursor:pointer}
 .listitem{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 15px;background:#fffdfd;border:1px solid #ffccd5;border-radius:14px;margin:10px 0}
 .hidden{display:none!important}
 .scorebox{background:#e8f5e9;color:#2e7d32;padding:14px;border-radius:14px;margin-top:14px;font-weight:700;text-align:center;font-size:16px;border:2px solid #a5d6a7}
@@ -118,8 +118,9 @@ canvas{display:block;touch-action:none;cursor:crosshair;background:#fff}
     <button class="warn" onclick="closeViewWork()">Fechar ❌</button>
   </div>
   <p class="muted">Veja abaixo o que ela rabiscou na lousa:</p>
+  <div id="parentProblemHeader" style="text-align:center; margin-bottom:10px;"></div>
   <div class="canvas-scroll-container">
-    <canvas id="parentPaper" width="1400" height="1000" aria-label="Visualização do rascunho"></canvas>
+    <canvas id="parentPaper" width="1600" height="1600" aria-label="Visualização do rascunho"></canvas>
   </div>
   <div class="actions" style="margin-top:15px;"><button class="soft" onclick="closeViewWork()">Voltar ao Painel</button></div>
 </section>
@@ -143,23 +144,25 @@ canvas{display:block;touch-action:none;cursor:crosshair;background:#fff}
   <h2>Lousa Gigante de Rascunho 📝</h2>
   
   <div class="problem-box">
-    <div class="muted" style="font-weight:700; margin-bottom:5px;">Enunciado Fixo na Lousa:</div>
-    <div id="currentProblemDisplay" style="font-size:22px; font-weight:800; color:#c2185b; margin-bottom:10px;"></div>
-    <div class="tip" style="font-size:13px; color:#8d6e63; margin-bottom:12px;">💡 A conta já está impressa no topo da lousa! Arraste o dedo na lousa abaixo para navegar e fazer todos os passos à vontade.</div>
+    <div class="muted" style="font-weight:700; margin-bottom:8px;">Conta Armada Fixa:</div>
+    <!-- CHAVE DA CONTA LIMPA E PERFEITA EM HTML -->
+    <div id="currentProblemDisplay" style="text-align:center; margin-bottom:12px;"></div>
+    
+    <div class="tip" style="font-size:13px; color:#8d6e63; margin-bottom:12px;">💡 A conta já está armada acima! Use a lousa gigante abaixo com muito espaço para fazer todos os passos à vontade.</div>
     
     <!-- PALETA DE CORES -->
-    <div style="display:flex; gap:10px; align-items:center; margin-bottom:12px;">
+    <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
       <span class="muted" style="font-weight:700;">Cor do Giz:</span>
       <button class="color-btn" style="background:#c2185b;" onclick="setDrawingColor('#c2185b')" title="Rosa Choque"></button>
       <button class="color-btn" style="background:#1976d2;" onclick="setDrawingColor('#1976d2')" title="Azul Escuro"></button>
       <button class="color-btn" style="background:#212121;" onclick="setDrawingColor('#212121')" title="Preto Clássico"></button>
     </div>
 
-    <!-- LOUSA COM TAMANHO GIGANTE E SCROLL -->
+    <!-- LOUSA GIGANTE COM 1600x1600px DE ESPAÇO -->
     <div class="canvas-scroll-container">
-      <canvas id="paper" width="1400" height="1000" aria-label="Lousa gigante para escrita à mão livre"></canvas>
+      <canvas id="paper" width="1600" height="1600" aria-label="Lousa gigante para escrita à mão livre"></canvas>
     </div>
-    <div class="actions" style="margin-top:10px;"><button class="soft" onclick="undo()">↶ Desfazer</button><button class="warn" onclick="clearPaper()">Apagar Rascunho</button></div>
+    <div class="actions" style="margin-top:12px;"><button class="soft" onclick="undo()">↶ Desfazer</button><button class="warn" onclick="clearPaper()">Apagar Rascunho</button></div>
   </div>
 
   <div style="margin-top:18px;">
@@ -174,7 +177,7 @@ canvas{display:block;touch-action:none;cursor:crosshair;background:#fff}
 </section>
 </main>
 <script>
-const KEY='reforco_sofia_livre_v27';
+const KEY='reforco_sofia_livre_v29';
 
 let state=JSON.parse(localStorage.getItem(KEY)||'{"items":[], "stars":0, "rewards":[{"name":"Viagem com a Tia Selma na praia", "total":1000}]}');
 if(!state.rewards) state.rewards = [{"name":"Viagem com a Tia Selma na praia", "total":1000}];
@@ -361,148 +364,19 @@ function renderLists(){
 
 function removeItem(id){state.items=state.items.filter(x=>x.id!==id);if(active===id){document.getElementById('notebook').classList.add('hidden');active=null}persist()}
 
+function getProblemHtml(x){
+  if(x.type === '÷'){
+    return `
+      <div style="display:inline-flex; align-items:center; background:#fffbfd; padding:12px 30px; border-radius:14px; border:2px solid #ffccd5; font-size:34px; font-weight:800; color:#c2185b; font-family:monospace;">
+        <span>${x.n1}</span>
+        <span style="border-left:4px solid #c2185b; height:50px; margin:0 18px; display:inline-block;"></span>
+        <span>${x.n2}</span>
+      </div>
+    `;
+  } else {
+    return `<div style="font-size:34px; font-weight:800; color:#c2185b; font-family:monospace;">${x.n1} ${x.type} ${x.n2}</div>`;
+  }
+}
+
 function setupCanvas(){
-  canvas=document.getElementById('paper');
-  ctx=canvas.getContext('2d');
-  ctx.lineCap='round';
-  ctx.lineJoin='round';
-  ctx.lineWidth=3;
-  ctx.strokeStyle=currentColor;
-  drawAll();
-  
-  canvas.onpointerdown=e=>{drawing=true;canvas.setPointerCapture(e.pointerId);let r=canvas.getBoundingClientRect();let x=e.clientX-r.left,y=e.clientY-r.top;current=[{x, y, color:currentColor}];ctx.beginPath();ctx.moveTo(x,y)};
-  canvas.onpointermove=e=>{if(!drawing)return;let r=canvas.getBoundingClientRect();let x=e.clientX-r.left,y=e.clientY-r.top;ctx.strokeStyle=currentColor;ctx.lineTo(x,y);ctx.stroke();current.push({x, y, color:currentColor});};
-  canvas.onpointerup=canvas.onpointercancel=()=>{if(drawing){drawing=false;if(current.length)strokes.push(current);current=[];saveSilently();}}
-}
-
-function drawAll(targetCtx, targetCanvas, targetStrokes){
-  let c = targetCtx || ctx;
-  let cv = targetCanvas || canvas;
-  let stArr = targetStrokes || strokes;
-  if(!c || !cv) return;
-
-  let w=cv.width, h=cv.height;
-  c.clearRect(0,0,w,h);
-  c.fillStyle='#fff';
-  c.fillRect(0,0,w,h);
-  
-  // Fundo quadriculado simulando caderno de matemática
-  c.strokeStyle='#f0f0f0';
-  c.lineWidth=1;
-  for(let x=0; x<w; x+=30){c.beginPath();c.moveTo(x,0);c.lineTo(x,h);c.stroke();}
-  for(let y=0; y<h; y+=30){c.beginPath();c.moveTo(0,y);c.lineTo(w,y);c.stroke();}
-
-  // IMPRIME O ENUNCIADO FIXO NO TOPO DA LOUSA AUTOMATICAMENTE
-  let xItem = state.items.find(v=>v.id===active);
-  if(xItem){
-    c.font = 'bold 36px monospace';
-    c.fillStyle = '#c2185b';
-    if(xItem.type === '÷'){
-      c.fillText(`${xItem.n1}  |  ${xItem.n2}`, 60, 70);
-      // Desenha a chave em L tradicional ao redor do divisor
-      c.lineWidth = 4;
-      c.strokeStyle = '#c2185b';
-      c.beginPath();
-      c.moveTo(135, 42);
-      c.lineTo(135, 80);
-      c.lineTo(195, 80);
-      c.stroke();
-    } else {
-      c.fillText(`${xItem.n1} ${xItem.type} ${xItem.n2}`, 60, 70);
-    }
-  }
-  
-  // Desenha os rabiscos feitos pela Sofia
-  stArr.forEach(st=>{
-    if(!st.length)return;
-    c.beginPath();
-    c.lineWidth=3;
-    c.lineCap='round';
-    c.lineJoin='round';
-    c.strokeStyle=st[0].color || '#c2185b';
-    c.moveTo(st[0].x, st[0].y);
-    st.slice(1).forEach(pt=>{
-      c.strokeStyle=pt.color || c.strokeStyle;
-      c.lineTo(pt.x, pt.y);
-      c.stroke();
-    });
-  });
-}
-
-function openNotebook(id){
-  active=id;
-  let x=state.items.find(v=>v.id===id);
-  document.getElementById('currentProblemDisplay').textContent = `${x.n1} ${x.type} ${x.n2}`;
-  document.getElementById('notebook').classList.remove('hidden');
-  strokes=Array.isArray(x.work)?x.work:[];
-  document.getElementById('studentAnswer').value='';
-  document.getElementById('resultFeedback').innerHTML='';
-  
-  setupCanvas();
-  document.getElementById('notebook').scrollIntoView({behavior:'smooth'});
-}
-
-function setDrawingColor(color){
-  currentColor = color;
-  if(ctx) ctx.strokeStyle = currentColor;
-}
-
-function saveSilently(){
-  if(active===null)return;
-  let x=state.items.find(v=>v.id===active);
-  if(x){
-    x.work=strokes;
-    localStorage.setItem(KEY,JSON.stringify(state));
-  }
-}
-
-function undo(){strokes.pop();drawAll();saveSilently()}
-function clearPaper(){if(!confirm('Quer apagar o rascunho da lousa?'))return;strokes=[];drawAll();saveSilently()}
-
-function checkAnswer(){
-  if(active===null)return;
-  let x=state.items.find(v=>v.id===active);
-  let val=document.getElementById('studentAnswer').value.trim();
-  let fb=document.getElementById('resultFeedback');
-  
-  x.work = strokes;
-  
-  if(val===String(x.expected)){
-    if(!x.correct){
-      state.stars = (state.stars || 0) + 10; 
-    }
-    x.solved=true;
-    x.correct=true;
-    fb.innerHTML='<div class="scorebox">🎉 Parabéns, Sofia! Você acertou em cheio! Ganhou +10 estrelinhas para as metas! ⭐⭐⭐💖</div>';
-    persist();
-  }else{
-    x.solved=true;
-    x.correct=false;
-    fb.innerHTML='<div class="scorebox" style="background:#ffebee;color:#c62828;border-color:#ffcdd2;">❌ Ops! O resultado não está correto. Revise os cálculos na lousa e tente de novo! 💪</div>';
-    persist();
-  }
-}
-
-function viewWork(id){
-  let x=state.items.find(v=>v.id===id);
-  if(!x) return;
-  
-  active = id; // temporário para o drawAll renderizar o enunciado correto no modal
-  document.getElementById('modalTitle').textContent = `Rascunho da Conta: ${x.n1} ${x.type} ${x.n2}`;
-  document.getElementById('parentPanel').classList.add('hidden');
-  document.getElementById('viewWorkModal').classList.remove('hidden');
-  document.getElementById('viewWorkModal').scrollIntoView({behavior:'smooth'});
-  
-  setTimeout(()=>{
-    parentCanvas = document.getElementById('parentPaper');
-    parentCtx = parentCanvas.getContext('2d');
-    drawAll(parentCtx, parentCanvas, x.work || []);
-  }, 100);
-}
-
-function closeViewWork(){
-  active = null;
-  document.getElementById('viewWorkModal').classList.add('hidden');
-  document.getElementById('parentPanel').classList.remove('hidden');
-}
-</script></body></html>
+  canvas=document.getElementById('paper
