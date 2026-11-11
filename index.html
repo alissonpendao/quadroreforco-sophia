@@ -210,8 +210,15 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 </section>
 </main>
 <script>
-// CHAVE BLINDADA PERMANENTE PARA NUNCA MAIS PERDER DADOS
-const KEY = 'caderno_sofia_dados_definitivos_v44';
+// FUNÇÃO DE CRIPTOGRAFIA HASH SHA-256 (PROTEGE CONTRA F12)
+async function hashPassword(password) {
+  const msgUint8 = new TextEncoder().encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+const KEY = 'caderno_sofia_dados_definitivos_v45_seguro';
 
 let state;
 try {
@@ -228,20 +235,27 @@ if(!state || typeof state !== 'object'){
     items: [], 
     stars: 0, 
     rewards: [{name:"Viagem com a Tia Selma na praia", total:1000}], 
-    passPai: '1234', 
-    passSofia: '5678'
+    passPaiHash: '', 
+    passSofiaHash: ''
   };
 }
 
-// Garantir que as senhas nunca fiquem vazias
-if(!state.passPai) state.passPai = '1234';
-if(!state.passSofia) state.passSofia = '5678';
-if(!state.rewards) state.rewards = [{name:"Viagem com a Tia Selma na praia", total:1000}];
-
-// Salva imediatamente para fixar na memória do aparelho
-try {
-  localStorage.setItem(KEY, JSON.stringify(state));
-} catch(e) {}
+// Inicializa senhas criptografadas padrão caso estejam vazias (Pai: '1234' | Sofia: '5678')
+async function initDefaults() {
+  if(!state.passPaiHash) {
+    state.passPaiHash = await hashPassword('1234');
+  }
+  if(!state.passSofiaHash) {
+    state.passSofiaHash = await hashPassword('5678');
+  }
+  if(!state.rewards) {
+    state.rewards = [{name:"Viagem com a Tia Selma na praia", total:1000}];
+  }
+  try {
+    localStorage.setItem(KEY, JSON.stringify(state));
+  } catch(e) {}
+}
+initDefaults();
 
 let active=null, cbCanvas, cbCtx, cbStrokes=[], cbCurrent=[], cbDrawing=false;
 let parentCanvas, parentCtx;
@@ -250,22 +264,20 @@ let currentChalkWidth = 4;
 let timerSeconds = 0, timerInterval = null;
 let currentBatch = [];
 
-function tryLogin(){
+async function tryLogin(){
   let val = document.getElementById('accessPass').value.trim();
   let msg = document.getElementById('loginMsg');
+  let valHash = await hashPassword(val);
   
-  let pPai = String(state.passPai || '1234').trim();
-  let pSofia = String(state.passSofia || '5678').trim();
-  
-  if(val === pPai){
+  if(valHash === state.passPaiHash){
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('studentPanel').classList.add('hidden');
     document.getElementById('parentPanel').classList.remove('hidden');
-    document.getElementById('newPassPai').value = pPai;
-    document.getElementById('newPassSofia').value = pSofia;
+    document.getElementById('newPassPai').value = '';
+    document.getElementById('newPassSofia').value = '';
     renderRewardsParent();
     renderLists();
-  }else if(val === pSofia){
+  }else if(valHash === state.passSofiaHash){
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('parentPanel').classList.add('hidden');
     document.getElementById('studentPanel').classList.remove('hidden');
@@ -332,7 +344,7 @@ function renderRewardsParent(){
   `).join('');
 }
 
-function savePasswords(){
+async function savePasswords(){
   let npPai = document.getElementById('newPassPai').value.trim();
   let npSofia = document.getElementById('newPassSofia').value.trim();
   if(!npPai || !npSofia){
@@ -340,10 +352,10 @@ function savePasswords(){
     document.getElementById('passMsg').textContent='As senhas não podem ficar em branco!';
     return;
   }
-  state.passPai = npPai;
-  state.passSofia = npSofia;
+  state.passPaiHash = await hashPassword(npPai);
+  state.passSofiaHash = await hashPassword(npSofia);
   document.getElementById('passMsg').style.color='#2e7d32';
-  document.getElementById('passMsg').textContent='🔒 Senhas atualizadas com sucesso!';
+  document.getElementById('passMsg').textContent='🔒 Senhas atualizadas e criptografadas com sucesso!';
   persist();
 }
 
