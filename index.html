@@ -23,12 +23,15 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 .listitem{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 15px;background:#fffdfd;border:1px solid #ffccd5;border-radius:14px;margin:10px 0}
 .hidden{display:none!important}
 
-/* ESTILO DA NOVA LOUSA EM CAIXINHAS (GRID) */
-.grid-container{background:#fff;border:2px solid #b0bec5;border-radius:14px;padding:20px;text-align:center;margin:15px 0;box-shadow:inset 0 2px 8px rgba(0,0,0,0.03)}
-.grid-row{display:flex;justify-content:center;gap:8px;margin-bottom:8px;align-items:center}
-.math-cell{width:45px;height:45px;text-align:center;font-size:22px;font-weight:800;border:2px solid #ffb6c1;border-radius:10px;background:#fffbfd;color:#c2185b}
+/* LOUSA BEM MAIOR COM LINHAS */
+.canvasbox{border:2px solid #b0bec5;border-radius:14px;overflow:hidden;background:white;touch-action:none;box-shadow:inset 0 2px 8px rgba(0,0,0,0.05)}
+canvas{display:block;width:100%;height:650px;touch-action:none;cursor:crosshair}
+
+/* CAIXINHAS ALINHADAS ABAIXO DA CONTA */
+.grid-container{background:#fff;border:2px solid #ffccd5;border-radius:14px;padding:15px;text-align:center;margin:15px 0}
+.grid-row{display:flex;justify-content:center;gap:6px;margin-bottom:6px;align-items:center}
+.math-cell{width:42px;height:42px;text-align:center;font-size:20px;font-weight:800;border:2px solid #ffb6c1;border-radius:8px;background:#fffbfd;color:#c2185b}
 .math-cell:focus{border-color:#ff758c;background:#fff;outline:none}
-.cell-label{font-size:12px;color:#888;font-weight:700;margin-bottom:2px}
 
 .tip{background:#fff8e1;color:#8d6e63;padding:12px;border-radius:12px;font-size:13px;margin:12px 0;border-left:4px solid #ffb300}
 .scorebox{background:#e8f5e9;color:#2e7d32;padding:14px;border-radius:14px;margin-top:14px;font-weight:700;text-align:center;font-size:16px;border:2px solid #a5d6a7}
@@ -37,8 +40,9 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 .progress-container{background:#fff;border-radius:10px;height:22px;width:100%;border:2px solid #ffb300;overflow:hidden;position:relative;margin:10px 0}
 .progress-bar{background:linear-gradient(90deg,#ffb300,#ff8f00);height:100%;width:0%;transition:width 0.5s ease}
 .progress-text{position:absolute;width:100%;top:0;left:0;font-size:12px;font-weight:800;color:#5d4037;line-height:18px;text-align:center}
+.color-btn{width:32px;height:32px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,0.2);cursor:pointer}
 .login-box{max-width:420px;margin:50px auto;text-align:center}
-@media(max-width:520px){.row{grid-template-columns:1fr}}
+@media(max-width:520px){.row{grid-template-columns:1fr}canvas{height:580px}}
 </style></head>
 <body>
 <header><h1>🌸 Caderno da Sofia 🌸</h1><p>Seu cantinho mágico de matemática</p></header>
@@ -60,7 +64,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 <!-- PAINEL DO PAI -->
 <section id="parentPanel" class="hidden">
   <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-    <div><h2>👨‍👧 Painel do Pai</h2><p class="muted" style="margin:0;">Monte as continhas (o resultado calcula sozinho!)</p></div>
+    <div><h2>👨‍👧 Painel do Pai</h2><p class="muted" style="margin:0;">Monte as continhas (resposta calculada automática!)</p></div>
     <button class="warn" onclick="logout()">Sair</button>
   </div>
 
@@ -102,7 +106,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
   </div>
   <div class="row" style="margin-top:10px;">
     <div><label>Segundo Número</label><input id="num2" type="number" placeholder="Ex.: 4" oninput="autoCalculate()"></div>
-    <div><label>Resposta Correta (Calculada Automática)</label><input id="expected" type="text" placeholder="Calcula sozinho..." style="background:#e8f5e9; font-weight:800; color:#2e7d32;"></div>
+    <div><label>Resposta Correta (Automática)</label><input id="expected" type="text" placeholder="Calcula sozinho..." style="background:#e8f5e9; font-weight:800; color:#2e7d32;"></div>
   </div>
   <div class="actions"><button class="primary" onclick="add()">Enviar continha para ela 🎀</button></div>
   <p class="muted" id="msg" aria-live="polite" style="margin-top:8px; color:#2e7d32; font-weight:700;"></p>
@@ -116,8 +120,9 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
     <h2 id="modalTitle" style="margin:0;">Rascunho da Sofia</h2>
     <button class="warn" onclick="closeViewWork()">Fechar ❌</button>
   </div>
-  <p class="muted">Veja abaixo os números que ela preencheu nas caixinhas:</p>
-  <div id="parentGridPreview" class="grid-container" style="max-width:400px; margin:0 auto;"></div>
+  <p class="muted">Veja abaixo o que ela rabiscou na lousa e preencheu nos quadradinhos:</p>
+  <div class="canvasbox"><canvas id="parentPaper" aria-label="Visualização do rascunho da Sofia"></canvas></div>
+  <div id="parentGridPreview" class="grid-container" style="margin-top:10px;"></div>
   <div class="actions" style="margin-top:15px;"><button class="soft" onclick="closeViewWork()">Voltar ao Painel</button></div>
 </section>
 
@@ -140,19 +145,32 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 
  <div class="card"><h2>Escolha sua continha 🌟</h2><div id="studentList"></div></div>
  <div id="notebook" class="card hidden">
-  <h2>Quadro de Rascunho em Caixinhas 📝</h2>
-  <div class="problem-box">
-    <div id="currentProblem" class="problem-math"></div>
-  </div>
-  <div class="tip">💡 Preencha os quadradinhos com os números do seu cálculo passo a passo. Depois, coloque o resultado final embaixo!</div>
+  <h2>Quadro de Rascunho Espaçoso 📝</h2>
   
-  <!-- LOUZA DE CAIXINHAS PARA A SOFIA -->
-  <div class="grid-container">
-    <p class="muted" style="margin-top:0; font-weight:700;">Monte sua continha nos quadradinhos:</p>
-    <div id="studentGridInputs"></div>
+  <!-- A CONTA APARECE AQUI EMBAIXO COM OS QUADRADINHOS ALINHADOS -->
+  <div class="problem-box">
+    <p class="muted" style="margin:0 0 8px; font-weight:700;">Sua Conta:</p>
+    <div id="currentProblemDisplay" class="problem-math" style="justify-content:center;"></div>
+    
+    <!-- QUADRADINHOS ABAIXO DA CONTA ESTILO SEU CADERNO -->
+    <div class="grid-container" style="margin-top:12px;">
+      <p class="muted" style="margin:0 0 6px; font-size:12px;">Monte a continha nos quadradinhos abaixo:</p>
+      <div id="studentGridInputs"></div>
+    </div>
   </div>
 
-  <div class="actions"><button class="warn" onclick="clearGrid()">Limpar quadradinhos</button></div>
+  <div class="tip">💡 Use a lousa maior abaixo para fazer seus rascunhos e rabiscos à vontade! Escolha a cor do giz:</div>
+  
+  <!-- PALETA DE CORES -->
+  <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+    <span class="muted" style="font-weight:700;">Cor do Giz:</span>
+    <button class="color-btn" style="background:#c2185b;" onclick="setDrawingColor('#c2185b')" title="Rosa Choque"></button>
+    <button class="color-btn" style="background:#1976d2;" onclick="setDrawingColor('#1976d2')" title="Azul Escuro"></button>
+    <button class="color-btn" style="background:#212121;" onclick="setDrawingColor('#212121')" title="Preto Clássico"></button>
+  </div>
+
+  <div class="canvasbox"><canvas id="paper" aria-label="Área para escrever a conta à mão livre"></canvas></div>
+  <div class="actions"><button class="soft" onclick="undo()">↶ Desfazer risco</button><button class="warn" onclick="clearPaper()">Apagar lousa</button></div>
   
   <div style="margin-top:18px;">
     <label>Qual foi o resultado final da conta?</label>
@@ -166,10 +184,12 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 </section>
 </main>
 <script>
-const KEY='reforco_sofia_livre_v13';
+const KEY='reforco_sofia_livre_v15';
 
 let state=JSON.parse(localStorage.getItem(KEY)||'{"items":[], "stars":0, "goalName":"Viagem com a Tia Selma na praia", "goalTotal":1000}');
-let active=null;
+let active=null,canvas,ctx,strokes=[],current=[],drawing=false,last=null;
+let parentCanvas,parentCtx;
+let currentColor = '#c2185b';
 
 function tryLogin(){
   let val=document.getElementById('accessPass').value.trim();
@@ -258,7 +278,12 @@ function updateProgressUI(){
   if(elPercent) elPercent.textContent = percent + '% conquistado!';
 }
 
-// CÁLCULO AUTOMÁTICO PARA O PAI NÃO PRECISAR DE CALCULADORA
+function setDrawingColor(color){
+  currentColor = color;
+  if(ctx) ctx.strokeStyle = currentColor;
+}
+
+// CÁLCULO AUTOMÁTICO PARA O PAI
 function autoCalculate(){
   let op = document.getElementById('opType').value;
   let n1 = parseFloat(document.getElementById('num1').value);
@@ -275,7 +300,7 @@ function autoCalculate(){
   else if(op === '-') res = n1 - n2;
   else if(op === 'x') res = n1 * n2;
   else if(op === '÷') {
-    if(n2 === 0) res = 'Erro (divisão por 0)';
+    if(n2 === 0) res = 'Erro';
     else res = n1 / n2;
   }
   resField.value = res;
@@ -293,15 +318,15 @@ function add(){
     return;
   }
   
-  // Cria uma matriz padrão de 4 linhas por 6 colunas de caixinhas para o rascunho dela
+  // Cria uma matriz padrão de 5 linhas por 8 colunas para os quadradinhos
   let defaultGrid = [];
-  for(let r=0; r<4; r++){
+  for(let r=0; r<5; r++){
     let row = [];
-    for(let c=0; c<6; c++){ row.push(''); }
+    for(let c=0; c<8; c++){ row.push(''); }
     defaultGrid.push(row);
   }
 
-  state.items.push({id:Date.now()+Math.random(), type, n1, n2, expected, grid: defaultGrid, solved:false, correct:false});
+  state.items.push({id:Date.now()+Math.random(), type, n1, n2, expected, grid: defaultGrid, work:[], solved:false, correct:false});
   document.getElementById('num1').value='';
   document.getElementById('num2').value='';
   document.getElementById('expected').value='';
@@ -317,7 +342,7 @@ function renderLists(){
     else{
       p.innerHTML=state.items.map((x,i)=>{
         let statusText = x.solved ? (x.correct ? '<span style="color:#2e7d32; font-weight:700;">⭐ Acertou</span>' : '<span style="color:#c62828; font-weight:700;">❌ Tentou e errou</span>') : '<span style="color:#777;">Aguardando</span>';
-        let hasWork = x.grid && x.grid.some(row => row.some(cell => cell !== ''));
+        let hasWork = (x.work && x.work.length > 0) || (x.grid && x.grid.some(row => row.some(cell => cell !== '')));
         return `<div class="listitem">
           <div><b>${i+1}. ${x.n1} ${x.type} ${x.n2}</b> (Resp: ${x.expected})<br><small>Status: ${statusText}</small></div>
           <div style="display:flex; gap:6px;">
@@ -336,15 +361,63 @@ function renderLists(){
 
 function removeItem(id){state.items=state.items.filter(x=>x.id!==id);if(active===id){document.getElementById('notebook').classList.add('hidden');active=null}persist()}
 
+function setupCanvas(){
+  canvas=document.getElementById('paper');
+  ctx=canvas.getContext('2d');
+  let rect=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
+  canvas.width=Math.round(rect.width*dpr);
+  canvas.height=Math.round(rect.height*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.lineCap='round';
+  ctx.lineJoin='round';
+  ctx.lineWidth=3;
+  ctx.strokeStyle=currentColor;
+  drawAll();
+  
+  canvas.onpointerdown=e=>{drawing=true;canvas.setPointerCapture(e.pointerId);let r=canvas.getBoundingClientRect();let x=e.clientX-r.left,y=e.clientY-r.top;current=[{x, y, color:currentColor}];ctx.beginPath();ctx.moveTo(x,y)};
+  canvas.onpointermove=e=>{if(!drawing)return;let r=canvas.getBoundingClientRect();let x=e.clientX-r.left,y=e.clientY-r.top;ctx.strokeStyle=currentColor;ctx.lineTo(x,y);ctx.stroke();current.push({x, y, color:currentColor});};
+  canvas.onpointerup=canvas.onpointercancel=()=>{if(drawing){drawing=false;if(current.length)strokes.push(current);current=[];saveSilently();}}
+}
+
+function drawAll(){
+  if(!ctx)return;
+  let w=canvas.clientWidth,h=canvas.clientHeight;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#fff';
+  ctx.fillRect(0,0,w,h);
+  
+  // Linhas do caderno na lousa maior
+  ctx.strokeStyle='#e8edf5';
+  ctx.lineWidth=1;
+  for(let y=34;y<h;y+=38){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+  
+  strokes.forEach(st=>{
+    if(!st.length)return;
+    ctx.beginPath();
+    ctx.lineWidth=3;
+    ctx.lineCap='round';
+    ctx.lineJoin='round';
+    ctx.strokeStyle=st[0].color || '#c2185b';
+    ctx.moveTo(st[0].x, st[0].y);
+    st.slice(1).forEach(pt=>{
+      ctx.strokeStyle=pt.color || ctx.strokeStyle;
+      ctx.lineTo(pt.x, pt.y);
+      ctx.stroke();
+    });
+  });
+}
+
 function openNotebook(id){
   active=id;
   let x=state.items.find(v=>v.id===id);
-  document.getElementById('currentProblem').textContent = `${x.n1} ${x.type} ${x.n2}`;
+  document.getElementById('currentProblemDisplay').textContent = `${x.n1} ${x.type} ${x.n2}`;
   document.getElementById('notebook').classList.remove('hidden');
+  strokes=Array.isArray(x.work)?x.work:[];
   document.getElementById('studentAnswer').value='';
   document.getElementById('resultFeedback').innerHTML='';
   
   buildStudentGrid(x.grid);
+  setupCanvas();
   document.getElementById('notebook').scrollIntoView({behavior:'smooth'});
 }
 
@@ -363,7 +436,7 @@ function buildStudentGrid(gridData){
       input.value = val;
       input.oninput = (e)=>{
         gridData[rIdx][cIdx] = e.target.value;
-        saveGridSilently();
+        saveSilently();
       };
       rowDiv.appendChild(input);
     });
@@ -371,29 +444,25 @@ function buildStudentGrid(gridData){
   });
 }
 
-function saveGridSilently(){
+function saveSilently(){
   if(active===null)return;
   let x=state.items.find(v=>v.id===active);
-  if(x){ localStorage.setItem(KEY,JSON.stringify(state)); }
-}
-
-function clearGrid(){
-  if(!confirm('Quer limpar todos os quadradinhos?'))return;
-  let x=state.items.find(v=>v.id===active);
   if(x){
-    x.grid.forEach((row, rIdx)=>{
-      row.forEach((val, cIdx)=>{ x.grid[rIdx][cIdx] = ''; });
-    });
-    buildStudentGrid(x.grid);
+    x.work=strokes;
     localStorage.setItem(KEY,JSON.stringify(state));
   }
 }
+
+function undo(){strokes.pop();drawAll();saveSilently()}
+function clearPaper(){if(!confirm('Quer apagar a lousa e tentar de novo?'))return;strokes=[];drawAll();saveSilently()}
 
 function checkAnswer(){
   if(active===null)return;
   let x=state.items.find(v=>v.id===active);
   let val=document.getElementById('studentAnswer').value.trim();
   let fb=document.getElementById('resultFeedback');
+  
+  x.work = strokes; // Salva rascunho e caixinhas em qualquer tentativa
   
   if(val===String(x.expected)){
     if(!x.correct){
@@ -406,38 +475,75 @@ function checkAnswer(){
   }else{
     x.solved=true;
     x.correct=false;
-    fb.innerHTML='<div class="scorebox" style="background:#ffebee;color:#c62828;border-color:#ffcdd2;">❌ Ops! O resultado não está correto. Revise os quadradinhos e tente de novo! 💪</div>';
+    fb.innerHTML='<div class="scorebox" style="background:#ffebee;color:#c62828;border-color:#ffcdd2;">❌ Ops! O resultado não está correto. Continue tentando, você consegue! 💪</div>';
     persist();
   }
 }
 
-// Visualizador de rascunho em caixinhas para o Pai
+// Visualizador completo para o Pai (Lousa + Quadradinhos)
 function viewWork(id){
   let x=state.items.find(v=>v.id===id);
-  if(!x || !x.grid) return;
+  if(!x) return;
   
   document.getElementById('modalTitle').textContent = `Rascunho da Conta: ${x.n1} ${x.type} ${x.n2}`;
   document.getElementById('parentPanel').classList.add('hidden');
   document.getElementById('viewWorkModal').classList.remove('hidden');
   document.getElementById('viewWorkModal').scrollIntoView({behavior:'smooth'});
   
+  setTimeout(()=>{
+    parentCanvas = document.getElementById('parentPaper');
+    parentCtx = parentCanvas.getContext('2d');
+    let rect = parentCanvas.getBoundingClientRect(), dpr = window.devicePixelRatio||1;
+    parentCanvas.width = Math.round(rect.width * dpr);
+    parentCanvas.height = Math.round(rect.height * dpr);
+    parentCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    
+    let w = parentCanvas.clientWidth, h = parentCanvas.clientHeight;
+    parentCtx.clearRect(0, 0, w, h);
+    parentCtx.fillStyle = '#fff';
+    parentCtx.fillRect(0, 0, w, h);
+    
+    parentCtx.strokeStyle = '#e8edf5';
+    parentCtx.lineWidth = 1;
+    for(let y=34; y<h; y+=38){parentCtx.beginPath();parentCtx.moveTo(0,y);parentCtx.lineTo(w,y);parentCtx.stroke();}
+    
+    if(x.work){
+      x.work.forEach(st=>{
+        if(!st.length)return;
+        parentCtx.beginPath();
+        parentCtx.lineWidth=3;
+        parentCtx.lineCap='round';
+        parentCtx.lineJoin='round';
+        parentCtx.strokeStyle=st[0].color || '#c2185b';
+        parentCtx.moveTo(st[0].x, st[0].y);
+        st.slice(1).forEach(pt=>{
+          parentCtx.strokeStyle=pt.color || parentCtx.strokeStyle;
+          parentCtx.lineTo(pt.x, pt.y);
+          parentCtx.stroke();
+        });
+      });
+    }
+  }, 100);
+
+  // Mostra também os quadradinhos preenchidos por ela
   let container = document.getElementById('parentGridPreview');
-  container.innerHTML = '';
-  
-  x.grid.forEach(row=>{
-    let rowDiv = document.createElement('div');
-    rowDiv.className = 'grid-row';
-    row.forEach(val=>{
-      let cell = document.createElement('div');
-      cell.className = 'math-cell';
-      cell.style.display = 'flex';
-      cell.style.alignItems = 'center';
-      cell.style.justifyContent = 'center';
-      cell.textContent = val;
-      rowDiv.appendChild(cell);
+  container.innerHTML = '<p class="muted" style="margin:0 0 6px; font-size:12px; font-weight:700;">Números nos quadradinhos dela:</p>';
+  if(x.grid){
+    x.grid.forEach(row=>{
+      let rowDiv = document.createElement('div');
+      rowDiv.className = 'grid-row';
+      row.forEach(val=>{
+        let cell = document.createElement('div');
+        cell.className = 'math-cell';
+        cell.style.display = 'flex';
+        cell.style.alignItems = 'center';
+        cell.style.justifyContent = 'center';
+        cell.textContent = val;
+        rowDiv.appendChild(cell);
+      });
+      container.appendChild(rowDiv);
     });
-    container.appendChild(rowDiv);
-  });
+  }
 }
 
 function closeViewWork(){
