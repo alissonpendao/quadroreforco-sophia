@@ -26,6 +26,11 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 canvas{display:block;width:100%;height:470px;touch-action:none;cursor:crosshair}
 .tip{background:#fff8e1;color:#8d6e63;padding:12px;border-radius:12px;font-size:13px;margin:12px 0;border-left:4px solid #ffb300}
 .scorebox{background:#e8f5e9;color:#2e7d32;padding:14px;border-radius:14px;margin-top:14px;font-weight:700;text-align:center;font-size:16px;border:2px solid #a5d6a7}
+.goal-card{background:linear-gradient(135deg,#fff8e1,#ffe0b2);border:2px solid #ffb300;border-radius:16px;padding:15px;margin-bottom:16px;text-align:center}
+.goal-title{font-size:18px;font-weight:800;color:#e65100;margin-bottom:8px}
+.progress-container{background:#fff;border-radius:10px;height:22px;width:100%;border:2px solid #ffb300;overflow:hidden;position:relative;margin:10px 0}
+.progress-bar{background:linear-gradient(90deg,#ffb300,#ff8f00);height:100%;width:0%;transition:width 0.5s ease}
+.progress-text{position:absolute;width:100%;top:0;left:0;font-size:12px;font-weight:800;color:#5d4037;line-height:18px;text-align:center}
 .login-box{max-width:420px;margin:50px auto;text-align:center}
 @media(max-width:520px){.row{grid-template-columns:1fr}canvas{height:420px}}
 </style></head>
@@ -49,9 +54,32 @@ canvas{display:block;width:100%;height:470px;touch-action:none;cursor:crosshair}
 <!-- PAINEL DO PAI -->
 <section id="parentPanel" class="hidden">
   <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-    <div><h2>👨‍👧 Painel do Pai</h2><p class="muted" style="margin:0;">Monte as continhas facilmente</p></div>
+    <div><h2>👨‍👧 Painel do Pai</h2><p class="muted" style="margin:0;">Monte as continhas e controle as senhas</p></div>
     <button class="warn" onclick="logout()">Sair</button>
   </div>
+
+  <!-- CONFIGURAR META -->
+  <div class="card" style="background:#fffaf0; border-color:#ffe0b2;">
+    <h2>🏖️ Meta de Estrelinhas da Viagem</h2>
+    <div class="row">
+      <div><label>Nome do Prêmio</label><input id="goalName" type="text" value="Viagem com a Tia Selma na praia"></div>
+      <div><label>Meta de Estrelas</label><input id="goalTotal" type="number" value="1000"></div>
+    </div>
+    <div class="actions"><button class="primary" style="background:linear-gradient(135deg,#ffb300,#ff8f00);" onclick="saveGoal()">Salvar Meta 🌟</button></div>
+    <p class="muted" id="goalMsg" style="margin-top:6px; color:#e65100; font-weight:700;"></p>
+  </div>
+
+  <!-- ALTERAR SENHAS -->
+  <div class="card" style="background:#f4f6fb; border-color:#cbd4e3;">
+    <h2>🔑 Alterar Senhas de Acesso</h2>
+    <div class="row">
+      <div><label>Nova Senha do Pai</label><input id="newPassPai" type="text" placeholder="Ex: 1234"></div>
+      <div><label>Nova Senha da Sofia</label><input id="newPassSofia" type="text" placeholder="Ex: 5678"></div>
+    </div>
+    <div class="actions"><button class="soft" onclick="savePasswords()">Atualizar Senhas 🔒</button></div>
+    <p class="muted" id="passMsg" style="margin-top:6px; color:#2457d6; font-weight:700;"></p>
+  </div>
+
  <div class="card">
   <h2>Preparar uma continha</h2>
   <div class="row">
@@ -81,6 +109,17 @@ canvas{display:block;width:100%;height:470px;touch-action:none;cursor:crosshair}
     <div><h2>⭐ Caderno da Sofia</h2><p class="muted" style="margin:0;">Vamos resolver os desafios de hoje?</p></div>
     <button class="warn" onclick="logout()">Sair</button>
   </div>
+
+  <!-- PLACAR DE ESTRELAS E META -->
+  <div class="goal-card">
+    <div class="goal-title" id="displayGoalTitle">🏖️ Meta: Viagem com a Tia Selma na praia</div>
+    <div class="muted" style="font-weight:700; color:#5d4037;">Suas Estrelinhas: <span id="displayStars" style="color:#e65100; font-size:18px;">0</span> / <span id="displayTotal">1000</span> ⭐</div>
+    <div class="progress-container">
+      <div id="progressBar" class="progress-bar"></div>
+      <div id="progressPercent" class="progress-text">0%</div>
+    </div>
+  </div>
+
  <div class="card"><h2>Escolha sua continha 🌟</h2><div id="studentList"></div></div>
  <div id="notebook" class="card hidden">
   <h2>Quadro de Rascunho 📝</h2>
@@ -103,22 +142,29 @@ canvas{display:block;width:100%;height:470px;touch-action:none;cursor:crosshair}
 </section>
 </main>
 <script>
-const KEY='reforco_sofia_livre_v6';
-const PASS_PAI='1234'; 
-const PASS_SOFIA='5678'; 
+const KEY='reforco_sofia_livre_v8';
 
-let state=JSON.parse(localStorage.getItem(KEY)||'{"items":[]}');let active=null,canvas,ctx,strokes=[],current=[],drawing=false,last=null;
+let state=JSON.parse(localStorage.getItem(KEY)||'{"items":[], "stars":0, "goalName":"Viagem com a Tia Selma na praia", "goalTotal":1000, "passPai":"1234", "passSofia":"5678"}');
+let active=null,canvas,ctx,strokes=[],current=[],drawing=false,last=null;
 
 function tryLogin(){
   let val=document.getElementById('accessPass').value.trim();
   let msg=document.getElementById('loginMsg');
-  if(val===PASS_PAI){
+  let pPai = state.passPai || '1234';
+  let pSofia = state.passSofia || '5678';
+  
+  if(val===pPai){
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('parentPanel').classList.remove('hidden');
+    document.getElementById('goalName').value = state.goalName || 'Viagem com a Tia Selma na praia';
+    document.getElementById('goalTotal').value = state.goalTotal || 1000;
+    document.getElementById('newPassPai').value = pPai;
+    document.getElementById('newPassSofia').value = pSofia;
     renderLists();
-  }else if(val===PASS_SOFIA){
+  }else if(val===pSofia){
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('studentPanel').classList.remove('hidden');
+    updateProgressUI();
     renderLists();
   }else{
     msg.textContent='Senha incorreta! Tente novamente.';
@@ -132,7 +178,57 @@ function logout(){
   document.getElementById('notebook').classList.add('hidden');
   document.getElementById('loginScreen').classList.remove('hidden');
 }
-function persist(){localStorage.setItem(KEY,JSON.stringify(state));renderLists()}
+function persist(){localStorage.setItem(KEY,JSON.stringify(state));renderLists();updateProgressUI();}
+
+function saveGoal(){
+  let gName=document.getElementById('goalName').value.trim();
+  let gTot=parseInt(document.getElementById('goalTotal').value);
+  if(!gName || isNaN(gTot) || gTot<=0){
+    document.getElementById('goalMsg').style.color='#c62828';
+    document.getElementById('goalMsg').textContent='Preencha um nome válido e um número de estrelas maior que 0!';
+    return;
+  }
+  state.goalName = gName;
+  state.goalTotal = gTot;
+  document.getElementById('goalMsg').style.color='#e65100';
+  document.getElementById('goalMsg').textContent='✨ Meta salva com sucesso!';
+  persist();
+}
+
+function savePasswords(){
+  let npPai = document.getElementById('newPassPai').value.trim();
+  let npSofia = document.getElementById('newPassSofia').value.trim();
+  if(!npPai || !npSofia){
+    document.getElementById('passMsg').style.color='#c62828';
+    document.getElementById('passMsg').textContent='As senhas não podem ficar em branco!';
+    return;
+  }
+  state.passPai = npPai;
+  state.passSofia = npSofia;
+  document.getElementById('passMsg').style.color='#2e7d32';
+  document.getElementById('passMsg').textContent='🔒 Senhas atualizadas com sucesso!';
+  persist();
+}
+
+function updateProgressUI(){
+  let stars = state.stars || 0;
+  let total = state.goalTotal || 1000;
+  let name = state.goalName || 'Viagem com a Tia Selma na praia';
+  
+  let percent = Math.min(100, Math.round((stars / total) * 100));
+  
+  let elTitle = document.getElementById('displayGoalTitle');
+  let elStars = document.getElementById('displayStars');
+  let elTotal = document.getElementById('displayTotal');
+  let elBar = document.getElementById('progressBar');
+  let elPercent = document.getElementById('progressPercent');
+  
+  if(elTitle) elTitle.textContent = `🏖️ Meta: ${name}`;
+  if(elStars) elStars.textContent = stars;
+  if(elTotal) elTotal.textContent = total;
+  if(elBar) elBar.style.width = percent + '%';
+  if(elPercent) elPercent.textContent = percent + '% conquistado!';
+}
 
 function add(){
   let type=document.getElementById('opType').value;
@@ -188,14 +284,24 @@ function checkAnswer(){
   let x=state.items.find(v=>v.id===active);
   let val=document.getElementById('studentAnswer').value.trim();
   let fb=document.getElementById('resultFeedback');
-  x.solved=true;
-  if(val===x.expected){
-    x.correct=true;
-    fb.innerHTML='<div class="scorebox">🎉 Parabéns, Sofia! Você acertou em cheio! Ganhou 3 estrelinhas! ⭐⭐⭐💖</div>';
-  }else{
-    x.correct=false;
-    fb.innerHTML='<div class="scorebox" style="background:#ffebee;color:#c62828;border-color:#ffcdd2;">❌ Ops! O resultado não está correto. Apague o rascunho e tente de novo com carinho! 💪</div>';
+  
+  if(!x.solved){
+    x.solved=true;
+    if(val===x.expected){
+      x.correct=true;
+      state.stars = (state.stars || 0) + 10; 
+      fb.innerHTML='<div class="scorebox">🎉 Parabéns, Sofia! Você acertou em cheio! Ganhou +10 estrelinhas para a viagem! ⭐⭐⭐💖</div>';
+    }else{
+      x.correct=false;
+      fb.innerHTML='<div class="scorebox" style="background:#ffebee;color:#c62828;border-color:#ffcdd2;">❌ Ops! O resultado não está correto. Apague o rascunho e tente de novo com carinho! 💪</div>';
+    }
+    persist();
+  } else {
+    if(val===x.expected){
+      fb.innerHTML='<div class="scorebox">🎉 Você já tinha acertado essa continha antes! Continue assim! ⭐</div>';
+    } else {
+      fb.innerHTML='<div class="scorebox" style="background:#ffebee;color:#c62828;border-color:#ffcdd2;">❌ Ops! Tente revisar seus cálculos no rascunho.</div>';
+    }
   }
-  persist();
 }
 </script></body></html>
