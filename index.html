@@ -38,10 +38,6 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 .cb-tool{width:42px;height:42px;border-radius:50%;border:2px solid rgba(255,255,255,0.5);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;background:transparent;transition:all 0.2s}
 .cb-tool.active{border-color:#fff;transform:scale(1.15);box-shadow:0 0 10px rgba(255,255,255,0.6)}
 
-/* MODAL DE RESPOSTA */
-#answerModal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.75);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px}
-.answer-box{background:white;padding:30px;border-radius:24px;max-width:380px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.3);animation:bounceIn 0.3s ease}
-
 /* TELA DE CELEBRAÇÃO FESTIVA */
 #celebrationOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:white;padding:20px;animation:fadeIn 0.3s ease}
 .celebration-card{background:linear-gradient(135deg,#ff758c,#ffb300);border:4px solid #fff;border-radius:30px;padding:35px;max-width:480px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,0.5);animation:bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)}
@@ -56,7 +52,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 <header><h1>🌸 Caderno da Sofia 🌸</h1><p>Seu cantinho mágico de matemática</p></header>
 <main>
 
-<!-- LOUZA DE ESCOLA TELA CHEIA -->
+<!-- LOUSA DE ESCOLA TELA CHEIA COM RESPOSTA INTEGRADA -->
 <div id="chalkboardOverlay" class="hidden">
   <div class="cb-topbar">
     <div>
@@ -72,30 +68,16 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
   </div>
 
   <div class="cb-toolbar">
-    <button class="cb-tool active" id="cbBtnWhite" style="background:#ffffff;" onclick="setChalkColor('#ffffff', 'cbBtnWhite')" title="Giz Branco"></button>
-    <button class="cb-tool" id="cbBtnYellow" style="background:#ffea79;" onclick="setChalkColor('#ffea79', 'cbBtnYellow')" title="Giz Amarelo"></button>
-    <button class="cb-tool" id="cbBtnPink" style="background:#ffb7b2;" onclick="setChalkColor('#ffb7b2', 'cbBtnPink')" title="Giz Rosa"></button>
-    <button class="cb-tool" id="cbBtnBlue" style="background:#a0c4ff;" onclick="setChalkColor('#a0c4ff', 'cbBtnBlue')" title="Giz Azul"></button>
-    
-    <span style="border-left:2px solid rgba(255,255,255,0.2); height:25px; margin:0 4px;"></span>
-    
-    <button class="cb-tool" id="cbBtnEraser" onclick="setCbEraser('cbBtnEraser')" title="Apagador">🧽</button>
+    <button class="cb-tool active" id="cbBtnWhite" style="background:#ffffff; color:#1b4332; font-weight:bold;" onclick="setChalkColor('#ffffff', 'cbBtnWhite')" title="Giz Branco">📍</button>
+    <button class="cb-tool" id="cbBtnEraser" onclick="setCbEraser('cbBtnEraser')" title="Apagador / Esponjinha">🧽</button>
     <button class="cb-tool" onclick="cbUndo()" title="Desfazer">↶</button>
     <button class="cb-tool" onclick="cbClear()" title="Limpar Quadro">🗑️</button>
     
-    <button class="primary" style="background:linear-gradient(135deg,#ff758c,#ffb300); padding:10px 20px; font-size:16px; box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openAnswerModal()">Responder Conta ⭐</button>
-  </div>
-</div>
-
-<!-- MODAL DE RESPOSTA FINAL -->
-<div id="answerModal" class="hidden">
-  <div class="answer-box">
-    <h2 style="color:#1b4332; margin-bottom:8px;">🎯 Resposta Final</h2>
-    <p class="muted" style="margin-bottom:15px;">Qual foi o quociente (resultado) da divisão?</p>
-    <input id="cbStudentAnswer" type="number" placeholder="Digite o resultado..." style="font-size:28px; text-align:center; font-weight:bold; color:#1b4332; border-color:#2d6a4f;">
-    <div class="actions" style="margin-top:20px;">
-      <button class="soft" style="flex:1;" onclick="closeAnswerModal()">Voltar à Lousa</button>
-      <button class="primary" style="flex:1; background:#2d6a4f;" onclick="checkCbAnswer()">Conferir ⭐</button>
+    <span style="border-left:2px solid rgba(255,255,255,0.2); height:25px; margin:0 4px;"></span>
+    
+    <div style="display:flex; gap:8px; align-items:center;">
+      <input id="cbDirectAnswer" type="number" placeholder="Resultado..." style="width:130px; padding:10px; font-size:16px; font-weight:bold; text-align:center; border-radius:10px; border:2px solid #fff; background:#fff; color:#1b4332;">
+      <button class="primary" style="background:linear-gradient(135deg,#ff758c,#ffb300); padding:10px 18px; font-size:15px; box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="checkCbAnswer()">Confirmar ⭐</button>
     </div>
   </div>
 </div>
@@ -110,17 +92,16 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
   </div>
 </div>
 
-<!-- TELA DE LOGIN COM CAMPO VISÍVEL E LIMPEZA DE CACHE -->
+<!-- TELA DE LOGIN SEGURA (SEM EXIBIR SENHAS OU BOTÕES DE RESET) -->
 <section id="loginScreen" class="card login-box">
   <h2>🔒 Área Secreta</h2>
-  <p class="muted">Digite a senha (Pai: 1234 | Sofia: 5678):</p>
+  <p class="muted">Digite sua senha para entrar:</p>
   <div style="text-align:left; margin-top:15px;">
     <label>Senha de Acesso</label>
-    <input id="accessPass" type="text" placeholder="Digite 1234 ou 5678..." onkeydown="if(event.key==='Enter')tryLogin()">
+    <input id="accessPass" type="password" placeholder="Digite sua senha..." onkeydown="if(event.key==='Enter')tryLogin()">
   </div>
-  <div class="actions" style="margin-top:18px; display:flex; flex-direction:column; gap:8px;">
+  <div class="actions" style="margin-top:18px;">
     <button class="primary" style="width:100%" onclick="tryLogin()">Entrar 💖</button>
-    <button class="warn" style="width:100%; font-size:13px;" onclick="clearLocalStorageCache()">🗑️ Limpar Dados e Corrigir Travamentos</button>
   </div>
   <p class="muted" id="loginMsg" style="color:#d92d20; margin-top:10px; font-weight:700;"></p>
 </section>
@@ -227,7 +208,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 </section>
 </main>
 <script>
-const KEY='reforco_sofia_livre_v38';
+const KEY='reforco_sofia_livre_v40';
 
 let state;
 try {
@@ -251,16 +232,6 @@ let currentChalkWidth = 4;
 let timerSeconds = 0, timerInterval = null;
 let currentBatch = [];
 
-function clearLocalStorageCache(){
-  localStorage.clear();
-  state = {items:[], stars:0, rewards:[{name:"Viagem com a Tia Selma na praia", total:1000}], passPai:'1234', passSofia:'5678'};
-  localStorage.setItem(KEY, JSON.stringify(state));
-  document.getElementById('accessPass').value = '';
-  let msg = document.getElementById('loginMsg');
-  msg.style.color = '#2e7d32';
-  msg.textContent = '✨ Cache limpo com sucesso! Use 1234 ou 5678.';
-}
-
 function tryLogin(){
   let val=document.getElementById('accessPass').value.trim();
   let msg=document.getElementById('loginMsg');
@@ -283,7 +254,7 @@ function tryLogin(){
     renderLists();
   }else{
     msg.style.color = '#d92d20';
-    msg.textContent='Senha incorreta! Use 1234 (Pai) ou 5678 (Sofia).';
+    msg.textContent='Senha incorreta!';
   }
 }
 
@@ -293,7 +264,6 @@ function logout(){
   document.getElementById('parentPanel').classList.add('hidden');
   document.getElementById('studentPanel').classList.add('hidden');
   document.getElementById('chalkboardOverlay').classList.add('hidden');
-  document.getElementById('answerModal').classList.add('hidden');
   document.getElementById('viewWorkModal').classList.add('hidden');
   document.getElementById('loginScreen').classList.remove('hidden');
   if(timerInterval) clearInterval(timerInterval);
@@ -528,6 +498,7 @@ function openChalkboard(id){
   document.getElementById('cbProblemTitle').textContent = getProblemText(x);
   document.getElementById('chalkboardOverlay').classList.remove('hidden');
   cbStrokes = Array.isArray(x.work)?x.work:[];
+  document.getElementById('cbDirectAnswer').value = '';
   
   timerSeconds = 0;
   if(timerInterval) clearInterval(timerInterval);
@@ -677,25 +648,20 @@ function saveCbSilently(){
   }
 }
 
-function openAnswerModal(){
-  document.getElementById('cbStudentAnswer').value = '';
-  document.getElementById('answerModal').classList.remove('hidden');
-}
-
-function closeAnswerModal(){
-  document.getElementById('answerModal').classList.add('hidden');
-}
-
 function checkCbAnswer(){
   if(active === null) return;
   let x = state.items.find(v => v.id === active);
-  let val = document.getElementById('cbStudentAnswer').value.trim();
+  let val = document.getElementById('cbDirectAnswer').value.trim();
   
+  if(!val){
+    alert('Digite o resultado da conta antes de confirmar!');
+    return;
+  }
+
   x.work = cbStrokes;
   if(timerInterval) clearInterval(timerInterval);
   x.timeSpent = timerSeconds;
   
-  closeAnswerModal();
   closeChalkboard();
 
   if(val === String(x.expected)){
