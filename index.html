@@ -21,7 +21,6 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 
 .listitem{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 15px;background:#fffdfd;border:1px solid #ffccd5;border-radius:14px;margin:10px 0}
 .hidden{display:none!important}
-.scorebox{background:#e8f5e9;color:#2e7d32;padding:14px;border-radius:14px;margin-top:14px;font-weight:700;text-align:center;font-size:16px;border:2px solid #a5d6a7}
 .goal-card{background:linear-gradient(135deg,#fff8e1,#ffe0b2);border:2px solid #ffb300;border-radius:16px;padding:15px;margin-bottom:16px;text-align:center}
 .goal-title{font-size:18px;font-weight:800;color:#e65100;margin-bottom:8px}
 .progress-container{background:#fff;border-radius:10px;height:22px;width:100%;border:2px solid #ffb300;overflow:hidden;position:relative;margin:10px 0}
@@ -109,33 +108,52 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
   <p class="muted" id="loginMsg" style="color:#d92d20; margin-top:10px; font-weight:700;"></p>
 </section>
 
-<!-- PAINEL DO PAI -->
+<!-- PAINEL DO PAI COM REFORÇO ESCOLAR -->
 <section id="parentPanel" class="hidden">
   <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-    <div><h2>👨‍👧 Painel do Pai</h2><p class="muted" style="margin:0;">Gerencie prêmios, senhas e probleminhas</p></div>
+    <div><h2>👨‍👧 Painel do Pai - Tutor de Reforço</h2><p class="muted" style="margin:0;">Acompanhe o desempenho e reforce a base do 5º ano</p></div>
     <button class="warn" onclick="logout()">Sair</button>
   </div>
 
   <!-- CENTRAL DE ACOMPANHAMENTO -->
   <div class="card" style="background:linear-gradient(135deg,#f8f9fa,#e9ecef); border-color:#ced4da;">
-    <h2>📊 Central de Acompanhamento da Sofia</h2>
+    <h2>📊 Central de Desempenho Escolar</h2>
     <div id="statsContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-top:10px;"></div>
   </div>
 
-  <!-- GERADOR AUTOMÁTICO DE PROBLEMINHAS -->
+  <!-- GERADOR COM NÍVEL DE DIFICULDADE (REFORÇO DO 5º ANO) -->
   <div class="card" style="background:#e8f4fd; border-color:#b9e2fc;">
-    <h2>📖 Gerador Automático de Probleminhas (Lote de 10)</h2>
-    <p class="muted">Clique no botão para sortear 10 probleminhas variados de historinha (adição, subtração, multiplicação e divisão). Revise e envie!</p>
+    <h2>📖 Gerador de Probleminhas (Nível 5º Ano)</h2>
+    <p class="muted">Escolha a dificuldade ideal para treinar o raciocínio dela sem frustração:</p>
+    <div class="row" style="margin-bottom:10px;">
+      <div>
+        <label>Dificuldade</label>
+        <select id="probDifficulty">
+          <option value="easy">Fácil (Números menores / Ideal para destravar)</option>
+          <option value="medium" selected>Médio (Padrão 5º ano)</option>
+          <option value="hard">Desafio (Valores maiores / Atenção redobrada)</option>
+        </select>
+      </div>
+    </div>
     <div class="actions">
-      <button class="primary" style="background:#0277bd;" onclick="generateProblemBatch()">🎲 Gerar Lote de 10 Probleminhas ✨</button>
+      <button class="primary" style="background:#0277bd;" onclick="generateProblemBatch()">🎲 Gerar Lote de 10 Probleminhas 📚</button>
     </div>
     <div id="problemBatchPreview" style="margin-top:15px;"></div>
   </div>
 
-  <!-- GERADOR AUTOMÁTICO DE CONTAS -->
+  <!-- GERADOR AUTOMÁTICO DE CONTAS COM NÍVEL -->
   <div class="card" style="background:#fffaf0; border-color:#ffe0b2;">
-    <h2>🤖 Gerador Automático de Contas (Lote de 10)</h2>
-    <p class="muted">Gere 10 continhas automáticas na medida certa para 11 anos.</p>
+    <h2>🤖 Gerador de Contas Armadas (Lote de 10)</h2>
+    <div class="row" style="margin-bottom:10px;">
+      <div>
+        <label>Dificuldade das Contas</label>
+        <select id="calcDifficulty">
+          <option value="easy">Fácil (Divisão exata / Multiplicação curta)</option>
+          <option value="medium" selected>Médio (Padrão 5º ano)</option>
+          <option value="hard">Avançado (Divisão e multiplicação longa)</option>
+        </select>
+      </div>
+    </div>
     <div class="actions">
       <button class="primary" style="background:linear-gradient(135deg,#ffb300,#ff8f00);" onclick="generateBatch()">Gerar Lote de 10 Contas ✨</button>
     </div>
@@ -169,29 +187,12 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
     <p class="muted" id="passMsg" style="margin-top:6px; color:#2457d6; font-weight:700;"></p>
   </div>
 
- <!-- CONTAS MANUAIS -->
+ <!-- HISTÓRICO E REVISÃO DE ERROS -->
  <div class="card">
-  <h2>Preparar uma continha manual</h2>
-  <div class="row">
-    <div>
-      <label>Tipo de Operação</label>
-      <select id="opType" onchange="autoCalculate()">
-        <option value="÷">Divisão (÷)</option>
-        <option value="x">Multiplicação (x)</option>
-        <option value="-">Subtração (-)</option>
-        <option value="+">Adição (+)</option>
-      </select>
-    </div>
-    <div><label>Primeiro Número</label><input id="num1" type="number" placeholder="Ex.: 540" oninput="autoCalculate()"></div>
-  </div>
-  <div class="row" style="margin-top:10px;">
-    <div><label>Segundo Número</label><input id="num2" type="number" placeholder="Ex.: 4" oninput="autoCalculate()"></div>
-    <div><label>Resposta Correta (Automática)</label><input id="expected" type="text" placeholder="Calcula sozinho..." style="background:#e8f5e9; font-weight:800; color:#2e7d32;"></div>
-  </div>
-  <div class="actions"><button class="primary" onclick="add()">Enviar continha avulsa 🎀</button></div>
-  <p class="muted" id="msg" aria-live="polite" style="margin-top:8px; color:#2e7d32; font-weight:700;"></p>
+  <h2>📋 Histórico e Revisão de Erros (Foco no Reforço)</h2>
+  <p class="muted">Aqui você vê o que ela errou para revisar junto com ela:</p>
+  <div id="parentList" style="margin-top:10px;"></div>
  </div>
- <div class="card"><h2>Itens cadastrados e Histórico</h2><div id="parentList"></div></div>
 </section>
 
 <!-- VISUALIZADOR DE RASCUNHO PARA O PAI -->
@@ -234,7 +235,7 @@ async function hashPassword(password) {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-const KEY = 'caderno_sofia_dados_definitivos_v48_lote_problemas';
+const KEY = 'caderno_sofia_dados_definitivos_v49_reforco';
 
 let state;
 try {
@@ -315,40 +316,44 @@ function persist(){
   renderStats();
 }
 
-// GERADOR AUTOMÁTICO DE LOTE DE PROBLEMINHAS
+// GERADOR INTELIGENTE DE PROBLEMINHAS POR NÍVEL
 function generateProblemBatch(){
   currentProblemBatch = [];
-  let nomes = ['Pedro', 'Maria', 'Lucas', 'Sofia', 'Ana', 'João', 'Julia', 'Carlos', 'Beatriz', 'Gabriel'];
-  let itens = ['balas', 'figurinhas', 'livros', 'caixas de bombom', 'laranjas', 'canetas', 'cartões', 'pães'];
+  let diff = document.getElementById('probDifficulty').value;
+  let nomes = ['Pedro', 'Maria', 'Lucas', 'Sofia', 'Ana', 'João', 'Julia', 'Carlos'];
+  let itens = ['balas', 'figurinhas', 'livros', 'bombons', 'laranjas', 'canetas', 'pães'];
   
   for(let i=0; i<10; i++){
     let nome = nomes[Math.floor(Math.random() * nomes.length)];
-    let outroNome = nomes[Math.floor(Math.random() * nomes.length)];
     let item = itens[Math.floor(Math.random() * itens.length)];
-    let tipo = Math.floor(Math.random() * 4); // 0: +, 1: -, 2: x, 3: ÷
+    let tipo = Math.floor(Math.random() * 4);
     let text = '', expected = 0;
 
-    if(tipo === 0){ // Adição
-      let n1 = Math.floor(Math.random() * 150) + 20;
-      let n2 = Math.floor(Math.random() * 150) + 20;
-      text = `${nome} tinha ${n1} ${item} em sua coleção e ganhou mais ${n2} ${item} de presente. Com quantos ${item} ${nome} ficou no total?`;
+    let min = 10, max = 50;
+    if(diff === 'medium') { min = 30; max = 150; }
+    if(diff === 'hard') { min = 100; max = 500; }
+
+    if(tipo === 0){
+      let n1 = Math.floor(Math.random() * max) + min;
+      let n2 = Math.floor(Math.random() * max) + min;
+      text = `${nome} tinha ${n1} ${item} e ganhou mais ${n2} ${item}. Com quantos ${item} ${nome} ficou no total?`;
       expected = n1 + n2;
-    } else if(tipo === 1){ // Subtração
-      let n1 = Math.floor(Math.random() * 200) + 50;
-      let n2 = Math.floor(Math.random() * n1) + 10;
-      text = `${nome} levou ${n1} ${item} para a escola e acabou perdendo ou dando ${n2} ${item}. Quantos ${item} sobraram com ${nome}?`;
+    } else if(tipo === 1){
+      let n1 = Math.floor(Math.random() * max) + min + 20;
+      let n2 = Math.floor(Math.random() * (n1 - 5)) + 5;
+      text = `${nome} tinha ${n1} ${item} e deu ${n2} ${item} para sua colega. Quantos ${item} ${nome} tem agora?`;
       expected = n1 - n2;
-    } else if(tipo === 2){ // Multiplicação
-      let n1 = Math.floor(Math.random() * 15) + 3;
-      let n2 = Math.floor(Math.random() * 12) + 2;
-      text = `${nome} comprou ${n1} pacotes. Cada pacote contém ${n2} ${item}. Quantos ${item} ${nome} comprou no total?`;
+    } else if(tipo === 2){
+      let n1 = diff === 'easy' ? (Math.floor(Math.random() * 6) + 2) : (Math.floor(Math.random() * 15) + 5);
+      let n2 = diff === 'easy' ? (Math.floor(Math.random() * 6) + 2) : (Math.floor(Math.random() * 10) + 3);
+      text = `${nome} comprou ${n1} caixas. Cada caixa tem ${n2} ${item}. Quantos ${item} há no total?`;
       expected = n1 * n2;
-    } else { // Divisão
-      let divisor = Math.floor(Math.random() * 6) + 2;
-      let quociente = Math.floor(Math.random() * 30) + 5;
-      let total = divisor * quociente;
-      text = `${nome} comprou ${total} ${item} e dividiu igualmente entre seus ${divisor} amigos. Quantos ${item} cada amigo recebeu?`;
-      expected = quociente;
+    } else {
+      let div = diff === 'easy' ? (Math.floor(Math.random() * 4) + 2) : (Math.floor(Math.random() * 7) + 2);
+      let q = diff === 'easy' ? (Math.floor(Math.random() * 10) + 5) : (Math.floor(Math.random() * 30) + 10);
+      let total = div * q;
+      text = `${nome} organizou ${total} ${item} em ${div} prateleiras iguais. Quantos ${item} ficaram em cada prateleira?`;
+      expected = q;
     }
 
     currentProblemBatch.push({
@@ -375,7 +380,7 @@ function renderProblemBatchPreview(){
   if(!currentProblemBatch.length){ container.innerHTML = '<p class="muted">Nenhum lote gerado.</p>'; return; }
   container.innerHTML = `
     <h3 style="font-size:15px; color:#0277bd; margin-bottom:8px;">Revise os 10 Probleminhas Gerados:</h3>
-    <div style="max-height:250px; overflow-y:auto; border:1px solid #b9e2fc; border-radius:12px; padding:10px; background:#fff;">
+    <div style="max-height:220px; overflow-y:auto; border:1px solid #b9e2fc; border-radius:12px; padding:10px; background:#fff;">
       ${currentProblemBatch.map((item, idx) => `
         <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid #f0f0f0; gap:10px;">
           <span style="font-size:13px;"><b>${idx+1}.</b> ${item.title} <small class="muted">(Resp: ${item.expected})</small></span>
@@ -384,7 +389,7 @@ function renderProblemBatchPreview(){
       `).join('')}
     </div>
     <div class="actions" style="margin-top:12px;">
-      <button class="primary" style="background:#2e7d32; width:100%;" onclick="sendProblemBatchToStudent()">🚀 Enviar Lote de Probleminhas para o Caderno (${currentProblemBatch.length})</button>
+      <button class="primary" style="background:#2e7d32; width:100%;" onclick="sendProblemBatchToStudent()">🚀 Enviar Probleminhas para o Caderno (${currentProblemBatch.length})</button>
     </div>
   `;
 }
@@ -490,42 +495,21 @@ function updateProgressUI(){
   }).join('');
 }
 
-function autoCalculate(){
-  let op = document.getElementById('opType').value;
-  let n1 = parseFloat(document.getElementById('num1').value);
-  let n2 = parseFloat(document.getElementById('num2').value);
-  let resField = document.getElementById('expected');
-  if(isNaN(n1) || isNaN(n2)){ resField.value = ''; return; }
-  let res = '';
-  if(op === '+') res = n1 + n2;
-  else if(op === '-') res = n1 - n2;
-  else if(op === 'x') res = n1 * n2;
-  else if(op === '÷') res = (n2 === 0) ? 'Erro' : (n1 / n2);
-  resField.value = res;
-}
-
-function add(){
-  let type=document.getElementById('opType').value;
-  let n1=document.getElementById('num1').value.trim();
-  let n2=document.getElementById('num2').value.trim();
-  let expected=document.getElementById('expected').value.trim();
-  if(!n1||!n2||!expected){ document.getElementById('msg').style.color='#c62828'; document.getElementById('msg').textContent='Preencha os campos!'; return; }
-  state.items.push({id:Date.now()+Math.random(), isProblem:false, type, n1, n2, expected, work:[], timeSpent:0, solved:false, correct:false});
-  document.getElementById('num1').value=''; document.getElementById('num2').value=''; document.getElementById('expected').value='';
-  persist();
-}
-
 function generateBatch(){
   currentBatch = [];
+  let diff = document.getElementById('calcDifficulty').value;
   let ops = ['÷', 'x', '-', '+'];
   for(let i=0; i<10; i++){
     let op = ops[Math.floor(Math.random() * ops.length)];
     let n1, n2, expected;
     if(op === '÷') {
-      let div = Math.floor(Math.random() * 7) + 2; let q = Math.floor(Math.random() * 50) + 10;
+      let div = diff === 'easy' ? (Math.floor(Math.random() * 4) + 2) : (Math.floor(Math.random() * 7) + 2);
+      let q = diff === 'easy' ? (Math.floor(Math.random() * 20) + 5) : (Math.floor(Math.random() * 50) + 10);
       n1 = div * q; n2 = div; expected = q;
     } else if(op === 'x') {
-      n1 = Math.floor(Math.random() * 40) + 10; n2 = Math.floor(Math.random() * 8) + 2; expected = n1 * n2;
+      n1 = diff === 'easy' ? (Math.floor(Math.random() * 15) + 2) : (Math.floor(Math.random() * 40) + 10);
+      n2 = diff === 'easy' ? (Math.floor(Math.random() * 5) + 2) : (Math.floor(Math.random() * 8) + 2);
+      expected = n1 * n2;
     } else if(op === '+') {
       n1 = Math.floor(Math.random() * 200) + 20; n2 = Math.floor(Math.random() * 200) + 20; expected = n1 + n2;
     } else if(op === '-') {
@@ -572,7 +556,7 @@ function renderLists(){
     else{
       p.innerHTML=state.items.map((x,i)=>{
         let desc = x.isProblem ? `📖 ${x.title}` : `${x.n1} ${x.type} ${x.n2} (Resp: ${x.expected})`;
-        let status = x.solved ? (x.correct ? '<span style="color:#2e7d32; font-weight:700;">⭐ Acertou</span>' : '<span style="color:#c62828; font-weight:700;">❌ Errou</span>') : 'Aguardando';
+        let status = x.solved ? (x.correct ? '<span style="color:#2e7d32; font-weight:700;">⭐ Acertou</span>' : '<span style="color:#c62828; font-weight:700;">❌ Errou (Revisar com ela)</span>') : 'Aguardando';
         let hasWork = x.work && x.work.length > 0;
         return `<div class="listitem">
           <div><b>${i+1}.</b> ${desc}<br><small>Status: ${status}</small></div>
