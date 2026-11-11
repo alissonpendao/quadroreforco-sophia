@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#ff758c"><title>Caderno da Sofia 🌸</title>
+<meta name="theme-color" content="#1b4332"><title>Caderno da Sofia 🌸</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#fff0f5,#f0f4ff);color:#333;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 header{background:linear-gradient(120deg,#ff758c,#ff7eb3);color:white;padding:22px 16px;text-align:center;border-bottom-left-radius:25px;border-bottom-right-radius:25px;box-shadow:0 4px 15px rgba(255,117,140,0.3)}
@@ -19,16 +19,6 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 .primary{background:linear-gradient(135deg,#ff758c,#ff7eb3);color:white;box-shadow:0 4px 12px rgba(255,117,140,0.4)}
 .soft{background:#e8f4fd;color:#0277bd}.warn{background:#ffebee;color:#c62828}
 
-/* LOUSA DESIGN PREMIUM */
-.problem-box{background:linear-gradient(135deg,#fff9fb,#fff0f3);border:2px solid #ffccd5;border-radius:20px;padding:22px;margin:15px 0;box-shadow:0 4px 15px rgba(255,182,193,0.1)}
-.canvas-scroll-container{width:100%;height:620px;overflow:auto;border:3px solid #ffb6c1;border-radius:16px;background:#fff;box-shadow:inset 0 2px 10px rgba(0,0,0,0.04);position:relative}
-canvas{display:block;touch-action:none;cursor:crosshair;background:#ffffff}
-
-/* BARRA DE FERRAMENTAS MODERNA (ESTILO TABLET) */
-.toolbar-pill{display:flex;gap:8px;align-items:center;background:#fff;padding:8px 14px;border-radius:30px;border:2px solid #ffccd5;box-shadow:0 4px 12px rgba(0,0,0,0.04);margin-bottom:14px;flex-wrap:wrap}
-.tool-btn{width:40px;height:40px;border-radius:50%;border:2px solid #eee;box-shadow:0 2px 4px rgba(0,0,0,0.05);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;background:#fff;transition:all 0.2s}
-.tool-btn.active{border-color:#d81b60;transform:scale(1.12);box-shadow:0 0 8px rgba(216,27,96,0.3)}
-
 .listitem{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 15px;background:#fffdfd;border:1px solid #ffccd5;border-radius:14px;margin:10px 0}
 .hidden{display:none!important}
 .scorebox{background:#e8f5e9;color:#2e7d32;padding:14px;border-radius:14px;margin-top:14px;font-weight:700;text-align:center;font-size:16px;border:2px solid #a5d6a7}
@@ -38,6 +28,19 @@ canvas{display:block;touch-action:none;cursor:crosshair;background:#ffffff}
 .progress-bar{background:linear-gradient(90deg,#ffb300,#ff8f00);height:100%;width:0%;transition:width 0.5s ease}
 .progress-text{position:absolute;width:100%;top:0;left:0;font-size:12px;font-weight:800;color:#5d4037;line-height:18px;text-align:center}
 .login-box{max-width:420px;margin:50px auto;text-align:center}
+
+/* LOUSA DE ESCOLA TELA CHEIA (FULLSCREEN CHALKBOARD) */
+#chalkboardOverlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:#1b4332;z-index:9999;display:flex;flex-direction:column;overflow:hidden}
+.cb-topbar{background:rgba(0,0,0,0.35);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;color:white;border-bottom:2px solid rgba(255,255,255,0.1)}
+.cb-canvas-container{flex:1;position:relative;width:100%;height:100%;overflow:hidden}
+#cbCanvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair;background:#1b4332}
+.cb-toolbar{background:rgba(0,0,0,0.45);padding:12px 15px;display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;border-top:2px solid rgba(255,255,255,0.1)}
+.cb-tool{width:42px;height:42px;border-radius:50%;border:2px solid rgba(255,255,255,0.5);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;background:transparent;transition:all 0.2s}
+.cb-tool.active{border-color:#fff;transform:scale(1.15);box-shadow:0 0 10px rgba(255,255,255,0.6)}
+
+/* MODAL DE RESPOSTA */
+#answerModal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.75);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px}
+.answer-box{background:white;padding:30px;border-radius:24px;max-width:380px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.3);animation:bounceIn 0.3s ease}
 
 /* TELA DE CELEBRAÇÃO FESTIVA */
 #celebrationOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:white;padding:20px;animation:fadeIn 0.3s ease}
@@ -52,6 +55,50 @@ canvas{display:block;touch-action:none;cursor:crosshair;background:#ffffff}
 <body>
 <header><h1>🌸 Caderno da Sofia 🌸</h1><p>Seu cantinho mágico de matemática</p></header>
 <main>
+
+<!-- LOUZA DE ESCOLA TELA CHEIA -->
+<div id="chalkboardOverlay" class="hidden">
+  <div class="cb-topbar">
+    <div>
+      <span style="font-size:13px; opacity:0.8; display:block;">Conta:</span>
+      <span id="cbProblemTitle" style="font-size:24px; font-weight:800; font-family:monospace; color:#ffea79;"></span>
+    </div>
+    <div id="cbTimer" style="background:rgba(255,255,255,0.15); padding:6px 14px; border-radius:12px; font-weight:700; font-size:15px;">⏱️ 00:00</div>
+    <button onclick="closeChalkboard()" style="background:#e53935; color:white; border:none; padding:8px 14px; border-radius:10px; font-weight:bold; cursor:pointer;">Sair ❌</button>
+  </div>
+  
+  <div class="cb-canvas-container">
+    <canvas id="cbCanvas"></canvas>
+  </div>
+
+  <div class="cb-toolbar">
+    <button class="cb-tool active" id="cbBtnWhite" style="background:#ffffff;" onclick="setChalkColor('#ffffff', 'cbBtnWhite')" title="Giz Branco"></button>
+    <button class="cb-tool" id="cbBtnYellow" style="background:#ffea79;" onclick="setChalkColor('#ffea79', 'cbBtnYellow')" title="Giz Amarelo"></button>
+    <button class="cb-tool" id="cbBtnPink" style="background:#ffb7b2;" onclick="setChalkColor('#ffb7b2', 'cbBtnPink')" title="Giz Rosa"></button>
+    <button class="cb-tool" id="cbBtnBlue" style="background:#a0c4ff;" onclick="setChalkColor('#a0c4ff', 'cbBtnBlue')" title="Giz Azul"></button>
+    
+    <span style="border-left:2px solid rgba(255,255,255,0.2); height:25px; margin:0 4px;"></span>
+    
+    <button class="cb-tool" id="cbBtnEraser" onclick="setCbEraser('cbBtnEraser')" title="Apagador">🧽</button>
+    <button class="cb-tool" onclick="cbUndo()" title="Desfazer">↶</button>
+    <button class="cb-tool" onclick="cbClear()" title="Limpar Quadro">🗑️</button>
+    
+    <button class="primary" style="background:linear-gradient(135deg,#ff758c,#ffb300); padding:10px 20px; font-size:16px; box-shadow:0 4px 12px rgba(0,0,0,0.3);" onclick="openAnswerModal()">Responder Conta ⭐</button>
+  </div>
+</div>
+
+<!-- MODAL DE RESPOSTA FINAL -->
+<div id="answerModal" class="hidden">
+  <div class="answer-box">
+    <h2 style="color:#1b4332; margin-bottom:8px;">🎯 Resposta Final</h2>
+    <p class="muted" style="margin-bottom:15px;">Qual foi o quociente (resultado) da divisão?</p>
+    <input id="cbStudentAnswer" type="number" placeholder="Digite o resultado..." style="font-size:28px; text-align:center; font-weight:bold; color:#1b4332; border-color:#2d6a4f;">
+    <div class="actions" style="margin-top:20px;">
+      <button class="soft" style="flex:1;" onclick="closeAnswerModal()">Voltar à Lousa</button>
+      <button class="primary" style="flex:1; background:#2d6a4f;" onclick="checkCbAnswer()">Conferir ⭐</button>
+    </div>
+  </div>
+</div>
 
 <!-- TELA DE CELEBRAÇÃO GIGANTE -->
 <div id="celebrationOverlay" class="hidden">
@@ -100,6 +147,16 @@ canvas{display:block;touch-action:none;cursor:crosshair;background:#ffffff}
     </div>
   </div>
 
+  <!-- GERADOR AUTOMÁTICO DE LOTE DE 10 CONTAS -->
+  <div class="card" style="background:#e8f4fd; border-color:#b9e2fc;">
+    <h2>🤖 Gerador Automático de Continhas (Lote de 10)</h2>
+    <p class="muted">Gere 10 continhas automáticas na medida certa para 11 anos (divisões exatas, multiplicações, somas e subtrações). Revise abaixo e remova as que não quiser antes de enviar para ela!</p>
+    <div class="actions">
+      <button class="primary" style="background:linear-gradient(135deg,#0277bd,#00acc1);" onclick="generateBatch()">Gerar Lote de 10 Contas ✨</button>
+    </div>
+    <div id="batchPreviewContainer" style="margin-top:15px;"></div>
+  </div>
+
   <!-- ALTERAR SENHAS -->
   <div class="card" style="background:#f4f6fb; border-color:#cbd4e3;">
     <h2>🔑 Alterar Senhas de Acesso</h2>
@@ -112,7 +169,7 @@ canvas{display:block;touch-action:none;cursor:crosshair;background:#ffffff}
   </div>
 
  <div class="card">
-  <h2>Preparar uma continha</h2>
+  <h2>Preparar uma continha manual</h2>
   <div class="row">
     <div>
       <label>Tipo de Operação</label>
@@ -129,7 +186,7 @@ canvas{display:block;touch-action:none;cursor:crosshair;background:#ffffff}
     <div><label>Segundo Número</label><input id="num2" type="number" placeholder="Ex.: 4" oninput="autoCalculate()"></div>
     <div><label>Resposta Correta (Automática)</label><input id="expected" type="text" placeholder="Calcula sozinho..." style="background:#e8f5e9; font-weight:800; color:#2e7d32;"></div>
   </div>
-  <div class="actions"><button class="primary" onclick="add()">Enviar continha para ela 🎀</button></div>
+  <div class="actions"><button class="primary" onclick="add()">Enviar continha avulsa 🎀</button></div>
   <p class="muted" id="msg" aria-live="polite" style="margin-top:8px; color:#2e7d32; font-weight:700;"></p>
  </div>
  <div class="card"><h2>Continhas cadastradas e Histórico de Revisão</h2><div id="parentList"></div></div>
@@ -142,10 +199,12 @@ canvas{display:block;touch-action:none;cursor:crosshair;background:#ffffff}
     <button class="warn" onclick="closeViewWork()">Fechar ❌</button>
   </div>
   <p class="muted">Veja abaixo o que ela rabiscou na lousa e o tempo levado:</p>
-  <div id="parentProblemHeader" style="text-align:center; margin-bottom:10px;"></div>
-  <div class="canvas-scroll-container">
+  <div id="parentProblemHeader" style="text-align:center; margin-bottom:10px; font-size:20px; font-weight:bold; color:#1b4332;"></div>
+  
+  <div style="width:100%; height:450px; background:#1b4332; border-radius:16px; overflow:auto; position:relative; border:4px solid #2d6a4f;">
     <canvas id="parentPaper" width="1600" height="1600" aria-label="Visualização do rascunho"></canvas>
   </div>
+
   <div class="actions" style="margin-top:15px;"><button class="soft" onclick="closeViewWork()">Voltar ao Painel</button></div>
 </section>
 
@@ -164,73 +223,20 @@ canvas{display:block;touch-action:none;cursor:crosshair;background:#ffffff}
   </div>
 
  <div class="card"><h2>Escolha sua continha 🌟</h2><div id="studentList"></div></div>
- <div id="notebook" class="card hidden">
-  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
-    <h2>Lousa Branca de Rascunho 📝</h2>
-    <div id="timerBadge" style="background:#fff3e0; color:#e65100; padding:6px 14px; border-radius:12px; font-weight:800; font-size:14px; border:1px solid #ffe0b2;">⏱️ Tempo: 00:00</div>
-  </div>
-  
-  <div class="problem-box">
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-      <div>
-        <div class="muted" style="font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:0.5px;">Conta Armada:</div>
-        <div id="currentProblemDisplay" style="font-size:28px; font-weight:800; color:#c2185b; font-family:monospace; margin-top:2px;"></div>
-      </div>
-      <div style="font-size:13px; color:#8d6e63; background:#fff; padding:6px 12px; border-radius:10px; border:1px solid #ffd1dc;">
-        💡 Use o dedo para rabiscar os cálculos à vontade!
-      </div>
-    </div>
-    
-    <!-- BARRA DE FERRAMENTAS PREMIUM (PILL TOOLBAR) -->
-    <div class="toolbar-pill">
-      <span class="muted" style="font-size:12px; font-weight:700; margin-right:4px;">Giz:</span>
-      <button class="tool-btn active" id="btnColor1" style="background:#c2185b;" onclick="setDrawingColor('#c2185b', 'btnColor1')" title="Rosa Choque"></button>
-      <button class="tool-btn" id="btnColor2" style="background:#1976d2;" onclick="setDrawingColor('#1976d2', 'btnColor2')" title="Azul Escuro"></button>
-      <button class="tool-btn" id="btnColor3" style="background:#212121;" onclick="setDrawingColor('#212121', 'btnColor3')" title="Preto Clássico"></button>
-      
-      <span style="border-left:2px solid #ffccd5; height:22px; margin:0 4px;"></span>
-      <span class="muted" style="font-size:12px; font-weight:700; margin-right:4px;">Ferramentas:</span>
-      <button class="tool-btn" id="btnEraser" onclick="setEraser('btnEraser')" title="Borracha">🧹</button>
-      
-      <span style="border-left:2px solid #ffccd5; height:22px; margin:0 4px;"></span>
-      <span class="muted" style="font-size:12px; font-weight:700; margin-right:4px;">Adesivos:</span>
-      <button class="tool-btn" onclick="setSticker('⭐')" title="Estrela">⭐</button>
-      <button class="tool-btn" onclick="setSticker('🌸')" title="Flor">🌸</button>
-      <button class="tool-btn" onclick="setSticker('💖')" title="Coração">💖</button>
-      <button class="tool-btn" onclick="setSticker('🦄')" title="Unicórnio">🦄</button>
-      <button class="tool-btn" onclick="setSticker('🎉')" title="Festa">🎉</button>
-    </div>
-
-    <!-- LOUSA LIMPA BRANCO TOTAL COM 1600x1600px DE ÁREA -->
-    <div class="canvas-scroll-container">
-      <canvas id="paper" width="1600" height="1600" aria-label="Lousa branca gigante para escrita à mão livre"></canvas>
-    </div>
-    <div class="actions" style="margin-top:12px;"><button class="soft" onclick="undo()">↶ Desfazer</button><button class="warn" onclick="clearPaper()">Apagar Lousa Inteira</button></div>
-  </div>
-
-  <div style="margin-top:18px;">
-    <label>Qual foi o resultado final da conta?</label>
-    <div class="row">
-      <input id="studentAnswer" type="text" placeholder="Digite o resultado aqui">
-      <button class="primary" onclick="checkAnswer()">Conferir Resposta ⭐</button>
-    </div>
-  </div>
-  <div id="resultFeedback"></div>
- </div>
 </section>
 </main>
 <script>
-const KEY='reforco_sofia_livre_v33';
+const KEY='reforco_sofia_livre_v36';
 
 let state=JSON.parse(localStorage.getItem(KEY)||'{"items":[], "stars":0, "rewards":[{"name":"Viagem com a Tia Selma na praia", "total":1000}]}');
 if(!state.rewards) state.rewards = [{"name":"Viagem com a Tia Selma na praia", "total":1000}];
 
-let active=null,canvas,ctx,strokes=[],current=[],drawing=false;
-let parentCanvas,parentCtx;
-let currentColor = '#c2185b';
-let currentLineWidth = 3;
-let activeSticker = null;
+let active=null, cbCanvas, cbCtx, cbStrokes=[], cbCurrent=[], cbDrawing=false;
+let parentCanvas, parentCtx;
+let currentChalkColor = '#ffffff';
+let currentChalkWidth = 4;
 let timerSeconds = 0, timerInterval = null;
+let currentBatch = []; // Armazena o lote gerado temporariamente para revisão do pai
 
 function tryLogin(){
   let val=document.getElementById('accessPass').value.trim();
@@ -262,7 +268,8 @@ function logout(){
   document.getElementById('loginMsg').textContent='';
   document.getElementById('parentPanel').classList.add('hidden');
   document.getElementById('studentPanel').classList.add('hidden');
-  document.getElementById('notebook').classList.add('hidden');
+  document.getElementById('chalkboardOverlay').classList.add('hidden');
+  document.getElementById('answerModal').classList.add('hidden');
   document.getElementById('viewWorkModal').classList.add('hidden');
   document.getElementById('loginScreen').classList.remove('hidden');
   if(timerInterval) clearInterval(timerInterval);
@@ -385,6 +392,72 @@ function add(){
   persist();
 }
 
+/* GERADOR DE LOTE AUTOMÁTICO DE 10 CONTAS */
+function generateBatch(){
+  currentBatch = [];
+  let ops = ['÷', 'x', '-', '+'];
+  for(let i=0; i<10; i++){
+    let op = ops[Math.floor(Math.random() * ops.length)];
+    let n1, n2, expected;
+    if(op === '÷') {
+      let divisor = Math.floor(Math.random() * 7) + 2; // 2 a 8
+      let quotient = Math.floor(Math.random() * 50) + 10; // 10 a 59
+      n1 = divisor * quotient;
+      n2 = divisor;
+      expected = quotient;
+    } else if(op === 'x') {
+      n1 = Math.floor(Math.random() * 40) + 10; // 10 a 49
+      n2 = Math.floor(Math.random() * 8) + 2;  // 2 a 9
+      expected = n1 * n2;
+    } else if(op === '+') {
+      n1 = Math.floor(Math.random() * 200) + 20;
+      n2 = Math.floor(Math.random() * 200) + 20;
+      expected = n1 + n2;
+    } else if(op === '-') {
+      n1 = Math.floor(Math.random() * 300) + 50;
+      n2 = Math.floor(Math.random() * n1) + 10;
+      expected = n1 - n2;
+    }
+    currentBatch.push({id: Date.now() + Math.random(), type: op, n1, n2, expected, work:[], timeSpent:0, solved:false, correct:false});
+  }
+  renderBatchPreview();
+}
+
+function removeBatchItem(index){
+  currentBatch.splice(index, 1);
+  renderBatchPreview();
+}
+
+function renderBatchPreview(){
+  let container = document.getElementById('batchPreviewContainer');
+  if(!currentBatch.length){
+    container.innerHTML = '<p class="muted">Nenhum lote gerado no momento. Clique no botão acima!</p>';
+    return;
+  }
+  container.innerHTML = `
+    <h3 style="font-size:15px; color:#0277bd; margin-bottom:8px;">Revise as 10 Contas Geradas (Remova as que não quiser):</h3>
+    <div style="max-height:220px; overflow-y:auto; border:1px solid #b9e2fc; border-radius:12px; padding:10px; background:#fff;">
+      ${currentBatch.map((item, idx) => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; border-bottom:1px solid #f0f0f0;">
+          <span><b>${idx+1}.</b>${item.n1} ${item.type}${item.n2} <small class="muted">(Resp: ${item.expected})</small></span>
+          <button class="warn" style="padding:4px 10px; font-size:12px;" onclick="removeBatchItem(${idx})">Remover ❌</button>
+        </div>
+      `).join('')}
+    </div>
+    <div class="actions" style="margin-top:12px;">
+      <button class="primary" style="background:#2e7d32; width:100%;" onclick="sendBatchToStudent()">🚀 Enviar Lote Aprovado para o Caderno da Sofia (${currentBatch.length} contas)</button>
+    </div>
+  `;
+}
+
+function sendBatchToStudent(){
+  if(!currentBatch.length) return;
+  currentBatch.forEach(item => state.items.push(item));
+  currentBatch = [];
+  persist();
+  document.getElementById('batchPreviewContainer').innerHTML = '<p style="color:#2e7d32; font-weight:700;">✨ Lote enviado com sucesso para o caderno dela!</p>';
+}
+
 function renderLists(){
   let p=document.getElementById('parentList'),s=document.getElementById('studentList');
   if(p){
@@ -406,235 +479,188 @@ function renderLists(){
   }
   if(s){
     if(!state.items.length){s.innerHTML='<p class="muted">Nenhuma conta disponível no momento. Peça ao papai para cadastrar! 🌸</p>';}
-    else{s.innerHTML=state.items.map((x,i)=>`<div class="listitem"><div><b>${i+1}. ${x.n1} ${x.type} ${x.n2}</b><div class="muted">${x.solved?(x.correct?'⭐ Acertou!':'❌ Tente de novo!'):'Aguardando resolução'}</div></div><button class="primary" onclick="openNotebook(${x.id})">Resolver ✨</button></div>`).join('');}
+    else{s.innerHTML=state.items.map((x,i)=>`<div class="listitem"><div><b>${i+1}. ${x.n1} ${x.type} ${x.n2}</b><div class="muted">${x.solved?(x.correct?'⭐ Acertou!':'❌ Tente de novo!'):'Aguardando resolução'}</div></div><button class="primary" onclick="openChalkboard(${x.id})">Resolver na Lousa 🧑‍🏫</button></div>`).join('');}
   }
 }
 
-function removeItem(id){state.items=state.items.filter(x=>x.id!==id);if(active===id){document.getElementById('notebook').classList.add('hidden');active=null}persist()}
+function removeItem(id){state.items=state.items.filter(x=>x.id!==id);if(active===id){document.getElementById('chalkboardOverlay').classList.add('hidden');active=null}persist()}
 
-function getProblemHtml(x){
+function getProblemText(x){
   if(x.type === '÷'){
-    return `
-      <div style="display:inline-flex; align-items:center; background:#fff; padding:6px 18px; border-radius:10px; border:2px solid #ffccd5; font-size:26px; font-weight:800; color:#c2185b; font-family:monospace;">
-        <span>${x.n1}</span>
-        <span style="border-left:3px solid #c2185b; height:32px; margin:0 12px; display:inline-block;"></span>
-        <span>${x.n2}</span>
-      </div>
-    `;
-  } else {
-    return `<div style="font-size:26px; font-weight:800; color:#c2185b; font-family:monospace;">${x.n1} ${x.type} ${x.n2}</div>`;
+    return `${x.n1} ÷ ${x.n2}`;
   }
+  return `${x.n1} ${x.type} ${x.n2}`;
 }
 
-function setupCanvas(){
-  canvas=document.getElementById('paper');
-  ctx=canvas.getContext('2d');
-  ctx.lineCap='round';
-  ctx.lineJoin='round';
-  ctx.lineWidth=currentLineWidth;
-  ctx.strokeStyle=currentColor;
-  drawAll(ctx, canvas, strokes);
-  
-  canvas.onpointerdown=e=>{
-    let r=canvas.getBoundingClientRect();
-    let x=e.clientX-r.left,y=e.clientY-r.top;
-    
-    if(activeSticker){
-      strokes.push([{type: 'sticker', emoji: activeSticker, x, y}]);
-      drawAll(ctx, canvas, strokes);
-      saveSilently();
-      return;
-    }
-
-    drawing=true;
-    canvas.setPointerCapture(e.pointerId);
-    current=[{x, y, color:currentColor, width:currentLineWidth, type:'line'}];
-    ctx.beginPath();
-    ctx.moveTo(x,y);
-  };
-
-  canvas.onpointermove=e=>{
-    if(!drawing || activeSticker)return;
-    let r=canvas.getBoundingClientRect();
-    let x=e.clientX-r.left,y=e.clientY-r.top;
-    ctx.strokeStyle=currentColor;
-    ctx.lineWidth=currentLineWidth;
-    ctx.lineTo(x,y);
-    ctx.stroke();
-    current.push({x, y, color:currentColor, width:currentLineWidth, type:'line'});
-  };
-
-  canvas.onpointerup=canvas.onpointercancel=()=>{
-    if(drawing){
-      drawing=false;
-      if(current.length)strokes.push(current);
-      current=[];
-      saveSilently();
-    }
-  }
-}
-
-function drawAll(targetCtx, targetCanvas, targetStrokes){
-  let c = targetCtx;
-  let cv = targetCanvas;
-  let stArr = targetStrokes;
-  if(!c || !cv) return;
-
-  let w=cv.width, h=cv.height;
-  c.clearRect(0,0,w,h);
-  c.fillStyle='#ffffff'; // PAPEL 100% BRANCO
-  c.fillRect(0,0,w,h);
-  
-  stArr.forEach(st=>{
-    if(!st.length)return;
-    if(st[0].type === 'sticker'){
-      c.font = '40px serif';
-      c.textAlign = 'center';
-      c.textBaseline = 'middle';
-      c.fillText(st[0].emoji, st[0].x, st[0].y);
-      return;
-    }
-    
-    c.beginPath();
-    c.lineCap='round';
-    c.lineJoin='round';
-    c.strokeStyle=st[0].color || '#c2185b';
-    c.lineWidth=st[0].width || 3;
-    c.moveTo(st[0].x, st[0].y);
-    st.slice(1).forEach(pt=>{
-      c.strokeStyle=pt.color || c.strokeStyle;
-      c.lineWidth=pt.width || 3;
-      c.lineTo(pt.x, pt.y);
-      c.stroke();
-    });
-  });
-}
-
-function openNotebook(id){
+function openChalkboard(id){
   active=id;
   let x=state.items.find(v=>v.id===id);
-  document.getElementById('currentProblemDisplay').innerHTML = getProblemHtml(x);
-  document.getElementById('notebook').classList.remove('hidden');
-  strokes=Array.isArray(x.work)?x.work:[];
-  document.getElementById('studentAnswer').value='';
-  document.getElementById('resultFeedback').innerHTML='';
+  document.getElementById('cbProblemTitle').textContent = getProblemText(x);
+  document.getElementById('chalkboardOverlay').classList.remove('hidden');
+  cbStrokes = Array.isArray(x.work)?x.work:[];
   
+  // Timer
   timerSeconds = 0;
   if(timerInterval) clearInterval(timerInterval);
   timerInterval = setInterval(()=>{
     timerSeconds++;
     let m = String(Math.floor(timerSeconds/60)).padStart(2,'0');
     let s = String(timerSeconds%60).padStart(2,'0');
-    let badge = document.getElementById('timerBadge');
-    if(badge) badge.textContent = `⏱️ Tempo: ${m}:${s}`;
+    let badge = document.getElementById('cbTimer');
+    if(badge) badge.textContent = `⏱️ ${m}:${s}`;
   }, 1000);
 
-  setDrawingColor('#c2185b', 'btnColor1');
-  setupCanvas();
-  document.getElementById('notebook').scrollIntoView({behavior:'smooth'});
+  setChalkColor('#ffffff', 'cbBtnWhite');
+  setupCbCanvas();
 }
 
-function setDrawingColor(color, btnId){
-  currentColor = color;
-  currentLineWidth = 3;
-  activeSticker = null;
-  updateActiveTool(btnId);
-  if(ctx) {
-    ctx.strokeStyle = currentColor;
-    ctx.lineWidth = currentLineWidth;
+function closeChalkboard(){
+  if(timerInterval) clearInterval(timerInterval);
+  document.getElementById('chalkboardOverlay').classList.add('hidden');
+  active = null;
+}
+
+function setupCbCanvas(){
+  cbCanvas = document.getElementById('cbCanvas');
+  cbCtx = cbCanvas.getContext('2d');
+  
+  cbCanvas.width = window.innerWidth * window.devicePixelRatio;
+  cbCanvas.height = (window.innerHeight - 120) * window.devicePixelRatio;
+  cbCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  
+  cbCtx.lineCap = 'round';
+  cbCtx.lineJoin = 'round';
+  cbCtx.lineWidth = currentChalkWidth;
+  cbCtx.strokeStyle = currentChalkColor;
+  
+  drawCbAll(cbCtx, cbCanvas, cbStrokes);
+  
+  cbCanvas.onpointerdown = e => {
+    cbDrawing = true;
+    cbCanvas.setPointerCapture(e.pointerId);
+    let r = cbCanvas.getBoundingClientRect();
+    let x = e.clientX - r.left;
+    let y = e.clientY - r.top;
+    cbCurrent = [{x, y, color: currentChalkColor, width: currentChalkWidth}];
+    cbCtx.beginPath();
+    cbCtx.moveTo(x, y);
+  };
+
+  cbCanvas.onpointermove = e => {
+    if(!cbDrawing) return;
+    let r = cbCanvas.getBoundingClientRect();
+    let x = e.clientX - r.left;
+    let y = e.clientY - r.top;
+    cbCtx.strokeStyle = currentChalkColor;
+    cbCtx.lineWidth = currentChalkWidth;
+    cbCtx.lineTo(x, y);
+    cbCtx.stroke();
+    cbCurrent.push({x, y, color: currentChalkColor, width: currentChalkWidth});
+  };
+
+  cbCanvas.onpointerup = cbCanvas.onpointercancel = () => {
+    if(cbDrawing){
+      cbDrawing = false;
+      if(cbCurrent.length) cbStrokes.push(cbCurrent);
+      cbCurrent = [];
+      saveCbSilently();
+    }
+  };
+}
+
+function drawCbAll(targetCtx, targetCanvas, targetStrokes){
+  let c = targetCtx;
+  let cv = targetCanvas;
+  let stArr = targetStrokes;
+  if(!c || !cv) return;
+
+  let displayWidth = cv.width / window.devicePixelRatio;
+  let displayHeight = cv.height / window.devicePixelRatio;
+
+  c.clearRect(0, 0, displayWidth, displayHeight);
+  c.fillStyle = '#1b4332'; // VERDE QUADRO-NEGRO
+  c.fillRect(0, 0, displayWidth, displayHeight);
+
+  stArr.forEach(st => {
+    if(!st.length) return;
+    c.beginPath();
+    c.lineCap = 'round';
+    c.lineJoin = 'round';
+    c.strokeStyle = st[0].color || '#ffffff';
+    c.lineWidth = st[0].width || 4;
+    c.moveTo(st[0].x, st[0].y);
+    st.slice(1).forEach(pt => {
+      c.strokeStyle = pt.color || c.strokeStyle;
+      c.lineWidth = pt.width || 4;
+      c.lineTo(pt.x, pt.y);
+      c.stroke();
+    });
+  });
+}
+
+function setChalkColor(color, btnId){
+  currentChalkColor = color;
+  currentChalkWidth = 4;
+  updateCbActiveTool(btnId);
+  if(cbCtx){
+    cbCtx.strokeStyle = currentChalkColor;
+    cbCtx.lineWidth = currentChalkWidth;
   }
 }
 
-function setEraser(btnId){
-  currentColor = '#ffffff'; 
-  currentLineWidth = 30; 
-  activeSticker = null;
-  updateActiveTool(btnId);
-  if(ctx) {
-    ctx.strokeStyle = currentColor;
-    ctx.lineWidth = currentLineWidth;
+function setCbEraser(btnId){
+  currentChalkColor = '#1b4332'; 
+  currentChalkWidth = 35; 
+  updateCbActiveTool(btnId);
+  if(cbCtx){
+    cbCtx.strokeStyle = currentChalkColor;
+    cbCtx.lineWidth = currentChalkWidth;
   }
 }
 
-function setSticker(emoji){
-  activeSticker = emoji;
-  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-}
-
-function updateActiveTool(btnId){
-  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+function updateCbActiveTool(btnId){
+  document.querySelectorAll('.cb-tool').forEach(b => b.classList.remove('active'));
   if(btnId){
     let btn = document.getElementById(btnId);
     if(btn) btn.classList.add('active');
   }
 }
 
-function saveSilently(){
-  if(active===null)return;
-  let x=state.items.find(v=>v.id===active);
+function cbUndo(){
+  cbStrokes.pop();
+  drawCbAll(cbCtx, cbCanvas, cbStrokes);
+  saveCbSilently();
+}
+
+function cbClear(){
+  if(!confirm('Quer limpar a lousa inteira?')) return;
+  cbStrokes = [];
+  drawCbAll(cbCtx, cbCanvas, cbStrokes);
+  saveCbSilently();
+}
+
+function saveCbSilently(){
+  if(active === null) return;
+  let x = state.items.find(v => v.id === active);
   if(x){
-    x.work=strokes;
-    localStorage.setItem(KEY,JSON.stringify(state));
+    x.work = cbStrokes;
+    localStorage.setItem(KEY, JSON.stringify(state));
   }
 }
 
-function undo(){strokes.pop();drawAll(ctx, canvas, strokes);saveSilently()}
-function clearPaper(){if(!confirm('Quer apagar a lousa inteira?'))return;strokes=[];drawAll(ctx, canvas, strokes);saveSilently()}
-
-function checkAnswer(){
-  if(active===null)return;
-  let x=state.items.find(v=>v.id===active);
-  let val=document.getElementById('studentAnswer').value.trim();
-  let fb=document.getElementById('resultFeedback');
-  
-  x.work = strokes;
-  if(timerInterval) clearInterval(timerInterval);
-  x.timeSpent = timerSeconds;
-  
-  if(val===String(x.expected)){
-    if(!x.correct){
-      state.stars = (state.stars || 0) + 10; 
-    }
-    x.solved=true;
-    x.correct=true;
-    persist();
-    
-    // Festa gigante na tela inteira
-    document.getElementById('celebrationOverlay').classList.remove('hidden');
-  }else{
-    x.solved=true;
-    x.correct=false;
-    fb.innerHTML='<div class="scorebox" style="background:#ffebee;color:#c62828;border-color:#ffcdd2;">❌ Ops! O resultado não está correto. Revise os cálculos na lousa e tente de novo! 💪</div>';
-    persist();
-  }
+function openAnswerModal(){
+  document.getElementById('cbStudentAnswer').value = '';
+  document.getElementById('answerModal').classList.remove('hidden');
 }
 
-function closeCelebration(){
-  document.getElementById('celebrationOverlay').classList.add('hidden');
-  renderLists();
-  document.getElementById('notebook').classList.add('hidden');
-  window.scrollTo({top:0, behavior:'smooth'});
+function closeAnswerModal(){
+  document.getElementById('answerModal').classList.add('hidden');
 }
 
-function viewWork(id){
-  let x=state.items.find(v=>v.id===id);
-  if(!x) return;
+function checkCbAnswer(){
+  if(active === null) return;
+  let x = state.items.find(v => v.id === active);
+  let val = document.getElementById('cbStudentAnswer').value.trim();
   
-  document.getElementById('modalTitle').textContent = `Rascunho da Conta: ${x.n1} ${x.type} ${x.n2}`;
-  document.getElementById('parentProblemHeader').innerHTML = getProblemHtml(x);
-  document.getElementById('parentPanel').classList.add('hidden');
-  document.getElementById('viewWorkModal').classList.remove('hidden');
-  document.getElementById('viewWorkModal').scrollIntoView({behavior:'smooth'});
-  
-  setTimeout(()=>{
-    parentCanvas = document.getElementById('parentPaper');
-    parentCtx = parentCanvas.getContext('2d');
-    drawAll(parentCtx, parentCanvas, x.work || []);
-  }, 100);
-}
-
-function closeViewWork(){
-  document.getElementById('viewWorkModal').classList.add('hidden');
-  document.getElementById('parentPanel').classList.remove('hidden');
-}
-</script></body></html>
+  x.work = cbStrokes;
+  if
