@@ -34,12 +34,20 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 .cb-topbar{background:rgba(0,0,0,0.35);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;color:white;border-bottom:2px solid rgba(255,255,255,0.1)}
 .cb-canvas-container{flex:1;position:relative;width:100%;height:100%;overflow:hidden}
 #cbCanvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair;background:#1b4332}
-.cb-toolbar{background:rgba(0,0,0,0.5);padding:12px 15px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-top:2px solid rgba(255,255,255,0.15)}
-.cb-tool{width:42px;height:42px;border-radius:50%;border:2px solid rgba(255,255,255,0.5);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;background:transparent;transition:all 0.2s}
-.cb-tool.active{border-color:#fff;transform:scale(1.15);box-shadow:0 0 10px rgba(255,255,255,0.6)}
+
+/* BARRA DE FERRAMENTAS DO GIZ (SOMENTE BRANCO E BORRACHA) */
+.cb-toolbar{background:rgba(0,0,0,0.3);padding:10px;display:flex;justify-content:center;align-items:center;gap:15px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,0.1)}
+.cb-tool{width:48px;height:48px;border-radius:50%;border:2px solid rgba(255,255,255,0.5);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;background:transparent;transition:all 0.2s}
+.cb-tool.active{border-color:#fff;transform:scale(1.15);box-shadow:0 0 10px rgba(255,255,255,0.6);background:rgba(255,255,255,0.2)}
+
+/* BARRA DE RESPOSTA GIGANTE FIXA NO RODAPÉ */
+.cb-answer-bar{background:rgba(0,0,0,0.8);padding:15px;display:flex;justify-content:center;align-items:center;gap:12px;border-top:2px solid rgba(255,255,255,0.2)}
+.cb-answer-bar input{width:130px;padding:12px;font-size:22px;font-weight:900;text-align:center;border-radius:12px;border:3px solid #ffea79;background:#fff;color:#1b4332}
+.cb-answer-bar button{background:linear-gradient(135deg,#ff758c,#ffb300);padding:14px 24px;font-size:16px;box-shadow:0 4px 12px rgba(0,0,0,0.4);color:white;border:none;border-radius:12px;font-weight:800;cursor:pointer;transition:transform 0.1s}
+.cb-answer-bar button:active{transform:scale(0.95)}
 
 /* TELA DE CELEBRAÇÃO FESTIVA */
-#celebrationOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:white;padding:20px;animation:fadeIn 0.3s ease}
+#celebrationOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:white;padding:20px;animation:fadeIn 0.3s ease}
 .celebration-card{background:linear-gradient(135deg,#ff758c,#ffb300);border:4px solid #fff;border-radius:30px;padding:35px;max-width:480px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,0.5);animation:bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)}
 .celebration-emojis{font-size:50px;margin-bottom:15px;display:flex;justify-content:center;gap:10px;animation:pulseEmoji 1s infinite alternate}
 @keyframes pulseEmoji{0%{transform:scale(1)}100%{transform:scale(1.2)}}
@@ -52,34 +60,36 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 <header><h1>🌸 Caderno da Sofia 🌸</h1><p>Seu cantinho mágico de matemática</p></header>
 <main>
 
-<!-- LOUSA DE ESCOLA TELA CHEIA COM RESPOSTA INTEGRADA -->
+<!-- LOUSA DE ESCOLA TELA CHEIA (V42) -->
 <div id="chalkboardOverlay" class="hidden">
+  <!-- Topo -->
   <div class="cb-topbar">
     <div>
-      <span style="font-size:13px; opacity:0.8; display:block;">Conta:</span>
+      <span style="font-size:13px; opacity:0.8; display:block;">Conta Atual:</span>
       <span id="cbProblemTitle" style="font-size:24px; font-weight:800; font-family:monospace; color:#ffea79;"></span>
     </div>
     <div id="cbTimer" style="background:rgba(255,255,255,0.15); padding:6px 14px; border-radius:12px; font-weight:700; font-size:15px;">⏱️ 00:00</div>
     <button onclick="closeChalkboard()" style="background:#e53935; color:white; border:none; padding:8px 14px; border-radius:10px; font-weight:bold; cursor:pointer;">Sair ❌</button>
   </div>
   
+  <!-- Área de Desenho -->
   <div class="cb-canvas-container">
     <canvas id="cbCanvas"></canvas>
   </div>
 
+  <!-- Barra de Ferramentas (SÓ GIZ BRANCO E BORRACHA) -->
   <div class="cb-toolbar">
-    <div style="display:flex; gap:8px; align-items:center;">
-      <button class="cb-tool active" id="cbBtnWhite" style="background:#ffffff; color:#1b4332; font-weight:bold;" onclick="setChalkColor('#ffffff', 'cbBtnWhite')" title="Giz Branco">📍</button>
-      <button class="cb-tool" id="cbBtnEraser" onclick="setCbEraser('cbBtnEraser')" title="Apagador / Esponjinha">🧽</button>
-      <button class="cb-tool" onclick="cbUndo()" title="Desfazer">↶</button>
-      <button class="cb-tool" onclick="cbClear()" title="Limpar Quadro">🗑️</button>
-    </div>
-    
-    <div style="display:flex; gap:8px; align-items:center; background:rgba(255,255,255,0.15); padding:6px 12px; border-radius:14px;">
-      <span style="color:white; font-size:14px; font-weight:bold;">Resposta:</span>
-      <input id="cbDirectAnswer" type="number" placeholder="Digite..." style="width:110px; padding:8px; font-size:16px; font-weight:bold; text-align:center; border-radius:8px; border:2px solid #fff; background:#fff; color:#1b4332;">
-      <button class="primary" style="background:linear-gradient(135deg,#ff758c,#ffb300); padding:9px 16px; font-size:14px; box-shadow:0 4px 10px rgba(0,0,0,0.3);" onclick="checkCbAnswer()">Confirmar ⭐</button>
-    </div>
+    <button class="cb-tool active" id="cbBtnWhite" style="color:white;" onclick="setChalkColor('#ffffff', 'cbBtnWhite')" title="Giz Branco">🖍️</button>
+    <button class="cb-tool" id="cbBtnEraser" onclick="setCbEraser('cbBtnEraser')" title="Esponja / Apagador">🧽</button>
+    <button class="cb-tool" onclick="cbUndo()" title="Desfazer Risco">↶</button>
+    <button class="cb-tool" onclick="cbClear()" title="Limpar Lousa">🗑️</button>
+  </div>
+  
+  <!-- BARRA DE RESPOSTA GIGANTE E DEDICADA -->
+  <div class="cb-answer-bar">
+    <span style="color:white; font-size:18px; font-weight:bold;">Resultado:</span>
+    <input id="cbDirectAnswer" type="number" placeholder="...">
+    <button onclick="checkCbAnswer()">Confirmar ⭐</button>
   </div>
 </div>
 
@@ -93,13 +103,13 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
   </div>
 </div>
 
-<!-- TELA DE LOGIN SEGURA (SEM MOSTRAR SENHAS) -->
+<!-- TELA DE LOGIN SEGURA (LIMPA DE DICAS) -->
 <section id="loginScreen" class="card login-box">
   <h2>🔒 Área Secreta</h2>
-  <p class="muted">Digite sua senha para entrar:</p>
+  <p class="muted">Digite a senha de acesso:</p>
   <div style="text-align:left; margin-top:15px;">
-    <label>Senha de Acesso</label>
-    <input id="accessPass" type="password" placeholder="Digite sua senha..." autocomplete="current-password" onkeydown="if(event.key==='Enter')tryLogin()">
+    <!-- Somente type="password", sem placeholder entregando a senha -->
+    <input id="accessPass" type="password" placeholder="Sua senha secreta..." autocomplete="current-password" onkeydown="if(event.key==='Enter')tryLogin()">
   </div>
   <div class="actions" style="margin-top:18px;">
     <button class="primary" style="width:100%" onclick="tryLogin()">Entrar 💖</button>
@@ -133,7 +143,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
   <!-- GERADOR AUTOMÁTICO DE LOTE DE 10 CONTAS -->
   <div class="card" style="background:#e8f4fd; border-color:#b9e2fc;">
     <h2>🤖 Gerador Automático de Continhas (Lote de 10)</h2>
-    <p class="muted">Gere 10 continhas automáticas na medida certa para 11 anos (divisões exatas, multiplicações, somas e subtrações). Revise abaixo e remova as que não quiser antes de enviar para ela!</p>
+    <p class="muted">Gere 10 continhas automáticas na medida certa para 11 anos. Revise abaixo e remova as que não quiser antes de enviar!</p>
     <div class="actions">
       <button class="primary" style="background:linear-gradient(135deg,#0277bd,#00acc1);" onclick="generateBatch()">Gerar Lote de 10 Contas ✨</button>
     </div>
@@ -144,8 +154,8 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
   <div class="card" style="background:#f4f6fb; border-color:#cbd4e3;">
     <h2>🔑 Alterar Senhas de Acesso</h2>
     <div class="row">
-      <div><label>Nova Senha do Pai</label><input id="newPassPai" type="text" placeholder="Ex: 1234"></div>
-      <div><label>Nova Senha da Sofia</label><input id="newPassSofia" type="text" placeholder="Ex: 5678"></div>
+      <div><label>Nova Senha do Pai</label><input id="newPassPai" type="text" placeholder="Senha do Pai"></div>
+      <div><label>Nova Senha da Sofia</label><input id="newPassSofia" type="text" placeholder="Senha da Sofia"></div>
     </div>
     <div class="actions"><button class="soft" onclick="savePasswords()">Atualizar Senhas 🔒</button></div>
     <p class="muted" id="passMsg" style="margin-top:6px; color:#2457d6; font-weight:700;"></p>
@@ -209,7 +219,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 </section>
 </main>
 <script>
-const KEY='reforco_sofia_livre_v41';
+const KEY='reforco_sofia_livre_v42'; // CHAVE NOVA PARA FORÇAR ATUALIZAÇÃO
 
 let state;
 try {
@@ -306,4 +316,79 @@ function renderRewardsParent(){
     container.innerHTML = '<p class="muted">Nenhum prêmio cadastrado.</p>';
     return;
   }
-  container.innerHTML = state.rewards.map((r
+  container.innerHTML = state.rewards.map((r, i)=>`
+    <div class="listitem" style="background:#fff; margin:6px 0;">
+      <div><b>${r.name}</b> — 🌟 ${r.total} estrelas</div>
+      <button class="warn" onclick="removeReward(${i})">Remover</button>
+    </div>
+  `).join('');
+}
+
+function savePasswords(){
+  let npPai = document.getElementById('newPassPai').value.trim();
+  let npSofia = document.getElementById('newPassSofia').value.trim();
+  if(!npPai || !npSofia){
+    document.getElementById('passMsg').style.color='#c62828';
+    document.getElementById('passMsg').textContent='As senhas não podem ficar em branco!';
+    return;
+  }
+  state.passPai = npPai;
+  state.passSofia = npSofia;
+  document.getElementById('passMsg').style.color='#2e7d32';
+  document.getElementById('passMsg').textContent='🔒 Senhas atualizadas com sucesso!';
+  persist();
+}
+
+function updateProgressUI(){
+  let stars = state.stars || 0;
+  let elStars = document.getElementById('displayStars');
+  if(elStars) elStars.textContent = stars;
+  
+  let container = document.getElementById('studentRewardsContainer');
+  if(!container) return;
+  
+  container.innerHTML = state.rewards.map(r=>{
+    let percent = Math.min(100, Math.round((stars / r.total) * 100));
+    return `
+      <div style="margin-bottom:12px; text-align:left; background:#fff; padding:10px; border-radius:12px; border:1px solid #ffe0b2;">
+        <div style="font-weight:700; color:#e65100; font-size:15px;">🎁 ${r.name} (${stars} / ${r.total} ⭐)</div>
+        <div class="progress-container" style="margin:6px 0 2px;">
+          <div class="progress-bar" style="width:${percent}%"></div>
+          <div class="progress-text">${percent}% conquistado</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function autoCalculate(){
+  let op = document.getElementById('opType').value;
+  let n1 = parseFloat(document.getElementById('num1').value);
+  let n2 = parseFloat(document.getElementById('num2').value);
+  let resField = document.getElementById('expected');
+  
+  if(isNaN(n1) || isNaN(n2)){
+    resField.value = '';
+    return;
+  }
+  
+  let res = '';
+  if(op === '+') res = n1 + n2;
+  else if(op === '-') res = n1 - n2;
+  else if(op === 'x') res = n1 * n2;
+  else if(op === '÷') {
+    if(n2 === 0) res = 'Erro';
+    else res = n1 / n2;
+  }
+  resField.value = res;
+}
+
+function add(){
+  let type=document.getElementById('opType').value;
+  let n1=document.getElementById('num1').value.trim();
+  let n2=document.getElementById('num2').value.trim();
+  let expected=document.getElementById('expected').value.trim();
+  
+  if(!n1||!n2||!expected){
+    document.getElementById('msg').style.color='#c62828';
+    document.getElementById('msg').textContent='Preencha os
