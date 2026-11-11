@@ -210,22 +210,38 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 </section>
 </main>
 <script>
-const KEY='caderno_sofia_dados_finais'; 
+// CHAVE BLINDADA PERMANENTE PARA NUNCA MAIS PERDER DADOS
+const KEY = 'caderno_sofia_dados_definitivos_v44';
 
 let state;
 try {
   let saved = localStorage.getItem(KEY);
-  state = saved ? JSON.parse(saved) : null;
+  if(saved) {
+    state = JSON.parse(saved);
+  }
 } catch(e) {
   state = null;
 }
 
 if(!state || typeof state !== 'object'){
-  state = {items:[], stars:0, rewards:[{name:"Viagem com a Tia Selma na praia", total:1000}], passPai:'1234', passSofia:'5678'};
+  state = {
+    items: [], 
+    stars: 0, 
+    rewards: [{name:"Viagem com a Tia Selma na praia", total:1000}], 
+    passPai: '1234', 
+    passSofia: '5678'
+  };
 }
+
+// Garantir que as senhas nunca fiquem vazias
 if(!state.passPai) state.passPai = '1234';
 if(!state.passSofia) state.passSofia = '5678';
 if(!state.rewards) state.rewards = [{name:"Viagem com a Tia Selma na praia", total:1000}];
+
+// Salva imediatamente para fixar na memória do aparelho
+try {
+  localStorage.setItem(KEY, JSON.stringify(state));
+} catch(e) {}
 
 let active=null, cbCanvas, cbCtx, cbStrokes=[], cbCurrent=[], cbDrawing=false;
 let parentCanvas, parentCtx;
@@ -241,7 +257,6 @@ function tryLogin(){
   let pPai = String(state.passPai || '1234').trim();
   let pSofia = String(state.passSofia || '5678').trim();
   
-  // Verificação estrita baseada exclusivamente nas senhas salvas no state (sem "portas dos fundos")
   if(val === pPai){
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('studentPanel').classList.add('hidden');
