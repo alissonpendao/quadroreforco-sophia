@@ -7,7 +7,7 @@
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#fff0f5,#f0f4ff);color:#333;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 header{background:linear-gradient(120deg,#ff758c,#ff7eb3);color:white;padding:22px 16px;text-align:center;border-bottom-left-radius:25px;border-bottom-right-radius:25px;box-shadow:0 4px 15px rgba(255,117,140,0.3)}
 header h1{margin:0;font-size:28px;text-shadow:0 2px 4px rgba(0,0,0,0.1)}header p{margin:6px 0 0;opacity:.95;font-size:15px}
-main{max-width:850px;margin:16px auto;padding:0 12px 30px}
+main{max-width:900px;margin:16px auto;padding:0 12px 30px}
 .card{background:white;border:2px solid #ffd1dc;border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:0 6px 20px rgba(255,182,193,0.15)}
 h2{font-size:20px;margin:0 0 12px;color:#d81b60}p{line-height:1.45}.muted{color:#777;font-size:13px}
 label{display:block;color:#555;font-size:13px;font-weight:700;margin:10px 0 5px}
@@ -20,14 +20,11 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 .soft{background:#e8f4fd;color:#0277bd}.warn{background:#ffebee;color:#c62828}
 .problem-box{background:linear-gradient(135deg,#fff9fb,#fff0f3);border:2px dashed #ffb6c1;border-radius:16px;padding:20px;text-align:center;margin:15px 0}
 
-/* ESTILO DA CHAVE EM L E PASSOS */
-.division-sheet{background:#fff;border:2px solid #ffccd5;border-radius:16px;padding:25px;margin:15px auto;max-width:500px;font-family:monospace;font-size:26px;font-weight:bold;color:#c2185b;text-align:left;box-shadow:0 4px 12px rgba(0,0,0,0.02)}
-.div-row{display:flex;align-items:center;gap:15px;margin:10px 0}
-.div-bracket{border-left:3px solid #c2185b;border-bottom:3px solid #c2185b;padding-left:12px;padding-bottom:2px}
-.calc-input{width:45px;height:42px;text-align:center;font-size:22px;font-weight:bold;color:#c2185b;border:2px solid #ffb6c1;border-radius:8px;background:#fffbfd}
-.calc-input:focus{border-color:#ff758c;background:#fff;outline:none}
-.math-line{border-bottom:2px solid #c2185b;width:120px;margin:5px 0}
+/* LOUSA GIGANTE COM SCROLL PARA NAVEGAR À VONTADE */
+.canvas-scroll-container{width:100%;height:450px;overflow:auto;border:2px solid #b0bec5;border-radius:14px;background:white;box-shadow:inset 0 2px 8px rgba(0,0,0,0.05);position:relative}
+canvas{display:block;touch-action:none;cursor:crosshair;background:#fff}
 
+.color-btn{width:36px;height:36px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,0.2);cursor:pointer}
 .listitem{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 15px;background:#fffdfd;border:1px solid #ffccd5;border-radius:14px;margin:10px 0}
 .hidden{display:none!important}
 .scorebox{background:#e8f5e9;color:#2e7d32;padding:14px;border-radius:14px;margin-top:14px;font-weight:700;text-align:center;font-size:16px;border:2px solid #a5d6a7}
@@ -114,14 +111,16 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
  <div class="card"><h2>Continhas cadastradas e Respostas da Sofia</h2><div id="parentList"></div></div>
 </section>
 
-<!-- VISUALIZADOR DE RESPOSTA PARA O PAI -->
+<!-- VISUALIZADOR DE RASCUNHO PARA O PAI -->
 <section id="viewWorkModal" class="card hidden">
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-    <h2 id="modalTitle" style="margin:0;">Resolução da Sofia</h2>
+    <h2 id="modalTitle" style="margin:0;">Rascunho da Sofia</h2>
     <button class="warn" onclick="closeViewWork()">Fechar ❌</button>
   </div>
-  <p class="muted">Veja abaixo o que ela preencheu:</p>
-  <div id="parentWorkPreview" class="card" style="background:#fffbfd; font-family:monospace; font-size:22px; color:#c2185b;"></div>
+  <p class="muted">Veja abaixo o que ela rabiscou na lousa:</p>
+  <div class="canvas-scroll-container">
+    <canvas id="parentPaper" width="1400" height="1000" aria-label="Visualização do rascunho"></canvas>
+  </div>
   <div class="actions" style="margin-top:15px;"><button class="soft" onclick="closeViewWork()">Voltar ao Painel</button></div>
 </section>
 
@@ -141,17 +140,30 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 
  <div class="card"><h2>Escolha sua continha 🌟</h2><div id="studentList"></div></div>
  <div id="notebook" class="card hidden">
-  <h2>Chave de Divisão 📝</h2>
+  <h2>Lousa Gigante de Rascunho 📝</h2>
   
   <div class="problem-box">
-    <div class="tip" style="margin-bottom:15px;">💡 Arme a divisão na chave abaixo. Conforme você digita o número da multiplicação embaixo, o aplicativo coloca o sinal de menos e o traço automático para você subtrair!</div>
+    <div class="muted" style="font-weight:700; margin-bottom:5px;">Enunciado Fixo na Lousa:</div>
+    <div id="currentProblemDisplay" style="font-size:22px; font-weight:800; color:#c2185b; margin-bottom:10px;"></div>
+    <div class="tip" style="font-size:13px; color:#8d6e63; margin-bottom:12px;">💡 A conta já está impressa no topo da lousa! Arraste o dedo na lousa abaixo para navegar e fazer todos os passos à vontade.</div>
     
-    <!-- CHAVE EM L INTERATIVA -->
-    <div id="divisionBuilder" style="text-align:center;"></div>
+    <!-- PALETA DE CORES -->
+    <div style="display:flex; gap:10px; align-items:center; margin-bottom:12px;">
+      <span class="muted" style="font-weight:700;">Cor do Giz:</span>
+      <button class="color-btn" style="background:#c2185b;" onclick="setDrawingColor('#c2185b')" title="Rosa Choque"></button>
+      <button class="color-btn" style="background:#1976d2;" onclick="setDrawingColor('#1976d2')" title="Azul Escuro"></button>
+      <button class="color-btn" style="background:#212121;" onclick="setDrawingColor('#212121')" title="Preto Clássico"></button>
+    </div>
+
+    <!-- LOUSA COM TAMANHO GIGANTE E SCROLL -->
+    <div class="canvas-scroll-container">
+      <canvas id="paper" width="1400" height="1000" aria-label="Lousa gigante para escrita à mão livre"></canvas>
+    </div>
+    <div class="actions" style="margin-top:10px;"><button class="soft" onclick="undo()">↶ Desfazer</button><button class="warn" onclick="clearPaper()">Apagar Rascunho</button></div>
   </div>
 
   <div style="margin-top:18px;">
-    <label>Qual foi o resultado final da conta (Quociente)?</label>
+    <label>Qual foi o resultado final da conta?</label>
     <div class="row">
       <input id="studentAnswer" type="text" placeholder="Digite o resultado aqui">
       <button class="primary" onclick="checkAnswer()">Conferir Resposta ⭐</button>
@@ -162,12 +174,14 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 </section>
 </main>
 <script>
-const KEY='reforco_sofia_livre_v26';
+const KEY='reforco_sofia_livre_v27';
 
 let state=JSON.parse(localStorage.getItem(KEY)||'{"items":[], "stars":0, "rewards":[{"name":"Viagem com a Tia Selma na praia", "total":1000}]}');
 if(!state.rewards) state.rewards = [{"name":"Viagem com a Tia Selma na praia", "total":1000}];
 
-let active=null;
+let active=null,canvas,ctx,strokes=[],current=[],drawing=false;
+let parentCanvas,parentCtx;
+let currentColor = '#c2185b';
 
 function tryLogin(){
   let val=document.getElementById('accessPass').value.trim();
@@ -312,8 +326,7 @@ function add(){
     return;
   }
 
-  // Começa com rascunho totalmente em branco para ela digitar tudo sozinha
-  state.items.push({id:Date.now()+Math.random(), type, n1, n2, expected, workText:'', solved:false, correct:false});
+  state.items.push({id:Date.now()+Math.random(), type, n1, n2, expected, work:[], solved:false, correct:false});
   document.getElementById('num1').value='';
   document.getElementById('num2').value='';
   document.getElementById('expected').value='';
@@ -329,11 +342,11 @@ function renderLists(){
     else{
       p.innerHTML=state.items.map((x,i)=>{
         let statusText = x.solved ? (x.correct ? '<span style="color:#2e7d32; font-weight:700;">⭐ Acertou</span>' : '<span style="color:#c62828; font-weight:700;">❌ Errou</span>') : '<span style="color:#777;">Aguardando</span>';
-        let hasWork = x.workText && x.workText.trim().length > 0;
+        let hasWork = x.work && x.work.length > 0;
         return `<div class="listitem">
           <div><b>${i+1}. ${x.n1} ${x.type} ${x.n2}</b> (Resp: ${x.expected})<br><small>Status: ${statusText}</small></div>
           <div style="display:flex; gap:6px;">
-            ${hasWork ? `<button class="soft" onclick="viewWork(${x.id})">Ver Resolução 👁️</button>` : `<span class="muted" style="font-size:12px; align-self:center;">Vazio</span>`}
+            ${hasWork ? `<button class="soft" onclick="viewWork(${x.id})">Ver Rascunho 👁️</button>` : `<span class="muted" style="font-size:12px; align-self:center;">Vazio</span>`}
             <button class="warn" onclick="removeItem(${x.id})">Remover</button>
           </div>
         </div>`;
@@ -348,51 +361,124 @@ function renderLists(){
 
 function removeItem(id){state.items=state.items.filter(x=>x.id!==id);if(active===id){document.getElementById('notebook').classList.add('hidden');active=null}persist()}
 
+function setupCanvas(){
+  canvas=document.getElementById('paper');
+  ctx=canvas.getContext('2d');
+  ctx.lineCap='round';
+  ctx.lineJoin='round';
+  ctx.lineWidth=3;
+  ctx.strokeStyle=currentColor;
+  drawAll();
+  
+  canvas.onpointerdown=e=>{drawing=true;canvas.setPointerCapture(e.pointerId);let r=canvas.getBoundingClientRect();let x=e.clientX-r.left,y=e.clientY-r.top;current=[{x, y, color:currentColor}];ctx.beginPath();ctx.moveTo(x,y)};
+  canvas.onpointermove=e=>{if(!drawing)return;let r=canvas.getBoundingClientRect();let x=e.clientX-r.left,y=e.clientY-r.top;ctx.strokeStyle=currentColor;ctx.lineTo(x,y);ctx.stroke();current.push({x, y, color:currentColor});};
+  canvas.onpointerup=canvas.onpointercancel=()=>{if(drawing){drawing=false;if(current.length)strokes.push(current);current=[];saveSilently();}}
+}
+
+function drawAll(targetCtx, targetCanvas, targetStrokes){
+  let c = targetCtx || ctx;
+  let cv = targetCanvas || canvas;
+  let stArr = targetStrokes || strokes;
+  if(!c || !cv) return;
+
+  let w=cv.width, h=cv.height;
+  c.clearRect(0,0,w,h);
+  c.fillStyle='#fff';
+  c.fillRect(0,0,w,h);
+  
+  // Fundo quadriculado simulando caderno de matemática
+  c.strokeStyle='#f0f0f0';
+  c.lineWidth=1;
+  for(let x=0; x<w; x+=30){c.beginPath();c.moveTo(x,0);c.lineTo(x,h);c.stroke();}
+  for(let y=0; y<h; y+=30){c.beginPath();c.moveTo(0,y);c.lineTo(w,y);c.stroke();}
+
+  // IMPRIME O ENUNCIADO FIXO NO TOPO DA LOUSA AUTOMATICAMENTE
+  let xItem = state.items.find(v=>v.id===active);
+  if(xItem){
+    c.font = 'bold 36px monospace';
+    c.fillStyle = '#c2185b';
+    if(xItem.type === '÷'){
+      c.fillText(`${xItem.n1}  |  ${xItem.n2}`, 60, 70);
+      // Desenha a chave em L tradicional ao redor do divisor
+      c.lineWidth = 4;
+      c.strokeStyle = '#c2185b';
+      c.beginPath();
+      c.moveTo(135, 42);
+      c.lineTo(135, 80);
+      c.lineTo(195, 80);
+      c.stroke();
+    } else {
+      c.fillText(`${xItem.n1} ${xItem.type} ${xItem.n2}`, 60, 70);
+    }
+  }
+  
+  // Desenha os rabiscos feitos pela Sofia
+  stArr.forEach(st=>{
+    if(!st.length)return;
+    c.beginPath();
+    c.lineWidth=3;
+    c.lineCap='round';
+    c.lineJoin='round';
+    c.strokeStyle=st[0].color || '#c2185b';
+    c.moveTo(st[0].x, st[0].y);
+    st.slice(1).forEach(pt=>{
+      c.strokeStyle=pt.color || c.strokeStyle;
+      c.lineTo(pt.x, pt.y);
+      c.stroke();
+    });
+  });
+}
+
 function openNotebook(id){
   active=id;
   let x=state.items.find(v=>v.id===id);
+  document.getElementById('currentProblemDisplay').textContent = `${x.n1} ${x.type} ${x.n2}`;
   document.getElementById('notebook').classList.remove('hidden');
+  strokes=Array.isArray(x.work)?x.work:[];
   document.getElementById('studentAnswer').value='';
   document.getElementById('resultFeedback').innerHTML='';
   
-  let builder = document.getElementById('divisionBuilder');
-  builder.innerHTML = `
-    <div style="font-size:24px; font-weight:bold; margin-bottom:10px;">${x.n1} <span style="border-left:3px solid #c2185b; border-bottom:3px solid #c2185b; padding-left:10px;">${x.n2}</span></div>
-    <div class="muted" style="margin-bottom:10px;">Faça a conta embaixo exatamente como no papel (quociente, multiplicações, traço de menos, subtrações e descidas):</div>
-    <textarea id="studentWork" style="width:100%; height:220px; font-family:monospace; font-size:24px; padding:12px; border:2px solid #ffb6c1; border-radius:12px; background:#fffbfd; color:#c2185b;" placeholder="Digite aqui o passo a passo..." oninput="saveWork()">${x.workText || ''}</textarea>
-  `;
-  
+  setupCanvas();
   document.getElementById('notebook').scrollIntoView({behavior:'smooth'});
 }
 
-function saveWork(){
+function setDrawingColor(color){
+  currentColor = color;
+  if(ctx) ctx.strokeStyle = currentColor;
+}
+
+function saveSilently(){
   if(active===null)return;
   let x=state.items.find(v=>v.id===active);
-  let el = document.getElementById('studentWork');
-  if(x && el){
-    x.workText = el.value;
+  if(x){
+    x.work=strokes;
     localStorage.setItem(KEY,JSON.stringify(state));
   }
 }
 
+function undo(){strokes.pop();drawAll();saveSilently()}
+function clearPaper(){if(!confirm('Quer apagar o rascunho da lousa?'))return;strokes=[];drawAll();saveSilently()}
+
 function checkAnswer(){
+  if(active===null)return;
   let x=state.items.find(v=>v.id===active);
   let val=document.getElementById('studentAnswer').value.trim();
   let fb=document.getElementById('resultFeedback');
   
-  let workEl = document.getElementById('studentWork');
-  if(workEl && x) x.workText = workEl.value;
-
+  x.work = strokes;
+  
   if(val===String(x.expected)){
-    if(!x.correct) state.stars = (state.stars || 0) + 10;
-    x.solved = true;
-    x.correct = true;
-    fb.innerHTML = '<div class="scorebox">🎉 Parabéns, Sofia! Você acertou em cheio! Ganhou +10 estrelinhas! ⭐⭐⭐💖</div>';
+    if(!x.correct){
+      state.stars = (state.stars || 0) + 10; 
+    }
+    x.solved=true;
+    x.correct=true;
+    fb.innerHTML='<div class="scorebox">🎉 Parabéns, Sofia! Você acertou em cheio! Ganhou +10 estrelinhas para as metas! ⭐⭐⭐💖</div>';
     persist();
-  } else {
-    x.solved = true;
-    x.correct = false;
-    fb.innerHTML = '<div class="scorebox" style="background:#ffebee;color:#c62828;border-color:#ffcdd2;">❌ Ops! O resultado final não está correto. Tente de novo! 💪</div>';
+  }else{
+    x.solved=true;
+    x.correct=false;
+    fb.innerHTML='<div class="scorebox" style="background:#ffebee;color:#c62828;border-color:#ffcdd2;">❌ Ops! O resultado não está correto. Revise os cálculos na lousa e tente de novo! 💪</div>';
     persist();
   }
 }
@@ -401,15 +487,21 @@ function viewWork(id){
   let x=state.items.find(v=>v.id===id);
   if(!x) return;
   
-  document.getElementById('modalTitle').textContent = `Resolução da Conta: ${x.n1} ${x.type} ${x.n2}`;
+  active = id; // temporário para o drawAll renderizar o enunciado correto no modal
+  document.getElementById('modalTitle').textContent = `Rascunho da Conta: ${x.n1} ${x.type} ${x.n2}`;
   document.getElementById('parentPanel').classList.add('hidden');
   document.getElementById('viewWorkModal').classList.remove('hidden');
   document.getElementById('viewWorkModal').scrollIntoView({behavior:'smooth'});
   
-  document.getElementById('parentWorkPreview').textContent = x.workText || '(Nenhum cálculo registrado)';
+  setTimeout(()=>{
+    parentCanvas = document.getElementById('parentPaper');
+    parentCtx = parentCanvas.getContext('2d');
+    drawAll(parentCtx, parentCanvas, x.work || []);
+  }, 100);
 }
 
 function closeViewWork(){
+  active = null;
   document.getElementById('viewWorkModal').classList.add('hidden');
   document.getElementById('parentPanel').classList.remove('hidden');
 }
