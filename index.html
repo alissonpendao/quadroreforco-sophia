@@ -222,4 +222,16 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
   <div style="width:100%; height:450px; background:#1b4332; border-radius:16px; overflow:auto; position:relative; border:4px solid #2d6a4f;">
     <canvas id="parentPaper" width="1600" height="1600"></canvas>
   </div>
-  <div class="actions" style="margin-top:15px;"><button class="soft" onclick="close
+  <div class="actions" style="margin-top:15px;"><button class="soft" onclick="closeViewWork()">Voltar ao Painel</button></div>
+</section>
+
+<!-- CADERNO DA SOFIA -->
+<section id="studentPanel" class="hidden">
+  <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+    <div><h2>⭐ Caderno da Sofia</h2><p class="muted" style="margin:0;">Vamos resolver os desafios de hoje?</p></div>
+    <button class="warn" onclick="logout()">Sair</button>
+  </div>
+
+  <div class="goal-card">
+    <div class="goal-title">🎁 Suas Metas e Prêmios</div>
+    <div class="
