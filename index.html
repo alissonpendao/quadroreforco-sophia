@@ -74,12 +74,12 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
     <input id="accessPass" type="password" placeholder="Sua senha secreta..." autocomplete="current-password" onkeydown="if(event.key==='Enter')tryLogin()">
   </div>
   <div class="actions" style="margin-top:18px;">
-    <button class="primary" style="width:100%" onclick="tryLogin()">Entrar 💖</button>
+    <button type="button" class="primary" style="width:100%" onclick="tryLogin()">Entrar 💖</button>
   </div>
   <p class="muted" id="loginMsg" style="color:#d92d20; margin-top:10px; font-weight:700;"></p>
 </section>
 
-<!-- LOUSA DE ESCOLA TELA CHEIA (COM PREVENÇÃO DE RECARGA) -->
+<!-- LOUSA DE ESCOLA TELA CHEIA -->
 <div id="chalkboardOverlay" class="hidden">
   <div class="cb-topbar">
     <div>
@@ -135,7 +135,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 <section id="parentPanel" class="hidden">
   <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
     <div><h2>👨‍👧 Painel do Pai - Sincronizado na Nuvem</h2><p class="muted" style="margin:0;">Gerencie desafios e veja as respostas da Sofia em tempo real</p></div>
-    <button class="warn" onclick="logout()">Sair</button>
+    <button type="button" class="warn" onclick="logout()">Sair</button>
   </div>
 
   <!-- CENTRAL DE ACOMPANHAMENTO -->
@@ -158,7 +158,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
       </div>
     </div>
     <div class="actions">
-      <button class="primary" style="background:#0277bd;" onclick="generateProblemBatch()">🎲 Gerar Lote de 10 Probleminhas 📚</button>
+      <button type="button" class="primary" style="background:#0277bd;" onclick="generateProblemBatch()">🎲 Gerar Lote de 10 Probleminhas 📚</button>
     </div>
     <div id="problemBatchPreview" style="margin-top:15px;"></div>
   </div>
@@ -177,7 +177,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
       </div>
     </div>
     <div class="actions">
-      <button class="primary" style="background:linear-gradient(135deg,#ffb300,#ff8f00);" onclick="generateBatch()">Gerar Lote de 10 Contas ✨</button>
+      <button type="button" class="primary" style="background:linear-gradient(135deg,#ffb300,#ff8f00);" onclick="generateBatch()">Gerar Lote de 10 Contas ✨</button>
     </div>
     <div id="batchPreviewContainer" style="margin-top:15px;"></div>
   </div>
@@ -189,7 +189,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
       <div><label>Nome do Prêmio</label><input id="newRewardName" type="text" placeholder="Ex: Sorvete ou Passeio"></div>
       <div><label>Estrelas Necessárias</label><input id="newRewardStars" type="number" placeholder="Ex: 10000"></div>
     </div>
-    <div class="actions"><button class="primary" onclick="addReward()">Adicionar Prêmio 🌟</button></div>
+    <div class="actions"><button type="button" class="primary" onclick="addReward()">Adicionar Prêmio 🌟</button></div>
     <p class="muted" id="rewardMsg" style="margin-top:6px; color:#e65100; font-weight:700;"></p>
     <div style="margin-top:15px;"><div id="rewardsListParent"></div></div>
   </div>
@@ -201,11 +201,11 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
       <div><label>Nova Senha do Pai</label><input id="newPassPai" type="text" placeholder="Senha do Pai (Ex: 2191)"></div>
       <div><label>Nova Senha da Sofia</label><input id="newPassSofia" type="text" placeholder="Senha da Sofia (Ex: 25022016)"></div>
     </div>
-    <div class="actions"><button class="soft" onclick="savePasswords()">Atualizar Senhas 🔒</button></div>
+    <div class="actions"><button type="button" class="soft" onclick="savePasswords()">Atualizar Senhas 🔒</button></div>
     <p class="muted" id="passMsg" style="margin-top:6px; color:#2457d6; font-weight:700;"></p>
   </div>
 
-  <!-- HISTÓRICO -->
+  <!-- HISTÓRICO COM BOTÃO DE VER RASCUNHO GARANTIDO -->
   <div class="card">
     <h2>📋 Histórico e Revisão de Desempenho (Tempo Real)</h2>
     <div id="parentList" style="margin-top:10px;"></div>
@@ -216,21 +216,21 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 <section id="viewWorkModal" class="card hidden">
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
     <h2 id="modalTitle" style="margin:0;">Rascunho da Sofia</h2>
-    <button class="warn" onclick="closeViewWork()">Fechar ❌</button>
+    <button type="button" class="warn" onclick="closeViewWork()">Fechar ❌</button>
   </div>
   <p class="muted">Veja abaixo o rascunho dela na lousa:</p>
   <div id="parentProblemHeader" style="text-align:center; margin-bottom:10px; font-size:18px; font-weight:bold; color:#1b4332;"></div>
   <div style="width:100%; height:450px; background:#1b4332; border-radius:16px; overflow:auto; position:relative; border:4px solid #2d6a4f;">
     <canvas id="parentPaper" width="1600" height="1600"></canvas>
   </div>
-  <div class="actions" style="margin-top:15px;"><button class="soft" onclick="closeViewWork()">Voltar ao Painel</button></div>
+  <div class="actions" style="margin-top:15px;"><button type="button" class="soft" onclick="closeViewWork()">Voltar ao Painel</button></div>
 </section>
 
 <!-- CADERNO DA SOFIA -->
 <section id="studentPanel" class="hidden">
   <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
     <div><h2>⭐ Caderno da Sofia</h2><p class="muted" style="margin:0;">Vamos resolver os desafios de hoje?</p></div>
-    <button class="warn" onclick="logout()">Sair</button>
+    <button type="button" class="warn" onclick="logout()">Sair</button>
   </div>
 
   <div class="goal-card">
@@ -271,7 +271,7 @@ let currentBatch = [];
 let currentProblemBatch = [];
 let loggedRole = null;
 
-// CONEXÃO EM SEGUNDO PLANO (NÃO TRAVA O LOGIN NUNCA)
+// ATUALIZAÇÃO EM TEMPO REAL NA TELA
 db.collection("caderno").doc("dados_oficiais").onSnapshot((doc) => {
   if (doc.exists) {
     let cloudData = doc.data();
@@ -279,22 +279,29 @@ db.collection("caderno").doc("dados_oficiais").onSnapshot((doc) => {
     if(cloudData.stars !== undefined) state.stars = cloudData.stars;
     if(cloudData.rewards) state.rewards = cloudData.rewards;
     
-    if(loggedRole === 'pai'){
-      renderRewardsParent();
-      renderStats();
-      renderLists();
-    } else if(loggedRole === 'sofia'){
-      updateProgressUI();
-      renderLists();
-    }
+    refreshCurrentView();
   }
 }, (error) => {
   console.log("Aviso de conexão em segundo plano: ", error);
 });
 
+function refreshCurrentView(){
+  if(loggedRole === 'pai'){
+    renderRewardsParent();
+    renderStats();
+    renderLists();
+  } else if(loggedRole === 'sofia'){
+    updateProgressUI();
+    renderLists();
+  }
+}
+
 function persist(){
   db.collection("caderno").doc("dados_oficiais").set(state)
-    .then(() => { console.log("Dados salvos na nuvem!"); })
+    .then(() => { 
+      console.log("Dados salvos na nuvem!"); 
+      refreshCurrentView();
+    })
     .catch((error) => { console.error("Erro ao salvar: ", error); });
 }
 
@@ -562,11 +569,10 @@ function renderLists(){
       p.innerHTML=state.items.map((x,i)=>{
         let desc = x.isProblem ? `📖 ${x.title}` : `${x.n1} ${x.type} ${x.n2} (Resp: ${x.expected})`;
         let status = x.solved ? (x.correct ? '<span style="color:#2e7d32; font-weight:700;">⭐ Acertou</span>' : '<span style="color:#c62828; font-weight:700;">❌ Errou (Revisar)</span>') : 'Aguardando';
-        let hasWork = x.work && x.work.length > 0;
         return `<div class="listitem">
           <div><b>${i+1}.</b> ${desc}<br><small>Status: ${status}</small></div>
           <div style="display:flex; gap:6px;">
-            ${hasWork ? `<button type="button" class="soft" onclick="viewWork(${x.id})">Ver Rascunho 👁️</button>` : ''}
+            <button type="button" class="soft" onclick="viewWork(${x.id})">Ver Rascunho 👁️</button>
             <button type="button" class="warn" onclick="removeItem(${x.id})">Remover</button>
           </div>
         </div>`;
@@ -699,7 +705,6 @@ function checkCbAnswer(){
   if(timerInterval) clearInterval(timerInterval);
   x.timeSpent = timerSeconds; 
   
-  // Fecha a lousa sem recarregar a página
   document.getElementById('chalkboardOverlay').classList.add('hidden');
   
   if(parseFloat(val) === parseFloat(x.expected)){
@@ -710,23 +715,20 @@ function checkCbAnswer(){
     x.correct = true; 
     persist();
     
-    // Mostra a celebração garantida
     document.getElementById('celebrationOverlay').classList.remove('hidden');
   }else{
     x.solved = true; 
     x.correct = false; 
     persist();
     alert('❌ Ops! Resultado incorreto. Tente de novo! 💪');
-    if(loggedRole === 'sofia') updateProgressUI();
-    renderLists();
+    refreshCurrentView();
   }
   active = null;
 }
 
 function closeCelebration(){
   document.getElementById('celebrationOverlay').classList.add('hidden');
-  updateProgressUI();
-  renderLists();
+  refreshCurrentView();
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
