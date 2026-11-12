@@ -79,7 +79,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
   <p class="muted" id="loginMsg" style="color:#d92d20; margin-top:10px; font-weight:700;"></p>
 </section>
 
-<!-- LOUSA DE ESCOLA TELA CHEIA -->
+<!-- LOUSA DE ESCOLA TELA CHEIA (COM PREVENÇÃO DE RECARGA) -->
 <div id="chalkboardOverlay" class="hidden">
   <div class="cb-topbar">
     <div>
@@ -87,9 +87,9 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
       <span id="cbProblemTitle" style="font-size:18px; font-weight:800; color:#ffea79; line-height:1.3;"></span>
     </div>
     <div style="display:flex; gap:8px; align-items:center;">
-      <button id="btnOpenHint" onclick="showHintModal()" style="background:#ffb300; color:#5d4037; border:none; padding:8px 12px; border-radius:10px; font-weight:bold; cursor:pointer;">💡 Dica Pedagógica</button>
+      <button id="btnOpenHint" type="button" onclick="showHintModal()" style="background:#ffb300; color:#5d4037; border:none; padding:8px 12px; border-radius:10px; font-weight:bold; cursor:pointer;">💡 Dica Pedagógica</button>
       <div id="cbTimer" style="background:rgba(255,255,255,0.15); padding:6px 14px; border-radius:12px; font-weight:700; font-size:15px;">⏱️ 00:00</div>
-      <button onclick="closeChalkboard()" style="background:#e53935; color:white; border:none; padding:8px 14px; border-radius:10px; font-weight:bold; cursor:pointer;">Sair ❌</button>
+      <button type="button" onclick="closeChalkboard()" style="background:#e53935; color:white; border:none; padding:8px 14px; border-radius:10px; font-weight:bold; cursor:pointer;">Sair ❌</button>
     </div>
   </div>
   
@@ -98,16 +98,16 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
   </div>
 
   <div class="cb-toolbar">
-    <button class="cb-tool active" id="cbBtnWhite" style="color:white;" onclick="setChalkColor('#ffffff', 'cbBtnWhite')" title="Giz Branco">🖍️</button>
-    <button class="cb-tool" id="cbBtnEraser" onclick="setCbEraser('cbBtnEraser')" title="Esponja / Apagador">🧽</button>
-    <button class="cb-tool" onclick="cbUndo()" title="Desfazer Risco">↶</button>
-    <button class="cb-tool" onclick="cbClear()" title="Limpar Lousa">🗑️</button>
+    <button type="button" class="cb-tool active" id="cbBtnWhite" style="color:white;" onclick="setChalkColor('#ffffff', 'cbBtnWhite')" title="Giz Branco">🖍️</button>
+    <button type="button" class="cb-tool" id="cbBtnEraser" onclick="setCbEraser('cbBtnEraser')" title="Esponja / Apagador">🧽</button>
+    <button type="button" class="cb-tool" onclick="cbUndo()" title="Desfazer Risco">↶</button>
+    <button type="button" class="cb-tool" onclick="cbClear()" title="Limpar Lousa">🗑️</button>
   </div>
   
   <div class="cb-answer-bar">
     <span style="color:white; font-size:18px; font-weight:bold;">Resposta Final:</span>
-    <input id="cbDirectAnswer" type="number" step="any" placeholder="...">
-    <button onclick="checkCbAnswer()">Confirmar ⭐</button>
+    <input id="cbDirectAnswer" type="number" step="any" placeholder="..." onkeydown="if(event.key==='Enter'){event.preventDefault(); checkCbAnswer();}">
+    <button type="button" onclick="checkCbAnswer()">Confirmar ⭐</button>
   </div>
 </div>
 
@@ -117,7 +117,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
     <div style="font-size:40px; margin-bottom:10px;">💡</div>
     <h3 style="color:#e65100; margin-top:0;">Caminho das Pedras:</h3>
     <p id="hintTextContent" style="font-size:16px; font-weight:600; line-height:1.5; margin:15px 0;"></p>
-    <button class="primary" style="background:#ffb300; color:#5d4037; width:100%; font-size:16px; padding:12px;" onclick="hideHintModal()">Entendi, vou calcular! ✨</button>
+    <button type="button" class="primary" style="background:#ffb300; color:#5d4037; width:100%; font-size:16px; padding:12px;" onclick="hideHintModal()">Entendi, vou calcular! ✨</button>
   </div>
 </div>
 
@@ -127,7 +127,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
     <div class="celebration-emojis">🎉 🌟 🦄 💖 🏆</div>
     <h2 style="color:white; font-size:32px; margin-bottom:10px; text-shadow:0 2px 4px rgba(0,0,0,0.2);">PARABÉNS, SOFIA! 🌸</h2>
     <p style="font-size:18px; font-weight:700; line-height:1.5; margin-bottom:20px;">Você acertou em cheio e ganhou <span style="font-size:24px; color:#fff59d;">+10 estrelinhas!</span><br>Continue assim que você vai conseguir realizar a sua meta! ⭐🚀</p>
-    <button class="primary" style="background:#fff; color:#d81b60; font-size:18px; width:100%; padding:14px; box-shadow:0 4px 15px rgba(0,0,0,0.2);" onclick="closeCelebration()">Continuar Arrebentando! ✨</button>
+    <button type="button" class="primary" style="background:#fff; color:#d81b60; font-size:18px; width:100%; padding:14px; box-shadow:0 4px 15px rgba(0,0,0,0.2);" onclick="closeCelebration()">Continuar Arrebentando! ✨</button>
   </div>
 </div>
 
@@ -408,12 +408,12 @@ function renderProblemBatchPreview(){
       ${currentProblemBatch.map((item, idx) => `
         <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid #f0f0f0; gap:10px;">
           <span style="font-size:13px;"><b>${idx+1}.</b> ${item.title}</span>
-          <button class="warn" style="padding:4px 10px; font-size:12px; flex-shrink:0;" onclick="removeProblemBatchItem(${idx})">Remover</button>
+          <button type="button" class="warn" style="padding:4px 10px; font-size:12px; flex-shrink:0;" onclick="removeProblemBatchItem(${idx})">Remover</button>
         </div>
       `).join('')}
     </div>
     <div class="actions" style="margin-top:12px;">
-      <button class="primary" style="background:#2e7d32; width:100%;" onclick="sendProblemBatchToStudent()">🚀 Enviar Probleminhas (${currentProblemBatch.length})</button>
+      <button type="button" class="primary" style="background:#2e7d32; width:100%;" onclick="sendProblemBatchToStudent()">🚀 Enviar Probleminhas (${currentProblemBatch.length})</button>
     </div>
   `;
 }
@@ -466,7 +466,7 @@ function renderRewardsParent(){
   container.innerHTML = state.rewards.map((r, i)=>`
     <div class="listitem" style="background:#fff; margin:6px 0;">
       <div><b>${r.name}</b> — 🌟 ${r.total} estrelas</div>
-      <button class="warn" onclick="removeReward(${i})">Remover</button>
+      <button type="button" class="warn" onclick="removeReward(${i})">Remover</button>
     </div>
   `).join('');
 }
@@ -536,12 +536,12 @@ function renderBatchPreview(){
       ${currentBatch.map((item, idx) => `
         <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; border-bottom:1px solid #f0f0f0;">
           <span><b>${idx+1}.</b> ${item.n1} ${item.type} ${item.n2}</span>
-          <button class="warn" style="padding:4px 10px; font-size:12px;" onclick="removeBatchItem(${idx})">Remover</button>
+          <button type="button" class="warn" style="padding:4px 10px; font-size:12px;" onclick="removeBatchItem(${idx})">Remover</button>
         </div>
       `).join('')}
     </div>
     <div class="actions" style="margin-top:12px;">
-      <button class="primary" style="background:#2e7d32; width:100%;" onclick="sendBatchToStudent()">🚀 Enviar Lote de Contas</button>
+      <button type="button" class="primary" style="background:#2e7d32; width:100%;" onclick="sendBatchToStudent()">🚀 Enviar Lote de Contas</button>
     </div>
   `;
 }
@@ -566,8 +566,8 @@ function renderLists(){
         return `<div class="listitem">
           <div><b>${i+1}.</b> ${desc}<br><small>Status: ${status}</small></div>
           <div style="display:flex; gap:6px;">
-            ${hasWork ? `<button class="soft" onclick="viewWork(${x.id})">Ver Rascunho 👁️</button>` : ''}
-            <button class="warn" onclick="removeItem(${x.id})">Remover</button>
+            ${hasWork ? `<button type="button" class="soft" onclick="viewWork(${x.id})">Ver Rascunho 👁️</button>` : ''}
+            <button type="button" class="warn" onclick="removeItem(${x.id})">Remover</button>
           </div>
         </div>`;
       }).join('');
@@ -580,7 +580,7 @@ function renderLists(){
         let desc = x.isProblem ? `📖 ${x.title}` : `${x.n1} ${x.type} ${x.n2}`;
         return `<div class="listitem">
           <div><b>${i+1}.</b> ${desc}<div class="muted">${x.solved?(x.correct?'⭐ Acertou!':'❌ Tente de novo!'):'Aguardando'}</div></div>
-          <button class="primary" onclick="openChalkboard(${x.id})">Resolver 🧑‍🏫</button>
+          <button type="button" class="primary" onclick="openChalkboard(${x.id})">Resolver 🧑‍🏫</button>
         </div>`;
       }).join('');
     }
@@ -694,21 +694,39 @@ function checkCbAnswer(){
   let x = state.items.find(v => v.id === active);
   let val = document.getElementById('cbDirectAnswer').value.trim();
   if(!val){ alert('Digite a resposta!'); return; }
-  x.work = cbStrokes; if(timerInterval) clearInterval(timerInterval);
-  x.timeSpent = timerSeconds; closeChalkboard();
+  
+  x.work = cbStrokes; 
+  if(timerInterval) clearInterval(timerInterval);
+  x.timeSpent = timerSeconds; 
+  
+  // Fecha a lousa sem recarregar a página
+  document.getElementById('chalkboardOverlay').classList.add('hidden');
   
   if(parseFloat(val) === parseFloat(x.expected)){
-    if(!x.correct){ state.stars = (state.stars || 0) + 10; }
-    x.solved = true; x.correct = true; persist();
+    if(!x.correct){ 
+      state.stars = (state.stars || 0) + 10; 
+    }
+    x.solved = true; 
+    x.correct = true; 
+    persist();
+    
+    // Mostra a celebração garantida
     document.getElementById('celebrationOverlay').classList.remove('hidden');
   }else{
-    x.solved = true; x.correct = false; persist();
+    x.solved = true; 
+    x.correct = false; 
+    persist();
     alert('❌ Ops! Resultado incorreto. Tente de novo! 💪');
+    if(loggedRole === 'sofia') updateProgressUI();
+    renderLists();
   }
+  active = null;
 }
 
 function closeCelebration(){
   document.getElementById('celebrationOverlay').classList.add('hidden');
+  updateProgressUI();
+  renderLists();
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
