@@ -106,7 +106,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
   
   <div class="cb-answer-bar">
     <span style="color:white; font-size:18px; font-weight:bold;">Resposta Final:</span>
-    <input id="cbDirectAnswer" type="number" step="any" placeholder="..." onkeydown="if(event.key==='Enter'){event.preventDefault(); checkCbAnswer();}">
+    <input id="cbDirectAnswer" type="text" inputmode="numeric" placeholder="..." onkeydown="if(event.key==='Enter'){event.preventDefault(); checkCbAnswer();}">
     <button type="button" onclick="checkCbAnswer()">Confirmar ⭐</button>
   </div>
 </div>
@@ -205,7 +205,7 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
     <p class="muted" id="passMsg" style="margin-top:6px; color:#2457d6; font-weight:700;"></p>
   </div>
 
-  <!-- HISTÓRICO COM BOTÃO DE VER RASCUNHO GARANTIDO -->
+  <!-- HISTÓRICO -->
   <div class="card">
     <h2>📋 Histórico e Revisão de Desempenho (Tempo Real)</h2>
     <div id="parentList" style="margin-top:10px;"></div>
@@ -698,16 +698,25 @@ function saveCbSilently(){
 function checkCbAnswer(){
   if(active === null) return;
   let x = state.items.find(v => v.id === active);
-  let val = document.getElementById('cbDirectAnswer').value.trim();
-  if(!val){ alert('Digite a resposta!'); return; }
+  let rawVal = document.getElementById('cbDirectAnswer').value.trim();
   
+  if(!rawVal){ alert('Digite a resposta!'); return; }
+  
+  // Limpeza e conversão blindada de número (substitui vírgula por ponto)
+  let cleanVal = rawVal.replace(',', '.');
+  let userNum = parseFloat(cleanVal);
+  let expectedNum = parseFloat(x.expected);
+  
+  if(isNaN(userNum)){ alert('Digite um número válido!'); return; }
+
   x.work = cbStrokes; 
   if(timerInterval) clearInterval(timerInterval);
   x.timeSpent = timerSeconds; 
   
   document.getElementById('chalkboardOverlay').classList.add('hidden');
   
-  if(parseFloat(val) === parseFloat(x.expected)){
+  // Verifica igualdade com tolerância decimal exata
+  if(Math.abs(userNum - expectedNum) < 0.001){
     if(!x.correct){ 
       state.stars = (state.stars || 0) + 10; 
     }
@@ -720,7 +729,7 @@ function checkCbAnswer(){
     x.solved = true; 
     x.correct = false; 
     persist();
-    alert('❌ Ops! Resultado incorreto. Tente de novo! 💪');
+    alert(`❌ Resposta incorreta (${rawVal}). A correta era ${x.expected}. Tente o próximo! 💪`);
     refreshCurrentView();
   }
   active = null;
