@@ -66,6 +66,19 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 <header><h1>🌸 Caderno da Sofia 🌸</h1><p>Sincronizado na Nuvem em Tempo Real</p></header>
 <main>
 
+<!-- TELA DE LOGIN RESTAURADA E GARANTIDA -->
+<section id="loginScreen" class="card login-box">
+  <h2>🔒 Área Secreta</h2>
+  <p class="muted">Digite sua senha de acesso:</p>
+  <div style="text-align:left; margin-top:15px;">
+    <input id="accessPass" type="password" placeholder="Sua senha secreta..." autocomplete="current-password" onkeydown="if(event.key==='Enter')tryLogin()">
+  </div>
+  <div class="actions" style="margin-top:18px;">
+    <button class="primary" style="width:100%" onclick="tryLogin()">Entrar 💖</button>
+  </div>
+  <p class="muted" id="loginMsg" style="color:#d92d20; margin-top:10px; font-weight:700;"></p>
+</section>
+
 <!-- LOUSA DE ESCOLA TELA CHEIA -->
 <div id="chalkboardOverlay" class="hidden">
   <div class="cb-topbar">
@@ -86,4 +99,96 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 
   <div class="cb-toolbar">
     <button class="cb-tool active" id="cbBtnWhite" style="color:white;" onclick="setChalkColor('#ffffff', 'cbBtnWhite')" title="Giz Branco">🖍️</button>
-    <button class="cb-tool" id="cbBtnEraser" onclick="setCbEraser('cb
+    <button class="cb-tool" id="cbBtnEraser" onclick="setCbEraser('cbBtnEraser')" title="Esponja / Apagador">🧽</button>
+    <button class="cb-tool" onclick="cbUndo()" title="Desfazer Risco">↶</button>
+    <button class="cb-tool" onclick="cbClear()" title="Limpar Lousa">🗑️</button>
+  </div>
+  
+  <div class="cb-answer-bar">
+    <span style="color:white; font-size:18px; font-weight:bold;">Resposta Final:</span>
+    <input id="cbDirectAnswer" type="number" step="any" placeholder="...">
+    <button onclick="checkCbAnswer()">Confirmar ⭐</button>
+  </div>
+</div>
+
+<!-- MODAL DA DICA INTELIGENTE -->
+<div id="hintModal" class="hidden">
+  <div class="hint-card">
+    <div style="font-size:40px; margin-bottom:10px;">💡</div>
+    <h3 style="color:#e65100; margin-top:0;">Caminho das Pedras:</h3>
+    <p id="hintTextContent" style="font-size:16px; font-weight:600; line-height:1.5; margin:15px 0;"></p>
+    <button class="primary" style="background:#ffb300; color:#5d4037; width:100%; font-size:16px; padding:12px;" onclick="hideHintModal()">Entendi, vou calcular! ✨</button>
+  </div>
+</div>
+
+<!-- TELA DE CELEBRAÇÃO GIGANTE -->
+<div id="celebrationOverlay" class="hidden">
+  <div class="celebration-card">
+    <div class="celebration-emojis">🎉 🌟 🦄 💖 🏆</div>
+    <h2 style="color:white; font-size:32px; margin-bottom:10px; text-shadow:0 2px 4px rgba(0,0,0,0.2);">PARABÉNS, SOFIA! 🌸</h2>
+    <p style="font-size:18px; font-weight:700; line-height:1.5; margin-bottom:20px;">Você acertou em cheio e ganhou <span style="font-size:24px; color:#fff59d;">+10 estrelinhas!</span><br>Continue assim que você vai conseguir realizar a sua meta! ⭐🚀</p>
+    <button class="primary" style="background:#fff; color:#d81b60; font-size:18px; width:100%; padding:14px; box-shadow:0 4px 15px rgba(0,0,0,0.2);" onclick="closeCelebration()">Continuar Arrebentando! ✨</button>
+  </div>
+</div>
+
+<!-- PAINEL DO PAI -->
+<section id="parentPanel" class="hidden">
+  <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+    <div><h2>👨‍👧 Painel do Pai - Sincronizado na Nuvem</h2><p class="muted" style="margin:0;">Gerencie desafios e veja as respostas da Sofia em tempo real</p></div>
+    <button class="warn" onclick="logout()">Sair</button>
+  </div>
+
+  <!-- CENTRAL DE ACOMPANHAMENTO -->
+  <div class="card" style="background:linear-gradient(135deg,#f8f9fa,#e9ecef); border-color:#ced4da;">
+    <h2>📊 Central de Desempenho Escolar</h2>
+    <div id="statsContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-top:10px;"></div>
+  </div>
+
+  <!-- GERADOR DE PROBLEMINHAS -->
+  <div class="card" style="background:#e8f4fd; border-color:#b9e2fc;">
+    <h2>📖 Gerador Automático de Probleminhas (5º Ano)</h2>
+    <div class="row" style="margin-bottom:10px;">
+      <div>
+        <label>Dificuldade</label>
+        <select id="probDifficulty">
+          <option value="easy">Fácil</option>
+          <option value="medium" selected>Médio (Padrão 5º ano)</option>
+          <option value="hard">Desafio</option>
+        </select>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="primary" style="background:#0277bd;" onclick="generateProblemBatch()">🎲 Gerar Lote de 10 Probleminhas 📚</button>
+    </div>
+    <div id="problemBatchPreview" style="margin-top:15px;"></div>
+  </div>
+
+  <!-- GERADOR DE CONTAS -->
+  <div class="card" style="background:#fffaf0; border-color:#ffe0b2;">
+    <h2>🤖 Gerador Automático de Contas Armadas</h2>
+    <div class="row" style="margin-bottom:10px;">
+      <div>
+        <label>Dificuldade das Contas</label>
+        <select id="calcDifficulty">
+          <option value="easy">Fácil</option>
+          <option value="medium" selected>Médio (Padrão 5º ano)</option>
+          <option value="hard">Avançado</option>
+        </select>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="primary" style="background:linear-gradient(135deg,#ffb300,#ff8f00);" onclick="generateBatch()">Gerar Lote de 10 Contas ✨</button>
+    </div>
+    <div id="batchPreviewContainer" style="margin-top:15px;"></div>
+  </div>
+
+  <!-- GERENCIAR PRÊMIOS -->
+  <div class="card" style="background:#fff5f8; border-color:#ffd1dc;">
+    <h2>🎁 Adicionar Prêmios e Metas</h2>
+    <div class="row">
+      <div><label>Nome do Prêmio</label><input id="newRewardName" type="text" placeholder="Ex: Sorvete ou Passeio"></div>
+      <div><label>Estrelas Necessárias</label><input id="newRewardStars" type="number" placeholder="Ex: 10000"></div>
+    </div>
+    <div class="actions"><button class="primary" onclick="addReward()">Adicionar Prêmio 🌟</button></div>
+    <p class="muted" id="rewardMsg" style="margin-top:6px; color:#e65100; font-weight:700;"></p>
+    <div style="margin-top
