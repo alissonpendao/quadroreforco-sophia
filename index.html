@@ -46,6 +46,11 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
 #celebrationOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:white;padding:20px;animation:fadeIn 0.3s ease}
 .celebration-card{background:linear-gradient(135deg,#ff758c,#ffb300);border:4px solid #fff;border-radius:30px;padding:35px;max-width:480px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,0.5);animation:bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)}
 .celebration-emojis{font-size:50px;margin-bottom:15px;display:flex;justify-content:center;gap:10px;animation:pulseEmoji 1s infinite alternate}
+
+/* MODAL DE DICA INTELIGENTE */
+#hintModal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.8);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px}
+.hint-card{background:#fff8e1;border:4px solid #ffb300;border-radius:24px;padding:25px;max-width:420px;width:100%;text-align:center;color:#5d4037;box-shadow:0 10px 30px rgba(0,0,0,0.4)}
+
 @keyframes pulseEmoji{0%{transform:scale(1)}100%{transform:scale(1.2)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes bounceIn{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
@@ -63,8 +68,11 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
       <span style="font-size:13px; opacity:0.8; display:block;" id="cbProblemLabel">Desafio Atual:</span>
       <span id="cbProblemTitle" style="font-size:18px; font-weight:800; color:#ffea79; line-height:1.3;"></span>
     </div>
-    <div id="cbTimer" style="background:rgba(255,255,255,0.15); padding:6px 14px; border-radius:12px; font-weight:700; font-size:15px;">⏱️ 00:00</div>
-    <button onclick="closeChalkboard()" style="background:#e53935; color:white; border:none; padding:8px 14px; border-radius:10px; font-weight:bold; cursor:pointer;">Sair ❌</button>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <button id="btnOpenHint" onclick="showHintModal()" style="background:#ffb300; color:#5d4037; border:none; padding:8px 12px; border-radius:10px; font-weight:bold; cursor:pointer;">💡 Dica Pedagógica</button>
+      <div id="cbTimer" style="background:rgba(255,255,255,0.15); padding:6px 14px; border-radius:12px; font-weight:700; font-size:15px;">⏱️ 00:00</div>
+      <button onclick="closeChalkboard()" style="background:#e53935; color:white; border:none; padding:8px 14px; border-radius:10px; font-weight:bold; cursor:pointer;">Sair ❌</button>
+    </div>
   </div>
   
   <div class="cb-canvas-container">
@@ -82,6 +90,16 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
     <span style="color:white; font-size:18px; font-weight:bold;">Resposta Final:</span>
     <input id="cbDirectAnswer" type="number" step="any" placeholder="...">
     <button onclick="checkCbAnswer()">Confirmar ⭐</button>
+  </div>
+</div>
+
+<!-- MODAL DA DICA INTELIGENTE -->
+<div id="hintModal" class="hidden">
+  <div class="hint-card">
+    <div style="font-size:40px; margin-bottom:10px;">💡</div>
+    <h3 style="color:#e65100; margin-top:0;">Caminho das Pedras:</h3>
+    <p id="hintTextContent" style="font-size:16px; font-weight:600; line-height:1.5; margin:15px 0;"></p>
+    <button class="primary" style="background:#ffb300; color:#5d4037; width:100%; font-size:16px; padding:12px;" onclick="hideHintModal()">Entendi, vou calcular! ✨</button>
   </div>
 </div>
 
@@ -108,10 +126,10 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
   <p class="muted" id="loginMsg" style="color:#d92d20; margin-top:10px; font-weight:700;"></p>
 </section>
 
-<!-- PAINEL DO PAI COM REFORÇO ESCOLAR -->
+<!-- PAINEL DO PAI -->
 <section id="parentPanel" class="hidden">
   <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-    <div><h2>👨‍👧 Painel do Pai - Tutor de Reforço</h2><p class="muted" style="margin:0;">Acompanhe o desempenho e reforce a base do 5º ano</p></div>
+    <div><h2>👨‍👧 Painel do Pai - Tutor de Reforço</h2><p class="muted" style="margin:0;">Gerencie desafios com salvamento unificado</p></div>
     <button class="warn" onclick="logout()">Sair</button>
   </div>
 
@@ -121,17 +139,16 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
     <div id="statsContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-top:10px;"></div>
   </div>
 
-  <!-- GERADOR COM NÍVEL DE DIFICULDADE (REFORÇO DO 5º ANO) -->
+  <!-- GERADOR DE PROBLEMINHAS -->
   <div class="card" style="background:#e8f4fd; border-color:#b9e2fc;">
-    <h2>📖 Gerador de Probleminhas (Nível 5º Ano)</h2>
-    <p class="muted">Escolha a dificuldade ideal para treinar o raciocínio dela sem frustração:</p>
+    <h2>📖 Gerador Automático de Probleminhas (5º Ano)</h2>
     <div class="row" style="margin-bottom:10px;">
       <div>
         <label>Dificuldade</label>
         <select id="probDifficulty">
-          <option value="easy">Fácil (Números menores / Ideal para destravar)</option>
+          <option value="easy">Fácil</option>
           <option value="medium" selected>Médio (Padrão 5º ano)</option>
-          <option value="hard">Desafio (Valores maiores / Atenção redobrada)</option>
+          <option value="hard">Desafio</option>
         </select>
       </div>
     </div>
@@ -141,16 +158,16 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
     <div id="problemBatchPreview" style="margin-top:15px;"></div>
   </div>
 
-  <!-- GERADOR AUTOMÁTICO DE CONTAS COM NÍVEL -->
+  <!-- GERADOR DE CONTAS -->
   <div class="card" style="background:#fffaf0; border-color:#ffe0b2;">
-    <h2>🤖 Gerador de Contas Armadas (Lote de 10)</h2>
+    <h2>🤖 Gerador Automático de Contas Armadas</h2>
     <div class="row" style="margin-bottom:10px;">
       <div>
         <label>Dificuldade das Contas</label>
         <select id="calcDifficulty">
-          <option value="easy">Fácil (Divisão exata / Multiplicação curta)</option>
+          <option value="easy">Fácil</option>
           <option value="medium" selected>Médio (Padrão 5º ano)</option>
-          <option value="hard">Avançado (Divisão e multiplicação longa)</option>
+          <option value="hard">Avançado</option>
         </select>
       </div>
     </div>
@@ -169,45 +186,38 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
     </div>
     <div class="actions"><button class="primary" onclick="addReward()">Adicionar Prêmio 🌟</button></div>
     <p class="muted" id="rewardMsg" style="margin-top:6px; color:#e65100; font-weight:700;"></p>
-    
-    <div style="margin-top:15px;">
-      <h3 style="font-size:15px; color:#e65100; margin-bottom:5px;">Prêmios Cadastrados:</h3>
-      <div id="rewardsListParent"></div>
-    </div>
+    <div style="margin-top:15px;"><div id="rewardsListParent"></div></div>
   </div>
 
   <!-- ALTERAR SENHAS -->
-  <div class="card" style="background:#f4f6fb; border-color:#cbd4e3;">
+  <div class="card">
     <h2>🔑 Alterar Senhas de Acesso</h2>
     <div class="row">
-      <div><label>Nova Senha do Pai</label><input id="newPassPai" type="text" placeholder="Senha do Pai"></div>
-      <div><label>Nova Senha da Sofia</label><input id="newPassSofia" type="text" placeholder="Senha da Sofia"></div>
+      <div><label>Nova Senha do Pai</label><input id="newPassPai" type="text" placeholder="Senha do Pai (Ex: 2191)"></div>
+      <div><label>Nova Senha da Sofia</label><input id="newPassSofia" type="text" placeholder="Senha da Sofia (Ex: 25022016)"></div>
     </div>
     <div class="actions"><button class="soft" onclick="savePasswords()">Atualizar Senhas 🔒</button></div>
     <p class="muted" id="passMsg" style="margin-top:6px; color:#2457d6; font-weight:700;"></p>
   </div>
 
- <!-- HISTÓRICO E REVISÃO DE ERROS -->
- <div class="card">
-  <h2>📋 Histórico e Revisão de Erros (Foco no Reforço)</h2>
-  <p class="muted">Aqui você vê o que ela errou para revisar junto com ela:</p>
-  <div id="parentList" style="margin-top:10px;"></div>
- </div>
+  <!-- HISTÓRICO -->
+  <div class="card">
+    <h2>📋 Histórico e Revisão de Desempenho</h2>
+    <div id="parentList" style="margin-top:10px;"></div>
+  </div>
 </section>
 
-<!-- VISUALIZADOR DE RASCUNHO PARA O PAI -->
+<!-- VISUALIZADOR DE RASCUNHO -->
 <section id="viewWorkModal" class="card hidden">
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
     <h2 id="modalTitle" style="margin:0;">Rascunho da Sofia</h2>
     <button class="warn" onclick="closeViewWork()">Fechar ❌</button>
   </div>
-  <p class="muted">Veja abaixo o que ela rabiscou na lousa e o tempo levado:</p>
+  <p class="muted">Veja abaixo o rascunho dela na lousa:</p>
   <div id="parentProblemHeader" style="text-align:center; margin-bottom:10px; font-size:18px; font-weight:bold; color:#1b4332;"></div>
-  
   <div style="width:100%; height:450px; background:#1b4332; border-radius:16px; overflow:auto; position:relative; border:4px solid #2d6a4f;">
-    <canvas id="parentPaper" width="1600" height="1600" aria-label="Visualização do rascunho"></canvas>
+    <canvas id="parentPaper" width="1600" height="1600"></canvas>
   </div>
-
   <div class="actions" style="margin-top:15px;"><button class="soft" onclick="closeViewWork()">Voltar ao Painel</button></div>
 </section>
 
@@ -235,31 +245,26 @@ async function hashPassword(password) {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-const KEY = 'caderno_sofia_dados_definitivos_v49_reforco';
+// CHAVE MESTRA OFICIAL ÚNICA
+const KEY = 'caderno_sofia_banco_dados_oficial_v53';
 
 let state;
 try {
   let saved = localStorage.getItem(KEY);
   if(saved) state = JSON.parse(saved);
-} catch(e) {
-  state = null;
-}
+} catch(e) { state = null; }
 
 if(!state || typeof state !== 'object'){
-  state = {
-    items: [], 
-    stars: 0, 
-    rewards: [{name:"Viagem com a Tia Selma na praia", total:10000}], 
-    passPaiHash: '', 
-    passSofiaHash: ''
-  };
+  state = { items: [], stars: 0, rewards: [{name:"Viagem com a Tia Selma na praia", total:10000}], passPaiHash: '', passSofiaHash: '' };
 }
 
 async function initDefaults() {
-  if(!state.passPaiHash) state.passPaiHash = await hashPassword('1234');
-  if(!state.passSofiaHash) state.passSofiaHash = await hashPassword('5678');
-  if(!state.rewards) state.rewards = [{name:"Viagem com a Tia Selma na praia", total:10000}];
-  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {}
+  let changed = false;
+  // Senha padrão do Pai: 2191 | Senha padrão da Sofia: 25022016
+  if(!state.passPaiHash) { state.passPaiHash = await hashPassword('2191'); changed = true; }
+  if(!state.passSofiaHash) { state.passSofiaHash = await hashPassword('25022016'); changed = true; }
+  if(!state.rewards) { state.rewards = [{name:"Viagem com a Tia Selma na praia", total:10000}]; changed = true; }
+  if(changed) persist();
 }
 initDefaults();
 
@@ -316,7 +321,27 @@ function persist(){
   renderStats();
 }
 
-// GERADOR INTELIGENTE DE PROBLEMINHAS POR NÍVEL
+function getAutomaticHint(item){
+  if(item.isProblem){
+    let t = item.title.toLowerCase();
+    if(t.includes('ganhou') || t.includes('total') || t.includes('juntou'))
+      return "💡 Dica: Quando o problema fala em juntar ou ganhar mais, qual operação básica você deve usar na lousa?";
+    if(t.includes('perdeu') || t.includes('deu') || t.includes('sobrou') || t.includes('gastou'))
+      return "💡 Dica: Se tiramos ou gastamos uma quantidade do total, a conta é de menos (-). Tente armá-la verticalmente!";
+    if(t.includes('cada caixa') || t.includes('pacotes') || t.includes('cada prateleira'))
+      return "💡 Dica: Se temos vários grupos iguais com a mesma quantidade, use a multiplicação (x)!";
+    if(t.includes('dividiu igualmente') || t.includes('organizou'))
+      return "💡 Dica: Quando dividimos algo igualmente entre várias pessoas ou lugares, a operação correta é a divisão (÷).";
+    return "💡 Dica: Leia a historinha novamente com calma e identifique quais números você precisa usar.";
+  } else {
+    if(item.type === '+') return "💡 Dica: Comece somando os números da unidade (coluna da direita). Se passar de 9, lembre-se de 'subir 1' para a dezena!";
+    if(item.type === '-') return "💡 Dica: Subtraia de cima para baixo. Se o número de cima for menor que o de baixo, peça emprestado ao vizinho da esquerda!";
+    if(item.type === 'x') return "💡 Dica: Multiplique o número de baixo por cada algarismo de cima, começando sempre pela unidade. Atenção à tabuada!";
+    if(item.type === '÷') return "💡 Dica: Na divisão, pense em quantas vezes o divisor cabe no dividendo. Vá testando a tabuada com calma!";
+  }
+  return "💡 Dica: Arme sua continha com capricho na lousa e confira os números!";
+}
+
 function generateProblemBatch(){
   currentProblemBatch = [];
   let diff = document.getElementById('probDifficulty').value;
@@ -328,52 +353,35 @@ function generateProblemBatch(){
     let item = itens[Math.floor(Math.random() * itens.length)];
     let tipo = Math.floor(Math.random() * 4);
     let text = '', expected = 0;
-
     let min = 10, max = 50;
     if(diff === 'medium') { min = 30; max = 150; }
     if(diff === 'hard') { min = 100; max = 500; }
 
     if(tipo === 0){
-      let n1 = Math.floor(Math.random() * max) + min;
-      let n2 = Math.floor(Math.random() * max) + min;
-      text = `${nome} tinha ${n1} ${item} e ganhou mais ${n2} ${item}. Com quantos ${item} ${nome} ficou no total?`;
-      expected = n1 + n2;
+      let n1 = Math.floor(Math.random() * max) + min; let n2 = Math.floor(Math.random() * max) + min;
+      text = `${nome} tinha ${n1} ${item} e ganhou mais ${n2} ${item}. Com quantos ${item} ${nome} ficou no total?`; expected = n1 + n2;
     } else if(tipo === 1){
-      let n1 = Math.floor(Math.random() * max) + min + 20;
-      let n2 = Math.floor(Math.random() * (n1 - 5)) + 5;
-      text = `${nome} tinha ${n1} ${item} e deu ${n2} ${item} para sua colega. Quantos ${item} ${nome} tem agora?`;
-      expected = n1 - n2;
+      let n1 = Math.floor(Math.random() * max) + min + 20; let n2 = Math.floor(Math.random() * (n1 - 5)) + 5;
+      text = `${nome} tinha ${n1} ${item} e deu ${n2} ${item} para sua colega. Quantos ${item} ${nome} tem agora?`; expected = n1 - n2;
     } else if(tipo === 2){
       let n1 = diff === 'easy' ? (Math.floor(Math.random() * 6) + 2) : (Math.floor(Math.random() * 15) + 5);
       let n2 = diff === 'easy' ? (Math.floor(Math.random() * 6) + 2) : (Math.floor(Math.random() * 10) + 3);
-      text = `${nome} comprou ${n1} caixas. Cada caixa tem ${n2} ${item}. Quantos ${item} há no total?`;
-      expected = n1 * n2;
+      text = `${nome} comprou ${n1} caixas. Cada caixa tem ${n2} ${item}. Quantos ${item} há no total?`; expected = n1 * n2;
     } else {
       let div = diff === 'easy' ? (Math.floor(Math.random() * 4) + 2) : (Math.floor(Math.random() * 7) + 2);
       let q = diff === 'easy' ? (Math.floor(Math.random() * 10) + 5) : (Math.floor(Math.random() * 30) + 10);
       let total = div * q;
-      text = `${nome} organizou ${total} ${item} em ${div} prateleiras iguais. Quantos ${item} ficaram em cada prateleira?`;
-      expected = q;
+      text = `${nome} organizou ${total} ${item} em ${div} prateleiras iguais. Quantos ${item} ficaram em cada prateleira?`; expected = q;
     }
 
-    currentProblemBatch.push({
-      id: Date.now() + Math.random(),
-      isProblem: true,
-      title: text,
-      expected: expected,
-      work: [],
-      timeSpent: 0,
-      solved: false,
-      correct: false
-    });
+    let newItem = { id: Date.now() + Math.random(), isProblem: true, title: text, expected: expected, work: [], timeSpent: 0, solved: false, correct: false };
+    newItem.hint = getAutomaticHint(newItem);
+    currentProblemBatch.push(newItem);
   }
   renderProblemBatchPreview();
 }
 
-function removeProblemBatchItem(index){
-  currentProblemBatch.splice(index, 1);
-  renderProblemBatchPreview();
-}
+function removeProblemBatchItem(index){ currentProblemBatch.splice(index, 1); renderProblemBatchPreview(); }
 
 function renderProblemBatchPreview(){
   let container = document.getElementById('problemBatchPreview');
@@ -383,13 +391,13 @@ function renderProblemBatchPreview(){
     <div style="max-height:220px; overflow-y:auto; border:1px solid #b9e2fc; border-radius:12px; padding:10px; background:#fff;">
       ${currentProblemBatch.map((item, idx) => `
         <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid #f0f0f0; gap:10px;">
-          <span style="font-size:13px;"><b>${idx+1}.</b> ${item.title} <small class="muted">(Resp: ${item.expected})</small></span>
+          <span style="font-size:13px;"><b>${idx+1}.</b> ${item.title}</span>
           <button class="warn" style="padding:4px 10px; font-size:12px; flex-shrink:0;" onclick="removeProblemBatchItem(${idx})">Remover</button>
         </div>
       `).join('')}
     </div>
     <div class="actions" style="margin-top:12px;">
-      <button class="primary" style="background:#2e7d32; width:100%;" onclick="sendProblemBatchToStudent()">🚀 Enviar Probleminhas para o Caderno (${currentProblemBatch.length})</button>
+      <button class="primary" style="background:#2e7d32; width:100%;" onclick="sendProblemBatchToStudent()">🚀 Enviar Probleminhas (${currentProblemBatch.length})</button>
     </div>
   `;
 }
@@ -399,13 +407,12 @@ function sendProblemBatchToStudent(){
   currentProblemBatch.forEach(item => state.items.push(item));
   currentProblemBatch = [];
   persist();
-  document.getElementById('problemBatchPreview').innerHTML = '<p style="color:#2e7d32; font-weight:700;">✨ Lote de probleminhas enviado com sucesso!</p>';
+  document.getElementById('problemBatchPreview').innerHTML = '<p style="color:#2e7d32; font-weight:700;">✨ Lote enviado com sucesso!</p>';
 }
 
 function renderStats(){
   let container = document.getElementById('statsContainer');
   if(!container) return;
-
   let resolvidas = state.items.filter(x => x.solved);
   let acertos = resolvidas.filter(x => x.correct).length;
   let erros = resolvidas.length - acertos;
@@ -413,10 +420,6 @@ function renderStats(){
   let mainGoalTotal = state.rewards.length > 0 ? state.rewards[0].total : 10000;
   let currentStars = state.stars || 0;
   let goalPercent = Math.min(100, ((currentStars / mainGoalTotal) * 100).toFixed(1));
-
-  let totalTime = resolvidas.reduce((acc, curr) => acc + (curr.timeSpent || 0), 0);
-  let avgTimeSec = resolvidas.length > 0 ? Math.round(totalTime / resolvidas.length) : 0;
-  let avgTimeFormatted = `${Math.floor(avgTimeSec/60)}m ${avgTimeSec%60}s`;
 
   container.innerHTML = `
     <div style="background:white; padding:12px; border-radius:12px; border:1px solid #ddd;">
@@ -429,30 +432,18 @@ function renderStats(){
       <div style="font-size:20px; font-weight:900; color:#0277bd; margin:4px 0;">${taxaAcerto}%</div>
       <div style="font-size:12px; color:#555;">${acertos} acertos | ${erros} erros</div>
     </div>
-    <div style="background:white; padding:12px; border-radius:12px; border:1px solid #ddd;">
-      <div style="font-size:12px; color:#666; font-weight:bold;">⏱️ Tempo Médio na Lousa</div>
-      <div style="font-size:20px; font-weight:900; color:#2d6a4f; margin:4px 0;">${avgTimeFormatted}</div>
-      <div style="font-size:12px; color:#555;">${resolvidas.length} itens avaliados</div>
-    </div>
   `;
 }
 
 function addReward(){
   let name = document.getElementById('newRewardName').value.trim();
   let total = parseInt(document.getElementById('newRewardStars').value);
-  if(!name || isNaN(total) || total<=0){
-    document.getElementById('rewardMsg').style.color='#c62828';
-    document.getElementById('rewardMsg').textContent='Preencha o nome e as estrelas!';
-    return;
-  }
+  if(!name || isNaN(total) || total<=0){ alert('Preencha o prêmio!'); return; }
   state.rewards.push({name, total});
-  document.getElementById('newRewardName').value='';
-  document.getElementById('newRewardStars').value='';
+  document.getElementById('newRewardName').value=''; document.getElementById('newRewardStars').value='';
   persist();
 }
-
 function removeReward(index){ state.rewards.splice(index, 1); persist(); }
-
 function renderRewardsParent(){
   let container = document.getElementById('rewardsListParent');
   if(!state.rewards.length){ container.innerHTML = '<p class="muted">Nenhum prêmio.</p>'; return; }
@@ -467,11 +458,10 @@ function renderRewardsParent(){
 async function savePasswords(){
   let npPai = document.getElementById('newPassPai').value.trim();
   let npSofia = document.getElementById('newPassSofia').value.trim();
-  if(!npPai || !npSofia){ document.getElementById('passMsg').style.color='#c62828'; document.getElementById('passMsg').textContent='Senhas em branco!'; return; }
-  state.passPaiHash = await hashPassword(npPai);
-  state.passSofiaHash = await hashPassword(npSofia);
-  document.getElementById('passMsg').style.color='#2e7d32';
-  document.getElementById('passMsg').textContent='🔒 Senhas atualizadas!';
+  if(!npPai && !npSofia){ alert('Preencha pelo menos uma nova senha!'); return; }
+  if(npPai) state.passPaiHash = await hashPassword(npPai);
+  if(npSofia) state.passSofiaHash = await hashPassword(npSofia);
+  document.getElementById('passMsg').textContent = '🔒 Senhas atualizadas com sucesso!';
   persist();
 }
 
@@ -515,7 +505,9 @@ function generateBatch(){
     } else if(op === '-') {
       n1 = Math.floor(Math.random() * 300) + 50; n2 = Math.floor(Math.random() * n1) + 10; expected = n1 - n2;
     }
-    currentBatch.push({id: Date.now() + Math.random(), isProblem:false, type: op, n1, n2, expected, work:[], timeSpent:0, solved:false, correct:false});
+    let newItem = { id: Date.now() + Math.random(), isProblem: false, type: op, n1, n2, expected, work: [], timeSpent: 0, solved: false, correct: false };
+    newItem.hint = getAutomaticHint(newItem);
+    currentBatch.push(newItem);
   }
   renderBatchPreview();
 }
@@ -556,7 +548,7 @@ function renderLists(){
     else{
       p.innerHTML=state.items.map((x,i)=>{
         let desc = x.isProblem ? `📖 ${x.title}` : `${x.n1} ${x.type} ${x.n2} (Resp: ${x.expected})`;
-        let status = x.solved ? (x.correct ? '<span style="color:#2e7d32; font-weight:700;">⭐ Acertou</span>' : '<span style="color:#c62828; font-weight:700;">❌ Errou (Revisar com ela)</span>') : 'Aguardando';
+        let status = x.solved ? (x.correct ? '<span style="color:#2e7d32; font-weight:700;">⭐ Acertou</span>' : '<span style="color:#c62828; font-weight:700;">❌ Errou (Revisar)</span>') : 'Aguardando';
         let hasWork = x.work && x.work.length > 0;
         return `<div class="listitem">
           <div><b>${i+1}.</b> ${desc}<br><small>Status: ${status}</small></div>
@@ -589,6 +581,10 @@ function openChalkboard(id){
   let x=state.items.find(v=>v.id===id);
   document.getElementById('cbProblemLabel').textContent = x.isProblem ? "Probleminha:" : "Conta Atual:";
   document.getElementById('cbProblemTitle').textContent = x.isProblem ? x.title : `${x.n1} ${x.type} ${x.n2}`;
+  
+  if(!x.hint) x.hint = getAutomaticHint(x);
+  document.getElementById('hintTextContent').textContent = x.hint;
+
   document.getElementById('chalkboardOverlay').classList.remove('hidden');
   cbStrokes = Array.isArray(x.work)?x.work:[];
   document.getElementById('cbDirectAnswer').value = '';
@@ -606,6 +602,9 @@ function openChalkboard(id){
   setChalkColor('#ffffff', 'cbBtnWhite');
   setupCbCanvas();
 }
+
+function showHintModal(){ document.getElementById('hintModal').classList.remove('hidden'); }
+function hideHintModal(){ document.getElementById('hintModal').classList.add('hidden'); }
 
 function closeChalkboard(){
   if(timerInterval) clearInterval(timerInterval);
@@ -717,7 +716,7 @@ function viewWork(id){
         parentCtx.beginPath(); parentCtx.lineCap = 'round'; parentCtx.lineJoin = 'round';
         parentCtx.strokeStyle = st[0].color || '#ffffff'; parentCtx.lineWidth = st[0].width || 4;
         parentCtx.moveTo(st[0].x, st[0].y);
-        st.slice(1).forEach(pt => { parentCtx.strokeStyle = pt.color || parentCtx.strokeStyle; parentCtx.lineWidth = pt.width || 4; parentCtx.lineTo(pt.x, pt.y); parentCtx.stroke(); });
+        st.slice(1).forEach(pt => { parentCtx.strokeStyle = pt.color || pt.strokeStyle; parentCtx.lineWidth = pt.width || 4; parentCtx.lineTo(pt.x, pt.y); parentCtx.stroke(); });
       });
     }
   }, 100);
