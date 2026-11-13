@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1b4332"><title>Caderno da Sofia 🌸</title>
+<!-- Firebase SDKs (Nuvem em Tempo Real) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<style>
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#fff0f5,#f0f4ff);color:#333;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:linear-gradient(120deg,#ff758c,#ff7eb3);color:white;padding:22px 16px;text-align:center;border-bottom-left-radius:25px;border-bottom-right-radius:25px;box-shadow:0 4px 15px rgba(255,117,140,0.3)}
+header h1{margin:0;font-size:28px;text-shadow:0 2px 4px rgba(0,0,0,0.1)}header p{margin:6px 0 0;opacity:.95;font-size:15px}
+main{max-width:950px;margin:16px auto;padding:0 12px 30px}
+.card{background:white;border:2px solid #ffd1dc;border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:0 6px 20px rgba(255,182,193,0.15)}
+h2{font-size:20px;margin:0 0 12px;color:#d81b60}p{line-height:1.45}.muted{color:#777;font-size:13px}
+label{display:block;color:#555;font-size:13px;font-weight:700;margin:10px 0 5px}
+input,select,textarea{width:100%;padding:12px;border:2px solid #ffccd5;border-radius:12px;font:inherit;background:#fffbfd;color:#333}
+input:focus,select:focus,textarea:focus{border-color:#ff758c;outline:none}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+button.primary,button.soft,button.warn,button.success{border:0;border-radius:12px;padding:12px 16px;font-weight:750;font-size:14px;cursor:pointer;transition:transform 0.1s}
+button.primary:active,button.soft:active,button.warn:active,button.success:active{transform:scale(0.97)}
+.primary{background:linear-gradient(135deg,#ff758c,#ff7eb3);color:white;box-shadow:0 4px 12px rgba(255,117,140,0.4)}
+.soft{background:#e8f4fd;color:#0277bd}.warn{background:#ffebee;color:#c62828}.success{background:#e8f5e9;color:#2e7d32}
+
+.listitem{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:12px 15px;background:#fffdfd;border:1px solid #ffccd5;border-radius:14px;margin:10px 0}
+.listitem.submitted{background:#fffde7;border-color:#fff59d;}
+.hidden{display:none!important}
+.goal-card{background:linear-gradient(135deg,#fff8e1,#ffe0b2);border:2px solid #ffb300;border-radius:16px;padding:15px;margin-bottom:16px;text-align:center}
+.goal-title{font-size:18px;font-weight:800;color:#e65100;margin-bottom:8px}
+.progress-container{background:#fff;border-radius:10px;height:22px;width:100%;border:2px solid #ffb300;overflow:hidden;position:relative;margin:10px 0}
+.progress-bar{background:linear-gradient(90deg,#ffb300,#ff8f00);height:100%;width:0%;transition:width 0.5s ease}
+.progress-text{position:absolute;width:100%;top:0;left:0;font-size:12px;font-weight:800;color:#5d4037;line-height:18px;text-align:center}
+.login-box{max-width:420px;margin:50px auto;text-align:center}
+
+/* LOUSA TELA CHEIA */
+#chalkboardOverlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:#1b4332;z-index:9999;display:flex;flex-direction:column;overflow:hidden}
+.cb-topbar{background:rgba(0,0,0,0.35);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;color:white;border-bottom:2px solid rgba(255,255,255,0.1)}
+.cb-canvas-container{flex:1;position:relative;width:100%;height:100%;overflow:hidden}
+#cbCanvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair;background:#1b4332}
+
+.cb-toolbar{background:rgba(0,0,0,0.3);padding:10px;display:flex;justify-content:center;align-items:center;gap:15px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,0.1)}
+.cb-tool{width:48px;height:48px;border-radius:50%;border:2px solid rgba(255,255,255,0.5);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;background:transparent;transition:all 0.2s}
+.cb-tool.active{border-color:#fff;transform:scale(1.15);box-shadow:0 0 10px rgba(255,255,255,0.6);background:rgba(255,255,255,0.2)}
+
+.cb-answer-bar{background:rgba(0,0,0,0.8);padding:15px;display:flex;justify-content:center;align-items:center;gap:12px;border-top:2px solid rgba(255,255,255,0.2)}
+.cb-answer-bar input{width:130px;padding:12px;font-size:22px;font-weight:900;text-align:center;border-radius:12px;border:3px solid #ffea79;background:#fff;color:#1b4332}
+.cb-answer-bar button{background:linear-gradient(135deg,#ff758c,#ffb300);padding:14px 24px;font-size:16px;box-shadow:0 4px 12px rgba(0,0,0,0.4);color:white;border:none;border-radius:12px;font-weight:800;cursor:pointer;transition:transform 0.1s}
+.cb-answer-bar button:active{transform:scale(0.95)}
+
+.full-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:white;padding:20px;animation:fadeIn 0.3s ease}
+.celebration-card{border:4px solid #fff;border-radius:30px;padding:35px;max-width:480px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,0.5);animation:bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)}
+.celebration-emojis{font-size:50px;margin-bottom:15px;display:flex;justify-content:center;gap:10px;animation:pulseEmoji 1s infinite alternate}
+
+#hintModal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.8);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px}
+.hint-card{background:#fff8e1;border:4px solid #ffb300;border-radius:24px;padding:25px;max-width:420px;width:100%;text-align:center;color:#5d4037;box-shadow:0 10px 30px rgba(0,0,0,0.4)}
+
+@keyframes pulseEmoji{0%{transform:scale(1)}100%{transform:scale(1.2)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes bounceIn{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
+
+@media(max-width:520px){.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><h1>🌸 Caderno da Sofia 🌸</h1><p>Sincronizado na Nuvem em Tempo Real</p></header>
+<main>
+
+<!-- TELA DE LOGIN -->
+<section id="loginScreen" class="card login-box">
+  <h2>🔒 Área Secreta</h2>
+  <p class="muted">Digite sua senha de acesso:</p>
+  <div style="text-align:left; margin-top:15px;">
+    <input id="accessPass" type="password" placeholder="Sua senha secreta..." autocomplete="current-password" onkeydown="if(event.key==='Enter')tryLogin()">
+  </div>
+  <div class="actions" style="margin-top:18px;">
+    <button type="button" class="primary" style="width:100%" onclick="tryLogin()">Entrar 💖</button>
+  </div>
+  <!-- SEGURANÇA TOTAL: NUNCA EXibe A SENHA AQUI -->
+  <p class="muted" id="loginMsg" style="color:#d92d20; margin-top:10px; font-weight:700;"></p>
+</section>
+
+<!-- LOUSA DE ESCOLA TELA CHEIA -->
+<div id="chalkboardOverlay" class="hidden">
+  <div class="cb-topbar">
+    <div>
+      <span style="font-size:13px; opacity:0.8; display:block;" id="cbProblemLabel">Desafio Atual:</span>
+      <span id="cbProblemTitle" style="font-size:18px; font-weight:800; color:#ffea79; line-height:1.3;"></span>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <button id="btnOpenHint" type="button" onclick="showHintModal()" style="background:#ffb300; color:#5d4037; border:none; padding:8px 12px; border-radius:10px; font-weight:bold; cursor:pointer;">💡 Dica</button>
+      <div id="cbTimer" style="background:rgba(255,255,255,0.15); padding:6px 14px; border-radius:12px; font-weight:700; font-size:15px;">⏱️ 00:00</div>
+      <button type="button" onclick="closeChalkboard()" style="background:#e53935; color:white; border:none; padding:8px 14px; border-radius:10px; font-weight:bold; cursor:pointer;">Sair ❌</button>
+    </div>
+  </div>
+  
+  <div class="cb-canvas-container">
+    <canvas id="cbCanvas"></canvas>
+  </div>
+
+  <div class="cb-toolbar">
+    <button type="button" class="cb-tool active" id="cbBtnWhite" style="color:white;" onclick="setChalkColor('#ffffff', 'cbBtnWhite')" title="Giz Branco">🖍️</button>
+    <button type="button" class="cb-tool" id="cbBtnEraser" onclick="setCbEraser('cbBtnEraser')" title="Esponja / Apagador">🧽</button>
+    <button type="button" class="cb-tool" onclick="cbUndo()" title="Desfazer Risco">↶</button>
+    <button type="button" class="cb-tool" onclick="cbClear()" title="Limpar Lousa">🗑️</button>
+  </div>
+  
+  <div class="cb-answer-bar">
+    <span style="color:white; font-size:18px; font-weight:bold;">Sua Resposta:</span>
+    <input id="cbDirectAnswer" type="text" inputmode="numeric" placeholder="..." onkeydown="if(event.key==='Enter'){event.preventDefault(); submitToDad();}">
+    <button type="button" onclick="submitToDad()">Entregar ao Papai 🚀</button>
+  </div>
+</div>
+
+<!-- MODAL DA DICA INTELIGENTE -->
+<div id="hintModal" class="hidden">
+  <div class="hint-card">
+    <div style="font-size:40px; margin-bottom:10px;">💡</div>
+    <h3 style="color:#e65100; margin-top:0;">Caminho das Pedras:</h3>
+    <p id="hintTextContent" style="font-size:16px; font-weight:600; line-height:1.5; margin:15px 0;"></p>
+    <button type="button" class="primary" style="background:#ffb300; color:#5d4037; width:100%; font-size:16px; padding:12px;" onclick="hideHintModal()">Entendi, vou calcular! ✨</button>
+  </div>
+</div>
+
+<!-- TELA 1: AGUARDANDO PAI -->
+<div id="waitingDadOverlay" class="full-overlay hidden">
+  <div class="celebration-card" style="background:linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);">
+    <div class="celebration-emojis">⏳ 👨‍👧 📝</div>
+    <h2 style="color:white; font-size:32px; margin-bottom:10px; text-shadow:0 2px 4px rgba(0,0,0,0.2);">TAREFA ENVIADA!</h2>
+    <p style="font-size:18px; font-weight:700; line-height:1.5; margin-bottom:20px;">O papai vai corrigir seu rascunho. Se estiver certinho, ele vai te dar os pontos e as estrelas!</p>
+    <button type="button" class="primary" style="background:#fff; color:#8e24aa; font-size:18px; width:100%; padding:14px; box-shadow:0 4px 15px rgba(0,0,0,0.2);" onclick="closeWaitingDad()">Entendi!</button>
+  </div>
+</div>
+
+<!-- TELA 2: NOTIFICAÇÃO DA SOFIA -->
+<div id="notificationOverlay" class="full-overlay hidden">
+  <div class="celebration-card" style="background:linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+    <div class="celebration-emojis">🔔 🌟 🏆</div>
+    <h2 style="color:white; font-size:30px; margin-bottom:10px; text-shadow:0 2px 4px rgba(0,0,0,0.2);">RECADO DO PAPAI!</h2>
+    <p id="notifText" style="font-size:18px; font-weight:700; line-height:1.5; margin-bottom:20px;"></p>
+    <button type="button" class="primary" style="background:#fff; color:#0277bd; font-size:18px; width:100%; padding:14px; box-shadow:0 4px 15px rgba(0,0,0,0.2);" onclick="closeNotification()">Eba! Entendi!</button>
+  </div>
+</div>
+
+<!-- PAINEL DO PAI -->
+<section id="parentPanel" class="hidden">
+  <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+    <div><h2>👨‍🏫 Sala do Professor (Pai)</h2><p class="muted" style="margin:0;">Gerencie desafios e corrija o rascunho da Sofia.</p></div>
+    <button type="button" class="warn" onclick="logout()">Sair</button>
+  </div>
+
+  <div class="card" style="background:linear-gradient(135deg,#f8f9fa,#e9ecef); border-color:#ced4da;">
+    <h2>📊 Central de Desempenho Escolar</h2>
+    <div id="statsContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-top:10px;"></div>
+  </div>
+
+  <div class="card" style="background:#fff3e0; border-color:#ffb74d;">
+    <h2>⭐ Controle Manual de Estrelas</h2>
+    <p class="muted" style="margin-top:0;">Dê bônus extras ou tire pontos da Sofia livremente.</p>
+    <div class="row">
+       <div><input id="manualStarAmount" type="number" placeholder="Quantas estrelas? Ex: 10"></div>
+    </div>
+    <div class="actions" style="margin-top:10px;">
+       <button type="button" class="primary" style="background:#f57c00; box-shadow:0 4px 12px rgba(245,124,0,0.3);" onclick="adjustStars('add')">Dar Estrelas ➕</button>
+       <button type="button" class="warn" style="background:#e53935; color:white;" onclick="adjustStars('remove')">Tirar Estrelas ➖</button>
+    </div>
+  </div>
+  
+  <div class="card" style="background:#fffde7; border:3px solid #fbc02d; box-shadow: 0 4px 15px rgba(251, 192, 45, 0.3);">
+    <h2 style="color:#f57f17; font-size:22px;">⚠️ Aguardando Sua Correção</h2>
+    <p class="muted" style="margin-top:0;">O que a Sofia resolver vai cair direto aqui:</p>
+    <div id="parentListPending" style="margin-top:10px;"></div>
+  </div>
+
+  <div class="card">
+    <h2>📋 Todos os Desafios</h2>
+    <p class="muted">Lista geral das tarefas ativas e já corrigidas.</p>
+    <div id="parentList" style="margin-top:10px;"></div>
+  </div>
+
+  <div class="card" style="background:#e8f4fd; border-color:#b9e2fc;">
+    <h2>📖 Gerador de Probleminhas (5º Ano)</h2>
+    <div class="row" style="margin-bottom:10px;">
+      <div><label>Dificuldade</label><select id="probDifficulty"><option value="easy">Fácil</option><option value="medium" selected>Médio (Padrão 5º ano)</option><option value="hard">Desafio</option></select></div>
+    </div>
+    <div class="actions"><button type="button" class="primary" style="background:#0277bd;" onclick="generateProblemBatch()">🎲 Gerar 10 Probleminhas 📚</button></div>
+    <div id="problemBatchPreview" style="margin-top:15px;"></div>
+  </div>
+
+  <div class="card" style="background:#fffaf0; border-color:#ffe0b2;">
+    <h2>🤖 Gerador de Contas Armadas</h2>
+    <div class="row" style="margin-bottom:10px;">
+      <div><label>Dificuldade</label><select id="calcDifficulty"><option value="easy">Fácil</option><option value="medium" selected>Médio (Padrão 5º ano)</option><option value="hard">Avançado</option></select></div>
+    </div>
+    <div class="actions"><button type="button" class="primary" style="background:linear-gradient(135deg,#ffb300,#ff8f00);" onclick="generateBatch()">Gerar 10 Contas ✨</button></div>
+    <div id="batchPreviewContainer" style="margin-top:15px;"></div>
+  </div>
+
+  <div class="card" style="background:#fff5f8; border-color:#ffd1dc;">
+    <h2>🎁 Adicionar Prêmios e Metas</h2>
+    <div class="row">
+      <div><label>Nome do Prêmio</label><input id="newRewardName" type="text" placeholder="Ex: Viagem com a Tia Selma na praia"></div>
+      <div><label>Estrelas Necessárias</label><input id="newRewardStars" type="number" placeholder="Ex: 10000"></div>
+    </div>
+    <div class="actions"><button type="button" class="primary" onclick="addReward()">Adicionar Prêmio 🌟</button></div>
+    <p class="muted" id="rewardMsg" style="margin-top:6px; color:#e65100; font-weight:700;"></p>
+    <div style="margin-top:15px;"><div id="rewardsListParent"></div></div>
+  </div>
+</section>
+
+<!-- VISUALIZADOR DE RASCUNHO DO PAI -->
+<section id="viewWorkModal" class="card hidden">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+    <h2 id="modalTitle" style="margin:0;">Rascunho da Sofia</h2>
+    <button type="button" class="warn" onclick="closeViewWork()">Fechar ❌</button>
+  </div>
+  <p class="muted">Avalie se ela armou a conta certo antes de dar os pontos!</p>
+  <div id="parentProblemHeader" style="text-align:center; margin-bottom:10px; font-size:18px; font-weight:bold; color:#1b4332;"></div>
+  
+  <div id="quickCorrectBar" style="background:#fff3e0; padding:12px; border-radius:12px; margin-bottom:15px; border:2px solid #ffb74d; display:flex; justify-content:space-around; align-items:center;">
+      <span style="font-weight:bold; color:#e65100;">O rascunho tá bom?</span>
+      <div style="display:flex; gap:10px;">
+          <button id="btnQuickRight" class="success" style="font-size:16px;">✅ Dar 10⭐</button>
+          <button id="btnQuickWrong" class="warn" style="font-size:16px;">❌ Errado (Refazer)</button>
+      </div>
+  </div>
+
+  <div style="width:100%; height:450px; background:#1b4332; border-radius:16px; overflow:hidden; position:relative; border:4px solid #2d6a4f;">
+    <canvas id="parentPaper" style="width:100%; height:100%; display:block;"></canvas>
+  </div>
+  <div class="actions" style="margin-top:15px;"><button type="button" class="soft" onclick="closeViewWork()">Voltar ao Painel</button></div>
+</section>
+
+<!-- CADERNO DA SOFIA -->
+<section id="studentPanel" class="hidden">
+  <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+    <div><h2>⭐ Caderno da Sofia</h2><p class="muted" style="margin:0;">Resolva os desafios para o papai corrigir!</p></div>
+    <button type="button" class="warn" onclick="logout()">Sair</button>
+  </div>
+
+  <div class="goal-card">
+    <div class="goal-title">🎁 Suas Metas e Prêmios</div>
+    <div class="muted" style="font-weight:700; color:#5d4037; margin-bottom:8px;">Total de Estrelinhas: <span id="displayStars" style="color:#e65100; font-size:18px;">0</span> ⭐</div>
+    <div id="studentRewardsContainer"></div>
+  </div>
+
+ <div class="card"><h2>Escolha seu desafio 🌟</h2><div id="studentList"></div></div>
+</section>
+</main>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDdvLiewnQhMo855lalaTnDJgbpZyI9clw",
+  authDomain: "reforcosophia.firebaseapp.com",
+  projectId: "reforcosophia",
+  storageBucket: "reforcosophia.firebasestorage.app",
+  messagingSenderId: "344687846766",
+  appId: "1:344687846766:web:464e5221876146d8ff0d7f"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const SENHA_PAI = "2191";
+const SENHA_SOFIA = "25022016";
+
+// Estado padrão limpo caso o banco esteja vazio
+let state = { 
+  items: [], 
+  stars: 0, 
+  rewards: [{name:"Viagem com a Tia Selma na praia", total:10000}], 
+  notifications: {correct: 0, incorrect: 0, show: false} 
+};
+
+let active=null; 
+let cbCanvas, cbCtx;
+let currentChalkColor = '#ffffff';
+let currentChalkWidth = 4;
+let cbDrawing = false;
+let cbSnapshots = []; 
+let hasDrawnOnBoard = false; 
+
+let timerSeconds = 0, timerInterval = null;
+let currentProblemBatch = [];
+let currentBatch = [];
+let loggedRole = null;
+
+// LEITURA EM TEMPO REAL
+db.collection("caderno").doc("dados_oficiais").onSnapshot((doc) => {
+  if (doc.exists) {
+    let cloudData = doc.data();
+    if(cloudData.items) state.items = cloudData.items;
+    if(cloudData.stars !== undefined) state.stars = cloudData.stars;
+    if(cloudData.rewards && cloudData.rewards.length > 0) state.rewards = cloudData.rewards;
+    if(cloudData.notifications) state.notifications = cloudData.notifications;
+    
+    refreshCurrentView();
+  } else {
+    // Se o banco estiver vazio (apagou lá no console), inicializa com o padrão
+    persist();
+  }
+}, (error) => {
+  console.log("Aviso: ", error);
+});
+
+function refreshCurrentView(){
+  if(loggedRole === 'pai'){
+    renderRewardsParent();
+    renderStats();
+    renderLists();
+  } else if(loggedRole === 'sofia'){
+    updateProgressUI();
+    renderLists();
+    checkNotificationsForSofia();
+  }
+}
+
+function persist(){
+  db.collection("caderno").doc("dados_oficiais").set(state)
+    .then(() => { 
+      refreshCurrentView();
+    })
+    .catch((error) => { 
+      console.error("Erro ao salvar: ", error);
+    });
+}
+
+function tryLogin(){
+  let val = document.getElementById('accessPass').value.trim();
+  let msg = document.getElementById('loginMsg');
+  
+  if(val === SENHA_PAI){
+    loggedRole = 'pai';
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('studentPanel').classList.add('hidden');
+    document.getElementById('parentPanel').classList.remove('hidden');
+    document.getElementById('accessPass').value = '';
+    msg.textContent = '';
+    refreshCurrentView();
+  }else if(val === SENHA_SOFIA){
+    loggedRole = 'sofia';
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('parentPanel').classList.add('hidden');
+    document.getElementById('studentPanel').classList.remove('hidden');
+    document.getElementById('accessPass').value = '';
+    msg.textContent = '';
+    refreshCurrentView();
+  }else{
+    msg.style.color = '#d92d20';
+    // SEGURANÇA BLINDADA: NUNCA REVELA AS SENHAS AQUI
+    msg.textContent = '❌ Senha incorreta! Tente novamente.';
+  }
+}
+
+function logout(){
+  loggedRole = null;
+  document.getElementById('accessPass').value='';
+  document.getElementById('loginMsg').textContent='';
+  document.getElementById('parentPanel').classList.add('hidden');
+  document.getElementById('studentPanel').classList.add('hidden');
+  document.getElementById('chalkboardOverlay').classList.add('hidden');
+  document.getElementById('viewWorkModal').classList.add('hidden');
+  document.getElementById('notificationOverlay').classList.add('hidden');
+  document.getElementById('waitingDadOverlay').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+  if(timerInterval) clearInterval(timerInterval);
+}
+
+function checkNotificationsForSofia() {
+    if(loggedRole === 'sofia' && state.notifications && state.notifications.show) {
+        let ac = state.notifications.correct || 0;
+        let er = state.notifications.incorrect || 0;
+        let pts = ac * 10;
+        let msg = `O papai corrigiu seus exercícios!<br><br>`;
+        if(ac > 0) msg += `⭐ Você acertou <b>${ac}</b> e ganhou <b>${pts} Estrelinhas</b>!<br>`;
+        if(er > 0) msg += `❌ Você errou <b>${er}</b>. Mas o papai mandou de volta para você tentar de novo, você consegue!<br>`;
+        
+        document.getElementById('notifText').innerHTML = msg;
+        document.getElementById('notificationOverlay').classList.remove('hidden');
+    }
+}
+
+function closeNotification(){
+    document.getElementById('notificationOverlay').classList.add('hidden');
+    state.notifications = { correct: 0, incorrect: 0, show: false };
+    persist();
+}
+
+function adjustStars(action) {
+  let val = parseInt(document.getElementById('manualStarAmount').value);
+  if(isNaN(val) || val <= 0) {
+    alert("Digite um número válido de estrelas primeiro.");
+    return;
+  }
+  if(action === 'add') {
+    state.stars = (state.stars || 0) + val;
+  } else if(action === 'remove') {
+    state.stars = (state.stars || 0) - val;
+    if(state.stars < 0) state.stars = 0; 
+  }
+  document.getElementById('manualStarAmount').value = '';
+  persist();
+}
+
+function markAsCorrect(id) {
+    let x = state.items.find(v => String(v.id) === String(id));
+    if(!x) return;
+    x.status = 'correct';
+    state.stars = (state.stars || 0) + 10; 
+    
+    if(!state.notifications) state.notifications = { correct:0, incorrect:0, show:false };
+    state.notifications.correct = (state.notifications.correct || 0) + 1;
+    state.notifications.show = true;
+    
+    persist();
+    closeViewWork(); 
+}
+
+function markAsIncorrect(id) {
+    let x = state.items.find(v => String(v.id) === String(id));
+    if(!x) return;
+    x.status = 'incorrect';
+    x.work = ""; 
+    x.studentAnswer = "";
+    
+    if(!state.notifications) state.notifications = { correct:0, incorrect:0, show:false };
+    state.notifications.incorrect = (state.notifications.incorrect || 0) + 1;
+    state.notifications.show = true;
+    
+    persist();
+    closeViewWork();
+}
+
+function getAutomaticHint(item){
+  if(item.isProblem){
+    let t = item.title.toLowerCase();
+    if(t.includes('ganhou') || t.includes('total') || t.includes('juntou')) return "💡 Dica: Qual operação básica usamos para juntar? (+)";
+    if(t.includes('perdeu') || t.includes('deu') || t.includes('sobrou') || t.includes('gastou')) return "💡 Dica: Qual operação tira uma quantidade? (-)";
+    if(t.includes('cada caixa') || t.includes('pacotes')) return "💡 Dica: Vários grupos iguais? Use a multiplicação (x)!";
+    if(t.includes('dividiu') || t.includes('organizou')) return "💡 Dica: Divida igualmente com a divisão (÷).";
+    return "💡 Dica: Leia a historinha novamente com calma.";
+  } else {
+    if(item.type === '+') return "💡 Dica: Comece pela direita. Se passar de 9, sobe 1!";
+    if(item.type === '-') return "💡 Dica: O número de cima é menor? Peça emprestado ao vizinho!";
+    if(item.type === 'x') return "💡 Dica: Multiplique sempre começando pela unidade.";
+    if(item.type === '÷') return "💡 Dica: Teste na tabuada quantas vezes o número cabe no outro.";
+  }
+  return "💡 Dica: Arme a continha na lousa!";
+}
+
+function generateProblemBatch(){
+  currentProblemBatch = [];
+  let diff = document.getElementById('probDifficulty').value;
+  let nomes = ['Pedro', 'Maria', 'Lucas', 'Sofia', 'Ana', 'João', 'Julia', 'Carlos'];
+  let itens = ['balas', 'figurinhas', 'livros', 'bombons', 'laranjas', 'canetas', 'pães'];
+  
+  for(let i=0; i<10; i++){
+    let nome = nomes[Math.floor(Math.random() * nomes.length)];
+    let item = itens[Math.floor(Math.random() * itens.length)];
+    let tipo = Math.floor(Math.random() * 4);
+    let text = '', expected = 0;
+    let min = 10, max = 50;
+    if(diff === 'medium') { min = 30; max = 150; }
+    if(diff === 'hard') { min = 100; max = 500; }
+
+    if(tipo === 0){
+      let n1 = Math.floor(Math.random() * max) + min; let n2 = Math.floor(Math.random() * max) + min;
+      text = `${nome} tinha ${n1} ${item} e ganhou mais ${n2} ${item}. Com quantos ${item} ${nome} ficou no total?`; expected = n1 + n2;
+    } else if(tipo === 1){
+      let n1 = Math.floor(Math.random() * max) + min + 20; let n2 = Math.floor(Math.random() * (n1 - 5)) + 5;
+      text = `${nome} tinha ${n1} ${item} e deu ${n2} ${item} para o colega. Quantos ${item} ${nome} tem agora?`; expected = n1 - n2;
+    } else if(tipo === 2){
+      let n1 = diff === 'easy' ? (Math.floor(Math.random() * 6) + 2) : (Math.floor(Math.random() * 15) + 5);
+      let n2 = diff === 'easy' ? (Math.floor(Math.random() * 6) + 2) : (Math.floor(Math.random() * 10) + 3);
+      text = `${nome} comprou ${n1} caixas. Cada caixa tem ${n2} ${item}. Quantos ${item} há no total?`; expected = n1 * n2;
+    } else {
+      let div = diff === 'easy' ? (Math.floor(Math.random() * 4) + 2) : (Math.floor(Math.random() * 7) + 2);
+      let q = diff === 'easy' ? (Math.floor(Math.random() * 10) + 5) : (Math.floor(Math.random() * 30) + 10);
+      let total = div * q;
+      text = `${nome} organizou ${total} ${item} em ${div} prateleiras. Quantos ${item} em cada prateleira?`; expected = q;
+    }
+
+    let newItem = { id: String(Date.now() + Math.random()), isProblem: true, title: text, expected: expected, work: "", studentAnswer: "", status: "pending", timeSpent: 0 };
+    newItem.hint = getAutomaticHint(newItem);
+    currentProblemBatch.push(newItem);
+  }
+  renderProblemBatchPreview();
+}
+
+function removeProblemBatchItem(index){ currentProblemBatch.splice(index, 1); renderProblemBatchPreview(); }
+
+function renderProblemBatchPreview(){
+  let container = document.getElementById('problemBatchPreview');
+  if(!currentProblemBatch.length){ container.innerHTML = '<p class="muted">Nenhum lote gerado.</p>'; return; }
+  container.innerHTML = `
+    <h3 style="font-size:15px; color:#0277bd; margin-bottom:8px;">Revise os ${currentProblemBatch.length} Probleminhas Gerados:</h3>
+    <div style="max-height:220px; overflow-y:auto; border:1px solid #b9e2fc; border-radius:12px; padding:10px; background:#fff;">
+      ${currentProblemBatch.map((item, idx) => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid #f0f0f0; gap:10px;">
+          <span style="font-size:13px;"><b>${idx+1}.</b> ${item.title}</span>
+          <button type="button" class="warn" style="padding:4px 10px; font-size:12px; flex-shrink:0;" onclick="removeProblemBatchItem(${idx})">Remover</button>
+        </div>
+      `).join('')}
+    </div>
+    <div class="actions" style="margin-top:12px;">
+      <button type="button" class="primary" style="background:#2e7d32; width:100%;" onclick="sendProblemBatchToStudent()">🚀 Enviar Probleminhas (${currentProblemBatch.length})</button>
+    </div>
+  `;
+}
+
+function sendProblemBatchToStudent(){
+  if(!currentProblemBatch.length) return;
+  currentProblemBatch.forEach(item => state.items.push(item));
+  currentProblemBatch = [];
+  persist();
+  document.getElementById('problemBatchPreview').innerHTML = '<p style="color:#2e7d32; font-weight:700;">✨ Lote enviado para a nuvem!</p>';
+}
+
+function generateBatch(){
+  currentBatch = [];
+  let diff = document.getElementById('calcDifficulty').value;
+  let ops = ['÷', 'x', '-', '+'];
+  for(let i=0; i<10; i++){
+    let op = ops[Math.floor(Math.random() * ops.length)];
+    let n1, n2, expected;
+    if(op === '÷') {
+      let div = diff === 'easy' ? (Math.floor(Math.random() * 4) + 2) : (Math.floor(Math.random() * 7) + 2);
+      let q = diff === 'easy' ? (Math.floor(Math.random() * 20) + 5) : (Math.floor(Math.random() * 50) + 10);
+      n1 = div * q; n2 = div; expected = q;
+    } else if(op === 'x') {
+      n1 = diff === 'easy' ? (Math.floor(Math.random() * 15) + 2) : (Math.floor(Math.random() * 40) + 10);
+      n2 = diff === 'easy' ? (Math.floor(Math.random() * 5) + 2) : (Math.floor(Math.random() * 8) + 2);
+      expected = n1 * n2;
+    } else if(op === '+') {
+      n1 = Math.floor(Math.random() * 200) + 20; n2 = Math.floor(Math.random() * 200) + 20; expected = n1 + n2;
+    } else if(op === '-') {
+      n1 = Math.floor(Math.random() * 300) + 50; n2 = Math.floor(Math.random() * n1) + 10; expected = n1 - n2;
+    }
+    let newItem = { id: String(Date.now() + Math.random()), isProblem: false, type: op, n1, n2, expected, work: "", studentAnswer: "", status: "pending", timeSpent: 0 };
+    newItem.hint = getAutomaticHint(newItem);
+    currentBatch.push(newItem);
+  }
+  renderBatchPreview();
+}
+
+function removeBatchItem(index){ currentBatch.splice(index, 1); renderBatchPreview(); }
+
+function renderBatchPreview(){
+  let container = document.getElementById('batchPreviewContainer');
+  if(!currentBatch.length){ container.innerHTML = '<p class="muted">Nenhum lote gerado.</p>'; return; }
+  container.innerHTML = `
+    <h3 style="font-size:15px; color:#0277bd; margin-bottom:8px;">Revise as ${currentBatch.length} Contas:</h3>
+    <div style="max-height:220px; overflow-y:auto; border:1px solid #b9e2fc; border-radius:12px; padding:10px; background:#fff;">
+      ${currentBatch.map((item, idx) => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; border-bottom:1px solid #f0f0f0;">
+          <span><b>${idx+1}.</b> ${item.n1} ${item.type} ${item.n2}</span>
+          <button type="button" class="warn" style="padding:4px 10px; font-size:12px;" onclick="removeBatchItem(${idx})">Remover</button>
+        </div>
+      `).join('')}
+    </div>
+    <div class="actions" style="margin-top:12px;">
+      <button type="button" class="primary" style="background:#2e7d32; width:100%;" onclick="sendBatchToStudent()">🚀 Enviar Lote de Contas</button>
+    </div>
+  `;
+}
+
+function sendBatchToStudent(){
+  if(!currentBatch.length) return;
+  currentBatch.forEach(item => state.items.push(item));
+  currentBatch = [];
+  persist();
+  document.getElementById('batchPreviewContainer').innerHTML = '<p style="color:#2e7d32; font-weight:700;">✨ Lote enviado para a nuvem!</p>';
+}
+
+function renderStats(){
+  let container = document.getElementById('statsContainer');
+  if(!container) return;
+  let corrigidas = state.items.filter(x => x.status === 'correct' || x.status === 'incorrect');
+  let acertos = corrigidas.filter(x => x.status === 'correct').length;
+  let erros = corrigidas.filter(x => x.status === 'incorrect').length;
+  let taxaAcerto = corrigidas.length > 0 ? Math.round((acertos / corrigidas.length) * 100) : 0;
+  
+  let aguardando = state.items.filter(x => x.status === 'submitted').length;
+  let mainGoalTotal = state.rewards.length > 0 ? state.rewards[0].total : 10000;
+  let currentStars = state.stars || 0;
+  let goalPercent = Math.min(100, ((currentStars / mainGoalTotal) * 100).toFixed(1));
+
+  container.innerHTML = `
+    <div style="background:white; padding:12px; border-radius:12px; border:1px solid #ddd;">
+      <div style="font-size:12px; color:#666; font-weight:bold;">🎯 Progresso da Meta</div>
+      <div style="font-size:20px; font-weight:900; color:#e65100; margin:4px 0;">${currentStars} / ${mainGoalTotal} ⭐</div>
+      <div style="font-size:13px; font-weight:bold; color:#2e7d32;">${goalPercent}% Conquistado</div>
+    </div>
+    <div style="background:white; padding:12px; border-radius:12px; border:1px solid #ddd;">
+      <div style="font-size:12px; color:#666; font-weight:bold;">📉 Aguardando Correção</div>
+      <div style="font-size:20px; font-weight:900; color:#d81b60; margin:4px 0;">${aguardando} <span style="font-size:14px;">tarefas</span></div>
+      <div style="font-size:12px; color:#555;">Corrija na caixa abaixo!</div>
+    </div>
+  `;
+}
+
+function addReward(){
+  let name = document.getElementById('newRewardName').value.trim();
+  let total = parseInt(document.getElementById('newRewardStars').value);
+  if(!name || isNaN(total) || total<=0){ alert('Preencha o prêmio e as estrelas!'); return; }
+  state.rewards.push({name, total});
+  document.getElementById('newRewardName').value=''; document.getElementById('newRewardStars').value='';
+  document.getElementById('rewardMsg').textContent = 'Prêmio adicionado com sucesso!';
+  setTimeout(() => { document.getElementById('rewardMsg').textContent = ''; }, 3000);
+  persist();
+}
+function removeReward(index){ state.rewards.splice(index, 1); persist(); }
+function renderRewardsParent(){
+  let container = document.getElementById('rewardsListParent');
+  if(!container) return;
+  if(!state.rewards.length){ container.innerHTML = '<p class="muted">Nenhum prêmio.</p>'; return; }
+  container.innerHTML = state.rewards.map((r, i)=>`
+    <div class="listitem" style="background:#fff; margin:6px 0;">
+      <div><b>${r.name}</b> — 🌟 ${r.total} estrelas</div>
+      <button type="button" class="warn" onclick="removeReward(${i})">Remover</button>
+    </div>
+  `).join('');
+}
+
+function updateProgressUI(){
+  let stars = state.stars || 0;
+  let elStars = document.getElementById('displayStars');
+  if(elStars) elStars.textContent = stars;
+  let container = document.getElementById('studentRewardsContainer');
+  if(!container) return;
+  container.innerHTML = state.rewards.map(r=>{
+    let percent = Math.min(100, Math.round((stars / r.total) * 100));
+    return `
+      <div style="margin-bottom:12px; text-align:left; background:#fff; padding:10px; border-radius:12px; border:1px solid #ffe0b2;">
+        <div style="font-weight:700; color:#e65100; font-size:15px;">🎁 ${r.name} (${stars} / ${r.total} ⭐)</div>
+        <div class="progress-container" style="margin:6px 0 2px;">
+          <div class="progress-bar" style="width:${percent}%"></div>
+          <div class="progress-text">${percent}% conquistado</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderLists(){
+  let pPending = document.getElementById('parentListPending');
+  let pOutros = document.getElementById('parentList');
+  let s = document.getElementById('studentList');
+  
+  if(pPending && pOutros){
+      let pendentes = state.items.filter(x => x.status === 'submitted');
+      let outros = state.items.filter(x => x.status !== 'submitted');
+
+      if(!pendentes.length) {
+          pPending.innerHTML = '<p class="muted" style="color:#795548; font-weight:bold;">Nenhuma tarefa aguardando correção no momento.</p>';
+      } else {
+          pPending.innerHTML = pendentes.map(x => {
+             let desc = x.isProblem ? `📖 ${x.title}` : `${x.n1} ${x.type} ${x.n2}`;
+             let mathAns = `(Resultado matemático exato: <b>${x.expected}</b>)`;
+             return `<div class="listitem submitted">
+                <div style="width:100%; display:flex; justify-content:space-between;">
+                   <div><b>${desc}</b><br><small>${mathAns}</small></div>
+                   <button type="button" class="warn" style="padding:4px 8px; font-size:12px; height:fit-content;" onclick="removeItem('${x.id}')">Excluir</button>
+                </div>
+                <div style="width:100%; display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; border-top:1px dashed #ccc; padding-top:8px;">
+                   <span style="color:#e65100; font-weight:bold; width:100%;">Sofia respondeu: ${x.studentAnswer}</span>
+                   <button type="button" class="soft" onclick="viewWork('${x.id}')">👁️ Corrigir Rascunho</button>
+                   <button type="button" class="success" onclick="markAsCorrect('${x.id}')">✅ Acertou (Dar 10⭐)</button>
+                   <button type="button" class="warn" onclick="markAsIncorrect('${x.id}')">❌ Errou (Refazer)</button>
+                </div>
+             </div>`;
+          }).join('');
+      }
+
+      if(!outros.length) {
+          pOutros.innerHTML = '<p class="muted">Nenhum desafio registrado.</p>';
+      } else {
+          pOutros.innerHTML = outros.map(x => {
+             let desc = x.isProblem ? `📖 ${x.title}` : `${x.n1} ${x.type} ${x.n2}`;
+             let painelStatus = "";
+             if (x.status === 'correct') {
+                 painelStatus = `<div style="width:100%; color:#2e7d32; font-weight:bold; margin-top:4px;">⭐ Corrigido: Acertou</div>`;
+             } else if (x.status === 'incorrect') {
+                 painelStatus = `<div style="width:100%; color:#c62828; font-weight:bold; margin-top:4px;">❌ Corrigido: Você mandou ela refazer</div>`;
+             } else {
+                 painelStatus = `<div style="width:100%; color:#666; font-weight:bold; margin-top:4px;">Aguardando a Sofia resolver...</div>`;
+             }
+             return `<div class="listitem">
+                <div style="width:100%; display:flex; justify-content:space-between;">
+                   <div><b>${desc}</b></div>
+                   <button type="button" class="warn" style="padding:4px 8px; font-size:12px; height:fit-content;" onclick="removeItem('${x.id}')">Excluir</button>
+                </div>
+                ${painelStatus}
+             </div>`;
+          }).join('');
+      }
+  }
+  
+  if(s){
+    if(!state.items.length){ s.innerHTML='<p class="muted">Nenhum desafio no momento! 🌸</p>'; }
+    else{
+      s.innerHTML=state.items.map((x,i)=>{
+        if(x.status === 'correct') return ''; 
+        
+        let desc = x.isProblem ? `📖 ${x.title}` : `${x.n1} ${x.type} ${x.n2}`;
+        
+        if(x.status === 'submitted') {
+             return `<div class="listitem" style="background:#f3e5f5; border-color:#ce93d8;">
+                <div><b>${desc}</b><div style="color:#8e24aa; font-weight:bold;">⏳ Aguardando correção do Papai...</div></div>
+             </div>`;
+        } else if (x.status === 'incorrect') {
+             return `<div class="listitem" style="background:#ffebee; border-color:#ef9a9a;">
+                <div><b>${desc}</b><div style="color:#c62828; font-weight:bold;">❌ Papai pediu para você refazer! (Sua resposta foi: ${x.studentAnswer})</div></div>
+                <button type="button" class="primary" style="background:#c62828;" onclick="openChalkboard('${x.id}')">Refazer 📝</button>
+             </div>`;
+        } else {
+             return `<div class="listitem">
+                <div><b>${desc}</b><div class="muted">Novo Desafio!</div></div>
+                <button type="button" class="primary" onclick="openChalkboard('${x.id}')">Resolver 🧑‍🏫</button>
+             </div>`;
+        }
+      }).join('');
+      
+      let temPendente = state.items.some(x => x.status === 'pending' || x.status === 'incorrect' || x.status === 'submitted');
+      if(!temPendente && state.items.length > 0){
+          s.innerHTML += '<p style="color:#2e7d32; font-weight:bold; text-align:center; margin-top:20px;">🎉 Você já entregou todos os desafios! Aguarde o papai colocar mais.</p>';
+      }
+    }
+  }
+}
+
+function removeItem(id){ 
+  state.items = state.items.filter(x => String(x.id) !== String(id)); 
+  persist(); 
+}
+
+function openChalkboard(id){
+  active = String(id);
+  hasDrawnOnBoard = false; 
+  
+  let x = state.items.find(v => String(v.id) === active);
+  if(!x) return;
+  
+  document.getElementById('cbProblemLabel').textContent = x.isProblem ? "Probleminha:" : "Conta Atual:";
+  document.getElementById('cbProblemTitle').textContent = x.isProblem ? x.title : `${x.n1} ${x.type} ${x.n2}`;
+  
+  if(!x.hint) x.hint = getAutomaticHint(x);
+  document.getElementById('hintTextContent').textContent = x.hint;
+
+  document.getElementById('chalkboardOverlay').classList.remove('hidden');
+  document.getElementById('cbDirectAnswer').value = '';
+  
+  timerSeconds = 0;
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    timerSeconds++;
+    let m = String(Math.floor(timerSeconds/60)).padStart(2,'0');
+    let s = String(timerSeconds%60).padStart(2,'0');
+    let badge = document.getElementById('cbTimer');
+    if(badge) badge.textContent = `⏱️ ${m}:${s}`;
+  }, 1000);
+
+  setChalkColor('#ffffff', 'cbBtnWhite');
+  setupCbCanvas(x);
+}
+
+function showHintModal(){ document.getElementById('hintModal').classList.remove('hidden'); }
+function hideHintModal(){ document.getElementById('hintModal').classList.add('hidden'); }
+
+function closeChalkboard(){
+  if(active !== null) {
+      let x = state.items.find(v => String(v.id) === active);
+      if(x && cbCanvas && hasDrawnOnBoard && x.status !== 'submitted'){
+          x.work = cbCanvas.toDataURL('image/png');
+          persist();
+      }
+  }
+  if(timerInterval) clearInterval(timerInterval);
+  document.getElementById('chalkboardOverlay').classList.add('hidden');
+  active = null;
+}
+
+function setupCbCanvas(itemX){
+  cbCanvas = document.getElementById('cbCanvas');
+  let container = document.querySelector('.cb-canvas-container');
+  
+  cbCanvas.width = container.clientWidth;
+  cbCanvas.height = container.clientHeight; 
+  
+  cbCtx = cbCanvas.getContext('2d');
+  cbCtx.fillStyle = '#1b4332';
+  cbCtx.fillRect(0, 0, cbCanvas.width, cbCanvas.height);
+  cbCtx.lineCap = 'round'; 
+  cbCtx.lineJoin = 'round';
+  
+  cbSnapshots = [];
+
+  if(itemX.work && typeof itemX.work === 'string' && itemX.work.startsWith('data:image')){
+      let img = new Image();
+      img.onload = () => { cbCtx.drawImage(img, 0, 0, cbCanvas.width, cbCanvas.height); };
+      img.src = itemX.work;
+      hasDrawnOnBoard = true; 
+  } 
+  
+  cbCanvas.onpointerdown = e => {
+    cbDrawing = true; cbCanvas.setPointerCapture(e.pointerId);
+    hasDrawnOnBoard = true; 
+    
+    cbSnapshots.push(cbCanvas.toDataURL('image/png'));
+    if(cbSnapshots.length > 8) cbSnapshots.shift(); 
+    
+    let r = cbCanvas.getBoundingClientRect();
+    let px = e.clientX - r.left, py = e.clientY - r.top;
+    
+    cbCtx.beginPath(); 
+    cbCtx.moveTo(px, py);
+  };
+  
+  cbCanvas.onpointermove = e => {
+    if(!cbDrawing) return;
+    let r = cbCanvas.getBoundingClientRect();
+    let px = e.clientX - r.left, py = e.clientY - r.top;
+    
+    cbCtx.strokeStyle = currentChalkColor; 
+    cbCtx.lineWidth = currentChalkWidth;
+    cbCtx.lineTo(px, py); 
+    cbCtx.stroke();
+  };
+  
+  cbCanvas.onpointerup = cbCanvas.onpointercancel = () => {
+    cbDrawing = false;
+  };
+}
+
+function setChalkColor(color, btnId){
+  currentChalkColor = color; currentChalkWidth = 4; 
+  document.querySelectorAll('.cb-tool').forEach(b => b.classList.remove('active'));
+  if(btnId) document.getElementById(btnId).classList.add('active');
+}
+function setCbEraser(btnId){
+  currentChalkColor = '#1b4332'; currentChalkWidth = 35; 
+  document.querySelectorAll('.cb-tool').forEach(b => b.classList.remove('active'));
+  if(btnId) document.getElementById(btnId).classList.add('active');
+}
+function cbUndo(){ 
+  if(cbSnapshots.length > 0){
+     let last = cbSnapshots.pop();
+     let img = new Image();
+     img.onload = () => {
+         cbCtx.clearRect(0,0,cbCanvas.width,cbCanvas.height);
+         cbCtx.drawImage(img, 0, 0);
+     };
+     img.src = last;
+  }
+}
+function cbClear(){ 
+  if(!confirm('Limpar lousa? Todos os rascunhos serão apagados.')) return; 
+  cbSnapshots.push(cbCanvas.toDataURL('image/png'));
+  cbCtx.fillStyle = '#1b4332';
+  cbCtx.fillRect(0, 0, cbCanvas.width, cbCanvas.height);
+  hasDrawnOnBoard = false; 
+}
+
+function submitToDad(){
+  if(active === null) return;
+  
+  if(!hasDrawnOnBoard) {
+      alert("⚠️ Ops! Você precisa armar a conta ou fazer o rascunho na lousa usando o giz antes de enviar. Não vale fazer de calculadora! 📝");
+      return; 
+  }
+
+  let x = state.items.find(v => String(v.id) === active);
+  if(!x) return;
+
+  let rawVal = document.getElementById('cbDirectAnswer').value.trim();
+  if(!rawVal){ alert('Digite a resposta para o papai!'); return; }
+
+  x.studentAnswer = rawVal;
+  x.work = cbCanvas.toDataURL('image/png'); 
+  x.status = 'submitted'; 
+  
+  if(timerInterval) clearInterval(timerInterval);
+  x.timeSpent = timerSeconds; 
+  
+  document.getElementById('chalkboardOverlay').classList.add('hidden');
+  document.getElementById('waitingDadOverlay').classList.remove('hidden'); 
+  
+  persist();
+  active = null;
+}
+
+function closeWaitingDad(){
+  document.getElementById('waitingDadOverlay').classList.add('hidden');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function viewWork(id){
+  let x = state.items.find(v => String(v.id) === String(id));
+  if(!x) return;
+  
+  document.getElementById('modalTitle').textContent = `Rascunho`;
+  document.getElementById('parentProblemHeader').textContent = x.isProblem ? x.title : `${x.n1} ${x.type} ${x.n2}`;
+  document.getElementById('parentPanel').classList.add('hidden');
+  document.getElementById('viewWorkModal').classList.remove('hidden');
+  
+  document.getElementById('btnQuickRight').onclick = function() { markAsCorrect(id); };
+  document.getElementById('btnQuickWrong').onclick = function() { markAsIncorrect(id); };
+  
+  if(x.status !== 'submitted') {
+      document.getElementById('quickCorrectBar').style.display = 'none';
+  } else {
+      document.getElementById('quickCorrectBar').style.display = 'flex';
+  }
+  
+  setTimeout(()=>{
+    let parentCanvas = document.getElementById('parentPaper'); 
+    let container = parentCanvas.parentElement;
+    parentCanvas.width = container.clientWidth;
+    parentCanvas.height = container.clientHeight;
+    let parentCtx = parentCanvas.getContext('2d');
+    
+    parentCtx.fillStyle = '#1b4332'; 
+    parentCtx.fillRect(0, 0, parentCanvas.width, parentCanvas.height);
+    
+    if(x.work && typeof x.work === 'string' && x.work.startsWith('data:image')){
+        let img = new Image();
+        img.onload = () => { 
+            parentCtx.drawImage(img, 0, 0, parentCanvas.width, parentCanvas.height); 
+        };
+        img.src = x.work;
+    } 
+  }, 100);
+}
+
+function closeViewWork(){
+  document.getElementById('viewWorkModal').classList.add('hidden');
+  document.getElementById('parentPanel').classList.remove('hidden');
+}
+</script>
+</body>
+</html>
