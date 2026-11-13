@@ -284,7 +284,7 @@ let timerSeconds = 0, timerInterval = null;
 let currentProblemBatch = [];
 let currentBatch = [];
 let loggedRole = null;
-let currentSearchTerm = "como aprender matematica 5 ano";
+let currentSearchTerm = "passo a passo como fazer conta de matematica";
 
 db.collection("caderno").doc("dados_oficiais").onSnapshot((doc) => {
   if (doc.exists) {
@@ -431,14 +431,14 @@ function markAsIncorrect(id) {
 
 function getYouTubeSearchQuery(item){
   if(item.isProblem){
-    return "como resolver probleminhas de matematica 5 ano";
+    return "passo a passo como resolver probleminhas de matematica";
   } else {
-    if(item.type === '+') return "como armar conta de adicao com reserva 5 ano";
-    if(item.type === '-') return "como armar conta de subtracao com emprestimo 5 ano";
-    if(item.type === 'x') return "como armar conta de multiplicacao 5 ano";
-    if(item.type === '÷') return "como armar conta de divisao passo a passo 5 ano";
+    if(item.type === '+') return "passo a passo como fazer conta de mais adicao";
+    if(item.type === '-') return "passo a passo como fazer conta de menos subtracao com emprestimo";
+    if(item.type === 'x') return "passo a passo como fazer conta de vezes multiplicacao";
+    if(item.type === '÷') return "passo a passo como fazer conta de dividir divisao";
   }
-  return "matematica 5 ano";
+  return "passo a passo como fazer conta de matematica";
 }
 
 function getAutomaticHint(item){
@@ -759,7 +759,7 @@ function openChalkboard(id){
   if(!x.hint) x.hint = getAutomaticHint(x);
   document.getElementById('hintTextContent').textContent = x.hint;
   
-  currentSearchTerm = x.searchQuery || "matematica 5 ano";
+  currentSearchTerm = x.searchQuery || "passo a passo como fazer conta de matematica";
 
   document.getElementById('chalkboardOverlay').classList.remove('hidden');
   document.getElementById('cbDirectAnswer').value = '';
