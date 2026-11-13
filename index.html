@@ -33,6 +33,20 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
 .progress-text{position:absolute;width:100%;top:0;left:0;font-size:12px;font-weight:800;color:#5d4037;line-height:18px;text-align:center}
 .login-box{max-width:420px;margin:50px auto;text-align:center}
 
+/* ANIMAÇÃO ESPECIAL PARA CONTA SURPRESA */
+@keyframes pulsePrize {
+  0% { transform: scale(1); box-shadow: 0 4px 15px rgba(251, 192, 45, 0.3); }
+  50% { transform: scale(1.02); box-shadow: 0 6px 25px rgba(255, 117, 140, 0.6); }
+  100% { transform: scale(1); box-shadow: 0 4px 15px rgba(251, 192, 45, 0.3); }
+}
+.prize-animated-card {
+  background: linear-gradient(135deg, #fff9c4, #fffde7);
+  border: 3px solid #ffb300;
+  border-radius: 18px;
+  padding: 15px;
+  animation: pulsePrize 1.8s infinite ease-in-out;
+}
+
 /* LOUSA TELA CHEIA */
 #chalkboardOverlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:#1b4332;z-index:9999;display:flex;flex-direction:column;overflow:hidden}
 .cb-topbar{background:rgba(0,0,0,0.35);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;color:white;border-bottom:2px solid rgba(255,255,255,0.1)}
@@ -169,7 +183,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   
   <div class="card" style="background:#fffde7; border:3px solid #fbc02d; box-shadow: 0 4px 15px rgba(251, 192, 45, 0.3);">
     <h2 style="color:#f57f17; font-size:22px;">⚠️ Aguardando Sua Correção</h2>
-    <p class="muted" style="margin-top:0;">O que a Sofia resolver vai cair direto aqui:</p>
+    <p class="muted" style="margin-top:0;">O que a Sofia resolver vai cair direto aqui (com o resultado exato calculado para você conferir):</p>
     <div id="parentListPending" style="margin-top:10px;"></div>
   </div>
 
@@ -177,6 +191,27 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
     <h2>📋 Todos os Desafios</h2>
     <p class="muted">Lista geral das tarefas ativas e já corrigidas.</p>
     <div id="parentList" style="margin-top:10px;"></div>
+  </div>
+
+  <!-- GERADOR DE CONTA MANUAL / SURPRESA -->
+  <div class="card" style="background:#e8f8f5; border-color:#a3e4d7;">
+    <h2>✍️ Criar Conta Manual / Surpresa Valendo Brinde</h2>
+    <p class="muted">Digite os números e escolha a operação; o resultado é calculado sozinho!</p>
+    <div class="row" style="margin-bottom:10px;">
+      <div><label>Número 1</label><input id="manualN1" type="number" placeholder="Ex: 145" oninput="autoCalcManual()"></div>
+      <div><label>Operação</label><select id="manualOp" onchange="autoCalcManual()"><option value="+">Adição (+)</option><option value="-">Subtração (-)</option><option value="x">Multiplicação (x)</option><option value="÷">Divisão (÷)</option></select></div>
+    </div>
+    <div class="row" style="margin-bottom:10px;">
+      <div><label>Número 2</label><input id="manualN2" type="number" placeholder="Ex: 12" oninput="autoCalcManual()"></div>
+      <div><label>Resultado Exato (Calculado Sozinho ✨)</label><input id="manualExpected" type="number" placeholder="Automático..." style="background:#e8f8f5; font-weight:bold; color:#16a085;"></div>
+    </div>
+    <div style="margin-bottom:10px;">
+      <label>🎁 O que está valendo? (Ex: 100 estrelas, Caixa de bombom, Pizza...)</label>
+      <input id="manualPrize" type="text" placeholder="Ex: 100 estrelas">
+    </div>
+    <div class="actions">
+      <button type="button" class="primary" style="background:#16a085; width:100%;" onclick="createManualProblem()">✨ Enviar Conta Manual para a Sofia</button>
+    </div>
   </div>
 
   <div class="card" style="background:#e8f4fd; border-color:#b9e2fc;">
@@ -189,8 +224,9 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   </div>
 
   <div class="card" style="background:#fffaf0; border-color:#ffe0b2;">
-    <h2>🤖 Gerador de Contas Armadas</h2>
+    <h2>🤖 Gerador de Contas Armadas (Com Filtro de Operação)</h2>
     <div class="row" style="margin-bottom:10px;">
+      <div><label>Tipo de Operação</label><select id="calcType"><option value="all" selected>Misturado (Todas)</option><option value="+">Somente Adição (+)</option><option value="-">Somente Subtração (-)</option><option value="x">Somente Multiplicação (x)</option><option value="÷">Somente Divisão (÷)</option></select></div>
       <div><label>Dificuldade</label><select id="calcDifficulty"><option value="easy">Fácil</option><option value="medium" selected>Médio (Padrão 5º ano)</option><option value="hard">Avançado</option></select></div>
     </div>
     <div class="actions"><button type="button" class="primary" style="background:linear-gradient(135deg,#ffb300,#ff8f00);" onclick="generateBatch()">Gerar 10 Contas ✨</button></div>
@@ -245,6 +281,12 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
     <div id="studentRewardsContainer"></div>
   </div>
 
+  <div class="card" style="background:linear-gradient(135deg,#e1f5fe,#b3e5fc); border-color:#0288d1;">
+    <div class="goal-title" style="color:#01579b;">🏆 Sala de Conquistas e Medalhas</div>
+    <div class="muted" style="font-weight:700; color:#0277bd; margin-bottom:8px;">Suas Medalhas Desbloqueadas:</div>
+    <div id="studentBadgesContainer" style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;"></div>
+  </div>
+
  <div class="card"><h2>Escolha seu desafio 🌟</h2><div id="studentList"></div></div>
 </section>
 </main>
@@ -269,7 +311,8 @@ let state = {
   items: [], 
   stars: 0, 
   rewards: [{name:"Viagem com a Tia Selma na praia", total:10000}], 
-  notifications: {correct: 0, incorrect: 0, show: false} 
+  notifications: {correct: 0, incorrect: 0, show: false},
+  badges: []
 };
 
 let active=null; 
@@ -293,6 +336,7 @@ db.collection("caderno").doc("dados_oficiais").onSnapshot((doc) => {
     if(cloudData.stars !== undefined) state.stars = cloudData.stars;
     if(cloudData.rewards && cloudData.rewards.length > 0) state.rewards = cloudData.rewards;
     if(cloudData.notifications) state.notifications = cloudData.notifications;
+    if(cloudData.badges) state.badges = cloudData.badges;
     
     refreshCurrentView();
   } else {
@@ -309,6 +353,7 @@ function refreshCurrentView(){
     renderLists();
   } else if(loggedRole === 'sofia'){
     updateProgressUI();
+    renderBadgesUI();
     renderLists();
     checkNotificationsForSofia();
   }
@@ -384,6 +429,46 @@ function closeNotification(){
     persist();
 }
 
+function checkAndUnlockBadges(){
+  if(!state.badges) state.badges = [];
+  let totalCorrect = state.items.filter(x => x.status === 'correct').length;
+  let currentStars = state.stars || 0;
+
+  let possibleBadges = [
+    { id: 'first_step', name: 'Primeiro Passo 🎯', desc: 'Acertou 5 desafios!', cond: totalCorrect >= 5 },
+    { id: 'math_star', name: 'Estrela da Matemática 🌟', desc: 'Acertou 25 desafios!', cond: totalCorrect >= 25 },
+    { id: 'tabuada_pro', name: 'Gênio da Tabuada 🧠', desc: 'Acertou 50 desafios!', cond: totalCorrect >= 50 },
+    { id: 'master_100', name: 'Mestre das Contas 🏆', desc: 'Acertou 100 desafios!', cond: totalCorrect >= 100 },
+    { id: 'falcon_250', name: 'Falcão dos Números 🚀', desc: 'Acertou 250 desafios!', cond: totalCorrect >= 250 },
+    { id: 'expert_stars', name: 'Lenda das Estrelas ⭐', desc: 'Acumulou 500 estrelas!', cond: currentStars >= 500 }
+  ];
+
+  let novoUnlock = false;
+  possibleBadges.forEach(b => {
+    if(b.cond && !state.badges.some(existing => existing.id === b.id)){
+      state.badges.push({ id: b.id, name: b.name, desc: b.desc });
+      novoUnlock = true;
+    }
+  });
+
+  if(novoUnlock) persist();
+}
+
+function renderBadgesUI(){
+  let container = document.getElementById('studentBadgesContainer');
+  if(!container) return;
+  if(!state.badges || state.badges.length === 0){
+    container.innerHTML = '<span class="muted" style="font-size:13px;">Resolva mais desafios para conquistar sua primeira medalha pesada! 🏅</span>';
+    return;
+  }
+  container.innerHTML = state.badges.map(b => `
+    <div style="background:white; border:2px solid #0288d1; border-radius:12px; padding:8px 12px; text-align:center; min-width:130px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+      <div style="font-size:15px; font-weight:800; color:#0277bd;">${b.name}</div>
+      <div style="font-size:11px; color:#555; margin-top:2px;">${b.desc}</div>
+    </div>
+  `).join('');
+}
+
 function adjustStars(action) {
   let val = parseInt(document.getElementById('manualStarAmount').value);
   if(isNaN(val) || val <= 0) {
@@ -397,6 +482,7 @@ function adjustStars(action) {
     if(state.stars < 0) state.stars = 0; 
   }
   document.getElementById('manualStarAmount').value = '';
+  checkAndUnlockBadges();
   persist();
 }
 
@@ -410,6 +496,7 @@ function markAsCorrect(id) {
     state.notifications.correct = (state.notifications.correct || 0) + 1;
     state.notifications.show = true;
     
+    checkAndUnlockBadges();
     persist();
     closeViewWork(); 
 }
@@ -456,6 +543,66 @@ function getAutomaticHint(item){
     if(item.type === '÷') return "💡 Dica: Teste na tabuada quantas vezes o número cabe no outro.";
   }
   return "💡 Dica: Arme a continha na lousa!";
+}
+
+function autoCalcManual(){
+  let n1 = parseFloat(document.getElementById('manualN1').value);
+  let n2 = parseFloat(document.getElementById('manualN2').value);
+  let op = document.getElementById('manualOp').value;
+  let expField = document.getElementById('manualExpected');
+
+  if(isNaN(n1) || isNaN(n2)){
+    expField.value = '';
+    return;
+  }
+
+  let res = 0;
+  if(op === '+') res = n1 + n2;
+  else if(op === '-') res = n1 - n2;
+  else if(op === 'x') res = n1 * n2;
+  else if(op === '÷') res = n2 !== 0 ? Number((n1 / n2).toFixed(2)) : 0;
+
+  expField.value = res;
+}
+
+function createManualProblem(){
+  let n1 = document.getElementById('manualN1').value.trim();
+  let n2 = document.getElementById('manualN2').value.trim();
+  let op = document.getElementById('manualOp').value;
+  let expected = document.getElementById('manualExpected').value.trim();
+  let prize = document.getElementById('manualPrize').value.trim();
+
+  if(!n1 || !n2 || !expected){
+    alert('Preencha os números e o resultado exato da conta!');
+    return;
+  }
+
+  let newItem = {
+    id: String(Date.now() + Math.random()),
+    isProblem: false,
+    isManual: true,
+    type: op,
+    n1: Number(n1),
+    n2: Number(n2),
+    expected: Number(expected),
+    prize: prize,
+    work: "",
+    studentAnswer: "",
+    status: "pending",
+    timeSpent: 0
+  };
+
+  newItem.hint = getAutomaticHint(newItem);
+  newItem.searchQuery = getYouTubeSearchQuery(newItem);
+
+  state.items.unshift(newItem);
+  persist();
+
+  document.getElementById('manualN1').value = '';
+  document.getElementById('manualN2').value = '';
+  document.getElementById('manualExpected').value = '';
+  document.getElementById('manualPrize').value = '';
+  alert('✨ Conta manual enviada e calculada para a Sofia!');
 }
 
 function generateProblemBatch(){
@@ -521,16 +668,18 @@ function renderProblemBatchPreview(){
 
 function sendProblemBatchToStudent(){
   if(!currentProblemBatch.length) return;
-  currentProblemBatch.forEach(item => state.items.push(item));
+  currentProblemBatch.forEach(item => state.items.unshift(item));
   currentProblemBatch = [];
   persist();
-  document.getElementById('problemBatchPreview').innerHTML = '<p style="color:#2e7d32; font-weight:700;">✨ Lote enviado para a nuvem!</p>';
+  document.getElementById('problemBatchPreview').innerHTML = '<p style="color:#2e7d32; font-weight:700;">✨ Lote enviado para o topo da nuvem!</p>';
 }
 
 function generateBatch(){
   currentBatch = [];
   let diff = document.getElementById('calcDifficulty').value;
-  let ops = ['÷', 'x', '-', '+'];
+  let selectedOp = document.getElementById('calcType').value;
+  let ops = selectedOp === 'all' ? ['÷', 'x', '-', '+'] : [selectedOp];
+
   for(let i=0; i<10; i++){
     let op = ops[Math.floor(Math.random() * ops.length)];
     let n1, n2, expected;
@@ -578,10 +727,10 @@ function renderBatchPreview(){
 
 function sendBatchToStudent(){
   if(!currentBatch.length) return;
-  currentBatch.forEach(item => state.items.push(item));
+  currentBatch.forEach(item => state.items.unshift(item));
   currentBatch = [];
   persist();
-  document.getElementById('batchPreviewContainer').innerHTML = '<p style="color:#2e7d32; font-weight:700;">✨ Lote enviado para a nuvem!</p>';
+  document.getElementById('batchPreviewContainer').innerHTML = '<p style="color:#2e7d32; font-weight:700;">✨ Lote enviado para o topo da nuvem!</p>';
 }
 
 function renderStats(){
@@ -668,10 +817,11 @@ function renderLists(){
       } else {
           pPending.innerHTML = pendentes.map(x => {
              let desc = x.isProblem ? `📖 ${x.title}` : `${x.n1} ${x.type} ${x.n2}`;
-             let mathAns = `(Resultado matemático exato: <b>${x.expected}</b>)`;
+             if(x.prize) desc += ` <span style="color:#d81b60; font-weight:bold;">(🎁 Brinde: ${x.prize})</span>`;
+             let mathAns = `<span style="background:#e8f8f5; color:#16a085; padding:2px 8px; border-radius:6px; font-weight:bold; border:1px solid #a3e4d7;">⚡ Resposta Correta: ${x.expected}</span>`;
              return `<div class="listitem submitted">
-                <div style="width:100%; display:flex; justify-content:space-between;">
-                   <div><b>${desc}</b><br><small>${mathAns}</small></div>
+                <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
+                   <div><b>${desc}</b><br><div style="margin-top:6px;">${mathAns}</div></div>
                    <button type="button" class="warn" style="padding:4px 8px; font-size:12px; height:fit-content;" onclick="removeItem('${x.id}')">Excluir</button>
                 </div>
                 <div style="width:100%; display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; border-top:1px dashed #ccc; padding-top:8px;">
@@ -689,6 +839,8 @@ function renderLists(){
       } else {
           pOutros.innerHTML = outros.map(x => {
              let desc = x.isProblem ? `📖 ${x.title}` : `${x.n1} ${x.type} ${x.n2}`;
+             if(x.prize) desc += ` <span style="color:#d81b60; font-weight:bold;">(🎁 Brinde: ${x.prize})</span>`;
+             let mathAns = `<span style="font-size:12px; color:#555;">(Resultado: <b>${x.expected}</b>)</span>`;
              let painelStatus = "";
              if (x.status === 'correct') {
                  painelStatus = `<div style="width:100%; color:#2e7d32; font-weight:bold; margin-top:4px;">⭐ Corrigido: Acertou</div>`;
@@ -698,8 +850,8 @@ function renderLists(){
                  painelStatus = `<div style="width:100%; color:#666; font-weight:bold; margin-top:4px;">Aguardando a Sofia resolver...</div>`;
              }
              return `<div class="listitem">
-                <div style="width:100%; display:flex; justify-content:space-between;">
-                   <div><b>${desc}</b></div>
+                <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
+                   <div><b>${desc}</b> ${mathAns}</div>
                    <button type="button" class="warn" style="padding:4px 8px; font-size:12px; height:fit-content;" onclick="removeItem('${x.id}')">Excluir</button>
                 </div>
                 ${painelStatus}
@@ -715,6 +867,12 @@ function renderLists(){
         if(x.status === 'correct') return ''; 
         
         let desc = x.isProblem ? `📖 ${x.title}` : `${x.n1} ${x.type} ${x.n2}`;
+        let itemClass = "listitem";
+        
+        if(x.prize) {
+            desc = `🎁 <span style="color:#d81b60; font-weight:900; font-size:16px;">NOVO DESAFIO VALENDO: ${x.prize}!</span><br><span style="font-size:18px; color:#1b4332; font-weight:bold;">Conta: ${x.n1} ${x.type} ${x.n2}</span>`;
+            itemClass = "listitem prize-animated-card"; // Aplica a animação de pulsação suave e destaque!
+        }
         
         if(x.status === 'submitted') {
              return `<div class="listitem" style="background:#f3e5f5; border-color:#ce93d8;">
@@ -726,8 +884,8 @@ function renderLists(){
                 <button type="button" class="primary" style="background:#c62828;" onclick="openChalkboard('${x.id}')">Refazer 📝</button>
              </div>`;
         } else {
-             return `<div class="listitem">
-                <div><b>${desc}</b><div class="muted">Novo Desafio!</div></div>
+             return `<div class="${itemClass}">
+                <div><div>${desc}</div><div class="muted">Novo Desafio Disponível!</div></div>
                 <button type="button" class="primary" onclick="openChalkboard('${x.id}')">Resolver 🧑‍🏫</button>
              </div>`;
         }
@@ -753,7 +911,7 @@ function openChalkboard(id){
   let x = state.items.find(v => String(v.id) === active);
   if(!x) return;
   
-  document.getElementById('cbProblemLabel').textContent = x.isProblem ? "Probleminha:" : "Conta Atual:";
+  document.getElementById('cbProblemLabel').textContent = x.prize ? `🎁 Desafio Valendo Prêmio (${x.prize}):` : (x.isProblem ? "Probleminha:" : "Conta Atual:");
   document.getElementById('cbProblemTitle').textContent = x.isProblem ? x.title : `${x.n1} ${x.type} ${x.n2}`;
   
   if(!x.hint) x.hint = getAutomaticHint(x);
@@ -918,7 +1076,9 @@ function viewWork(id){
   if(!x) return;
   
   document.getElementById('modalTitle').textContent = `Rascunho`;
-  document.getElementById('parentProblemHeader').textContent = x.isProblem ? x.title : `${x.n1} ${x.type} ${x.n2}`;
+  let titleHeader = x.isProblem ? x.title : `${x.n1} ${x.type} ${x.n2}`;
+  if(x.prize) titleHeader += ` (🎁 Brinde: ${x.prize})`;
+  document.getElementById('parentProblemHeader').textContent = titleHeader;
   document.getElementById('parentPanel').classList.add('hidden');
   document.getElementById('viewWorkModal').classList.remove('hidden');
   
