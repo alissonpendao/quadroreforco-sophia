@@ -142,6 +142,19 @@ button.primary:active,button.soft:active,button.warn:active{transform:scale(0.97
     <h2>📊 Central de Desempenho Escolar</h2>
     <div id="statsContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-top:10px;"></div>
   </div>
+  
+  <!-- NOVO: CONTROLE MANUAL DE ESTRELAS -->
+  <div class="card" style="background:#fff3e0; border-color:#ffb74d;">
+    <h2>⭐ Controle Manual de Estrelas</h2>
+    <p class="muted" style="margin-top:0;">Dê bônus ou tire pontos se notar trapaça no rascunho.</p>
+    <div class="row">
+       <div><input id="manualStarAmount" type="number" placeholder="Quantas estrelas? Ex: 10"></div>
+    </div>
+    <div class="actions" style="margin-top:10px;">
+       <button type="button" class="primary" style="background:#f57c00; box-shadow:0 4px 12px rgba(245,124,0,0.3);" onclick="adjustStars('add')">Dar Estrelas ➕</button>
+       <button type="button" class="warn" style="background:#e53935; color:white;" onclick="adjustStars('remove')">Tirar Estrelas ➖</button>
+    </div>
+  </div>
 
   <div class="card" style="background:#e8f4fd; border-color:#b9e2fc;">
     <h2>📖 Gerador Automático de Probleminhas (5º Ano)</h2>
@@ -231,14 +244,14 @@ let cbCanvas, cbCtx;
 let currentChalkColor = '#ffffff';
 let currentChalkWidth = 4;
 let cbDrawing = false;
-let cbSnapshots = []; // Memória leve para o botão "Desfazer"
+let cbSnapshots = []; 
+let hasDrawnOnBoard = false; // <-- VARIÁVEL ANTI-TRAPAÇA
 
 let timerSeconds = 0, timerInterval = null;
 let currentProblemBatch = [];
 let currentBatch = [];
 let loggedRole = null;
 
-// ATUALIZAÇÃO EM TEMPO REAL NA TELA
 db.collection("caderno").doc("dados_oficiais").onSnapshot((doc) => {
   if (doc.exists) {
     let cloudData = doc.data();
@@ -309,6 +322,24 @@ function logout(){
   document.getElementById('viewWorkModal').classList.add('hidden');
   document.getElementById('loginScreen').classList.remove('hidden');
   if(timerInterval) clearInterval(timerInterval);
+}
+
+function adjustStars(action) {
+  let val = parseInt(document.getElementById('manualStarAmount').value);
+  if(isNaN(val) || val <= 0) {
+    alert("Digite um número válido de estrelas primeiro.");
+    return;
+  }
+  
+  if(action === 'add') {
+    state.stars = (state.stars || 0) + val;
+  } else if(action === 'remove') {
+    state.stars = (state.stars || 0) - val;
+    if(state.stars < 0) state.stars = 0; // Não deixa ficar negativo
+  }
+  
+  document.getElementById('manualStarAmount').value = '';
+  persist();
 }
 
 function getAutomaticHint(item){
@@ -561,6 +592,8 @@ function removeItem(id){
 
 function openChalkboard(id){
   active = String(id);
+  hasDrawnOnBoard = false; // <-- Zera a trapaça ao abrir
+  
   let x = state.items.find(v => String(v.id) === active);
   if(!x) return;
   
@@ -584,7 +617,7 @@ function openChalkboard(id){
   }, 1000);
 
   setChalkColor('#ffffff', 'cbBtnWhite');
-  setupCbCanvas(x); // Passa o item para desenhar o rascunho salvo, se houver
+  setupCbCanvas(x);
 }
 
 function showHintModal(){ document.getElementById('hintModal').classList.remove('hidden'); }
@@ -593,8 +626,7 @@ function hideHintModal(){ document.getElementById('hintModal').classList.add('hi
 function closeChalkboard(){
   if(active !== null) {
       let x = state.items.find(v => String(v.id) === active);
-      if(x && cbCanvas){
-          // Salva uma fotinha leve da tela ao invés de mil coordenadas!
+      if(x && cbCanvas && hasDrawnOnBoard){
           x.work = cbCanvas.toDataURL('image/png');
           persist();
       }
@@ -617,28 +649,19 @@ function setupCbCanvas(itemX){
   cbCtx.lineCap = 'round'; 
   cbCtx.lineJoin = 'round';
   
-  cbSnapshots = []; // Limpa histórico do desfazer da sessão
+  cbSnapshots = [];
 
-  // Restaura o rascunho se existir
   if(itemX.work && typeof itemX.work === 'string' && itemX.work.startsWith('data:image')){
       let img = new Image();
       img.onload = () => { cbCtx.drawImage(img, 0, 0, cbCanvas.width, cbCanvas.height); };
       img.src = itemX.work;
-  } else if (itemX.work && Array.isArray(itemX.work)) {
-      // Suporte para os riscos antigos pesados
-      itemX.work.forEach(st => {
-          if(!st.length) return;
-          cbCtx.beginPath();
-          cbCtx.strokeStyle = st[0].color || '#ffffff'; cbCtx.lineWidth = st[0].width || 4;
-          cbCtx.moveTo(st[0].x, st[0].y);
-          st.slice(1).forEach(pt => { cbCtx.strokeStyle = pt.color || cbCtx.strokeStyle; cbCtx.lineWidth = pt.width || 4; cbCtx.lineTo(pt.x, pt.y); cbCtx.stroke(); });
-      });
-  }
+      hasDrawnOnBoard = true; // Se tem rascunho antigo, conta como desenhado
+  } 
   
   cbCanvas.onpointerdown = e => {
     cbDrawing = true; cbCanvas.setPointerCapture(e.pointerId);
+    hasDrawnOnBoard = true; // <-- GIZ TOCOU NA LOUSA (Permissão garantida)
     
-    // Salva estado para o botão "Desfazer" sem pesar na nuvem
     cbSnapshots.push(cbCanvas.toDataURL('image/png'));
     if(cbSnapshots.length > 8) cbSnapshots.shift(); 
     
@@ -687,28 +710,34 @@ function cbUndo(){
   }
 }
 function cbClear(){ 
-  if(!confirm('Limpar lousa?')) return; 
+  if(!confirm('Limpar lousa? Todos os rascunhos serão apagados.')) return; 
   cbSnapshots.push(cbCanvas.toDataURL('image/png'));
   cbCtx.fillStyle = '#1b4332';
   cbCtx.fillRect(0, 0, cbCanvas.width, cbCanvas.height);
+  hasDrawnOnBoard = false; // Se apagou tudo, tem que desenhar de novo pra valer!
 }
 
 function checkCbAnswer(){
   if(active === null) return;
+  
+  // BLOQUEIO ANTI-TRAPAÇA: Exige que tenha desenhado algo
+  if(!hasDrawnOnBoard) {
+      alert("⚠️ Ops! Você precisa armar a conta ou fazer o rascunho na lousa usando o giz antes de responder. Não vale fazer de calculadora! 📝");
+      return; // Trava a função aqui, não deixa enviar
+  }
+
   let x = state.items.find(v => String(v.id) === active);
   if(!x) return;
 
   let rawVal = document.getElementById('cbDirectAnswer').value.trim();
   if(!rawVal){ alert('Digite a resposta!'); return; }
   
-  // Limpeza de teclado de celular que bota vírgula
   let cleanVal = rawVal.replace(',', '.');
   let userNum = parseFloat(cleanVal);
   let expectedNum = parseFloat(x.expected);
   
   if(isNaN(userNum)){ alert('Digite um número válido!'); return; }
 
-  // FOTOGRAFIA LEVE DA LOUSA (Nunca mais trava o banco)
   x.work = cbCanvas.toDataURL('image/png'); 
   
   if(timerInterval) clearInterval(timerInterval);
@@ -716,7 +745,6 @@ function checkCbAnswer(){
   
   document.getElementById('chalkboardOverlay').classList.add('hidden');
   
-  // Confirmação à prova de falhas com tolerância decimal
   if(Math.abs(userNum - expectedNum) < 0.001){
     if(!x.correct){ 
       state.stars = (state.stars || 0) + 10; 
@@ -765,20 +793,10 @@ function viewWork(id){
     if(x.work && typeof x.work === 'string' && x.work.startsWith('data:image')){
         let img = new Image();
         img.onload = () => { 
-            // Desenha esticado para caber na tela do pai
             parentCtx.drawImage(img, 0, 0, parentCanvas.width, parentCanvas.height); 
         };
         img.src = x.work;
-    } else if (x.work && Array.isArray(x.work)) {
-        // Legado (antigo)
-        x.work.forEach(st => {
-            if(!st.length) return;
-            parentCtx.beginPath(); parentCtx.lineCap = 'round'; parentCtx.lineJoin = 'round';
-            parentCtx.strokeStyle = st[0].color || '#ffffff'; parentCtx.lineWidth = st[0].width || 4;
-            parentCtx.moveTo(st[0].x, st[0].y);
-            st.slice(1).forEach(pt => { parentCtx.strokeStyle = pt.color || parentCtx.strokeStyle; parentCtx.lineWidth = pt.width || 4; parentCtx.lineTo(pt.x, pt.y); parentCtx.stroke(); });
-        });
-    }
+    } 
   }, 100);
 }
 
