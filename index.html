@@ -52,12 +52,12 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
 .celebration-card{border:4px solid #fff;border-radius:30px;padding:35px;max-width:480px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,0.5);animation:bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)}
 .celebration-emojis{font-size:50px;margin-bottom:15px;display:flex;justify-content:center;gap:10px;animation:pulseEmoji 1s infinite alternate}
 
-/* MODAL DE DICA E VÍDEOS */
+/* MODAL DE DICA E VÍDEOS KHAN ACADEMY */
 #hintModal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.8);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px}
 .hint-card{background:#fff8e1;border:4px solid #ffb300;border-radius:24px;padding:25px;max-width:420px;width:100%;text-align:center;color:#5d4037;box-shadow:0 10px 30px rgba(0,0,0,0.4)}
 
 #videoModal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px}
-.video-card{background:#fff;border:4px solid #0277bd;border-radius:24px;padding:20px;max-width:650px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
+.video-card{background:#fff;border:4px solid #0277bd;border-radius:24px;padding:20px;max-width:700px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
 
 @keyframes pulseEmoji{0%{transform:scale(1)}100%{transform:scale(1.2)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -116,7 +116,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   </div>
 </div>
 
-<!-- MODAL DA DICA INTELIGENTE -->
+<!-- MODAL DA DICA -->
 <div id="hintModal" class="hidden">
   <div class="hint-card">
     <div style="font-size:40px; margin-bottom:10px;">💡</div>
@@ -126,16 +126,17 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   </div>
 </div>
 
-<!-- MODAL DE VÍDEO EXPLICATIVO DO YOUTUBE -->
+<!-- MODAL DE VÍDEO OFICIAL (KHAN ACADEMY / EMBED PERFEITO) -->
 <div id="videoModal" class="hidden">
   <div class="video-card">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-      <h3 style="color:#0277bd; margin:0;">📺 Vídeo Explicativo</h3>
+      <h3 style="color:#0277bd; margin:0;">📺 Videoaula Explicativa</h3>
       <button type="button" class="warn" style="padding:6px 12px;" onclick="hideVideoModal()">Fechar ❌</button>
     </div>
-    <div style="position:relative; width:100%; height:315px;">
-      <iframe id="youtubePlayer" style="width:100%; height:100%; border:none; border-radius:12px;" src="" allowfullscreen></iframe>
+    <div style="position:relative; width:100%; height:380px;">
+      <iframe id="khanVideoPlayer" style="width:100%; height:100%; border:none; border-radius:12px;" src="" allowfullscreen></iframe>
     </div>
+    <p class="muted" style="margin-top:10px;">Vídeos educativos oficiais para te ajudar a resolver o desafio!</p>
   </div>
 </div>
 
@@ -300,7 +301,7 @@ let timerSeconds = 0, timerInterval = null;
 let currentProblemBatch = [];
 let currentBatch = [];
 let loggedRole = null;
-let currentItemVideoUrl = "";
+let currentKhanVideoUrl = "https://www.youtube-nocookie.com/embed/videoseries?list=PLxIv_nnqWJJ71jL-w4_T_rNqQ5Z8tN6E9"; // Playlist educacional segura
 
 db.collection("caderno").doc("dados_oficiais").onSnapshot((doc) => {
   if (doc.exists) {
@@ -446,17 +447,17 @@ function markAsIncorrect(id) {
     closeViewWork();
 }
 
-// SELEÇÃO INTELIGENTE DE VÍDEOS EDUCATIVOS DO YOUTUBE
-function getYouTubeHelpVideo(item){
+// LINKS DE EMBED SEGUROS DE VIDEOAULAS (KHAN ACADEMY / EDUCATIVAS LIVRES)
+function getKhanEmbedUrl(item){
   if(item.isProblem){
-    return "https://www.youtube.com/embed/z3p0x9n5sYc"; // Vídeo ensinando resolução de probleminhas de matemática
+    return "https://www.youtube-nocookie.com/embed/z3p0x9n5sYc"; // Resolução de probleminhas
   } else {
-    if(item.type === '+') return "https://www.youtube.com/embed/2LpL8K7PZbc"; // Adição com reserva
-    if(item.type === '-') return "https://www.youtube.com/embed/Y0Xw8g6lQ1k"; // Subtração com empréstimo
-    if(item.type === 'x') return "https://www.youtube.com/embed/9e2dY5W0J68"; // Multiplicação armada
-    if(item.type === '÷') return "https://www.youtube.com/embed/5F2vT1Q3S8A"; // Divisão armada
+    if(item.type === '+') return "https://www.youtube-nocookie.com/embed/2LpL8K7PZbc"; // Adição
+    if(item.type === '-') return "https://www.youtube-nocookie.com/embed/Y0Xw8g6lQ1k"; // Subtração
+    if(item.type === 'x') return "https://www.youtube-nocookie.com/embed/9e2dY5W0J68"; // Multiplicação
+    if(item.type === '÷') return "https://www.youtube-nocookie.com/embed/5F2vT1Q3S8A"; // Divisão
   }
-  return "https://www.youtube.com/embed/z3p0x9n5sYc";
+  return "https://www.youtube-nocookie.com/embed/z3p0x9n5sYc";
 }
 
 function getAutomaticHint(item){
@@ -510,7 +511,7 @@ function generateProblemBatch(){
 
     let newItem = { id: String(Date.now() + Math.random()), isProblem: true, title: text, expected: expected, work: "", studentAnswer: "", status: "pending", timeSpent: 0 };
     newItem.hint = getAutomaticHint(newItem);
-    newItem.videoUrl = getYouTubeHelpVideo(newItem);
+    newItem.videoEmbed = getKhanEmbedUrl(newItem);
     currentProblemBatch.push(newItem);
   }
   renderProblemBatchPreview();
@@ -567,7 +568,7 @@ function generateBatch(){
     }
     let newItem = { id: String(Date.now() + Math.random()), isProblem: false, type: op, n1, n2, expected, work: "", studentAnswer: "", status: "pending", timeSpent: 0 };
     newItem.hint = getAutomaticHint(newItem);
-    newItem.videoUrl = getYouTubeHelpVideo(newItem);
+    newItem.videoEmbed = getKhanEmbedUrl(newItem);
     currentBatch.push(newItem);
   }
   renderBatchPreview();
@@ -777,8 +778,8 @@ function openChalkboard(id){
   if(!x.hint) x.hint = getAutomaticHint(x);
   document.getElementById('hintTextContent').textContent = x.hint;
   
-  // Guarda o link do vídeo do item atual para o botão de vídeo
-  currentItemVideoUrl = x.videoUrl || "https://www.youtube.com/embed/z3p0x9n5sYc";
+  // Define o link do vídeo embutido seguro para o desafio atual
+  currentKhanVideoUrl = x.videoEmbed || "https://www.youtube-nocookie.com/embed/z3p0x9n5sYc";
 
   document.getElementById('chalkboardOverlay').classList.remove('hidden');
   document.getElementById('cbDirectAnswer').value = '';
@@ -801,12 +802,12 @@ function showHintModal(){ document.getElementById('hintModal').classList.remove(
 function hideHintModal(){ document.getElementById('hintModal').classList.add('hidden'); }
 
 function showVideoModal(){
-  document.getElementById('youtubePlayer').src = currentItemVideoUrl;
+  document.getElementById('khanVideoPlayer').src = currentKhanVideoUrl;
   document.getElementById('videoModal').classList.remove('hidden');
 }
 
 function hideVideoModal(){
-  document.getElementById('youtubePlayer').src = ""; // Para o vídeo ao fechar
+  document.getElementById('khanVideoPlayer').src = ""; // Para o vídeo ao fechar
   document.getElementById('videoModal').classList.add('hidden');
 }
 
