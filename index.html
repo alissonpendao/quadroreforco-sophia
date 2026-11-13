@@ -78,6 +78,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   <div class="actions" style="margin-top:18px;">
     <button type="button" class="primary" style="width:100%" onclick="tryLogin()">Entrar 💖</button>
   </div>
+  <!-- AVISO DE ERRO AGORA DISCRETO SEM SENHA -->
   <p class="muted" id="loginMsg" style="color:#d92d20; margin-top:10px; font-weight:700;"></p>
 </section>
 
@@ -167,6 +168,19 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
        <button type="button" class="warn" style="background:#e53935; color:white;" onclick="adjustStars('remove')">Tirar Estrelas ➖</button>
     </div>
   </div>
+  
+  <!-- SESSÃO ISOLADA SÓ PARA O QUE ELA ENTREGOU -->
+  <div class="card" style="background:#fffde7; border:3px solid #fbc02d; box-shadow: 0 4px 15px rgba(251, 192, 45, 0.3);">
+    <h2 style="color:#f57f17; font-size:22px;">⚠️ Aguardando Sua Correção</h2>
+    <p class="muted" style="margin-top:0;">O que a Sofia acabou de fazer vai cair direto aqui:</p>
+    <div id="parentListPending" style="margin-top:10px;"></div>
+  </div>
+
+  <div class="card">
+    <h2>📋 Todos os Desafios (Cadastrados/Corrigidos)</h2>
+    <p class="muted">Lista geral das tarefas ativas e já corrigidas.</p>
+    <div id="parentList" style="margin-top:10px;"></div>
+  </div>
 
   <div class="card" style="background:#e8f4fd; border-color:#b9e2fc;">
     <h2>📖 Gerador de Probleminhas (5º Ano)</h2>
@@ -186,10 +200,15 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
     <div id="batchPreviewContainer" style="margin-top:15px;"></div>
   </div>
 
-  <div class="card">
-    <h2>📋 Correções e Histórico</h2>
-    <p class="muted">Os exercícios que ela fez ficam <b>Amarelos</b> aguardando sua correção.</p>
-    <div id="parentList" style="margin-top:10px;"></div>
+  <div class="card" style="background:#fff5f8; border-color:#ffd1dc;">
+    <h2>🎁 Adicionar Prêmios e Metas</h2>
+    <div class="row">
+      <div><label>Nome do Prêmio</label><input id="newRewardName" type="text" placeholder="Ex: Sorvete ou Passeio"></div>
+      <div><label>Estrelas Necessárias</label><input id="newRewardStars" type="number" placeholder="Ex: 10000"></div>
+    </div>
+    <div class="actions"><button type="button" class="primary" onclick="addReward()">Adicionar Prêmio 🌟</button></div>
+    <p class="muted" id="rewardMsg" style="margin-top:6px; color:#e65100; font-weight:700;"></p>
+    <div style="margin-top:15px;"><div id="rewardsListParent"></div></div>
   </div>
 </section>
 
@@ -274,11 +293,12 @@ db.collection("caderno").doc("dados_oficiais").onSnapshot((doc) => {
     if(cloudData.rewards) state.rewards = cloudData.rewards;
     if(cloudData.notifications) state.notifications = cloudData.notifications;
     
-    // Migração para os itens antigos que não tem "status"
+    // Migração de segurança para itens antigos que ela já fez
     state.items.forEach(x => {
         if(!x.status){
             if(x.solved && x.correct) x.status = 'correct';
             else if(x.solved && !x.correct) x.status = 'incorrect';
+            else if(x.studentAnswer || (x.work && typeof x.work === 'string')) x.status = 'submitted';
             else x.status = 'pending';
         }
     });
@@ -321,6 +341,7 @@ function tryLogin(){
     document.getElementById('studentPanel').classList.add('hidden');
     document.getElementById('parentPanel').classList.remove('hidden');
     document.getElementById('accessPass').value = '';
+    msg.textContent = '';
     refreshCurrentView();
   }else if(val === SENHA_SOFIA){
     loggedRole = 'sofia';
@@ -328,10 +349,11 @@ function tryLogin(){
     document.getElementById('parentPanel').classList.add('hidden');
     document.getElementById('studentPanel').classList.remove('hidden');
     document.getElementById('accessPass').value = '';
+    msg.textContent = '';
     refreshCurrentView();
   }else{
     msg.style.color = '#d92d20';
-    msg.textContent='Senha incorreta! Digite 2191 (Pai) ou 25022016 (Sofia)';
+    msg.textContent = 'Senha incorreta! Tente novamente.';
   }
 }
 
@@ -395,21 +417,20 @@ function markAsCorrect(id) {
     let x = state.items.find(v => String(v.id) === String(id));
     if(!x) return;
     x.status = 'correct';
-    state.stars = (state.stars || 0) + 10; // Da as estrelas só agora!
+    state.stars = (state.stars || 0) + 10; 
     
     if(!state.notifications) state.notifications = { correct:0, incorrect:0, show:false };
     state.notifications.correct = (state.notifications.correct || 0) + 1;
     state.notifications.show = true;
     
     persist();
-    closeViewWork(); // Fecha o modal se estiver aberto
+    closeViewWork(); 
 }
 
 function markAsIncorrect(id) {
     let x = state.items.find(v => String(v.id) === String(id));
     if(!x) return;
     x.status = 'incorrect';
-    // Remove o rascunho dela para ela desenhar do zero
     x.work = ""; 
     x.studentAnswer = "";
     
@@ -418,9 +439,8 @@ function markAsIncorrect(id) {
     state.notifications.show = true;
     
     persist();
-    closeViewWork(); // Fecha o modal se estiver aberto
+    closeViewWork();
 }
-
 
 function getAutomaticHint(item){
   if(item.isProblem){
@@ -583,9 +603,9 @@ function renderStats(){
       <div style="font-size:13px; font-weight:bold; color:#2e7d32;">${goalPercent}% Conquistado</div>
     </div>
     <div style="background:white; padding:12px; border-radius:12px; border:1px solid #ddd;">
-      <div style="font-size:12px; color:#666; font-weight:bold;">📉 Tarefas Aguardando Pai</div>
-      <div style="font-size:20px; font-weight:900; color:#d81b60; margin:4px 0;">${aguardando}</div>
-      <div style="font-size:12px; color:#555;">Vá em Histórico para corrigir</div>
+      <div style="font-size:12px; color:#666; font-weight:bold;">📉 Aguardando Correção</div>
+      <div style="font-size:20px; font-weight:900; color:#d81b60; margin:4px 0;">${aguardando} <span style="font-size:14px;">tarefas</span></div>
+      <div style="font-size:12px; color:#555;">Corrija na caixa abaixo!</div>
     </div>
   `;
 }
@@ -596,11 +616,14 @@ function addReward(){
   if(!name || isNaN(total) || total<=0){ alert('Preencha o prêmio!'); return; }
   state.rewards.push({name, total});
   document.getElementById('newRewardName').value=''; document.getElementById('newRewardStars').value='';
+  document.getElementById('rewardMsg').textContent = 'Prêmio adicionado com sucesso!';
+  setTimeout(() => { document.getElementById('rewardMsg').textContent = ''; }, 3000);
   persist();
 }
 function removeReward(index){ state.rewards.splice(index, 1); persist(); }
 function renderRewardsParent(){
   let container = document.getElementById('rewardsListParent');
+  if(!container) return;
   if(!state.rewards.length){ container.innerHTML = '<p class="muted">Nenhum prêmio.</p>'; return; }
   container.innerHTML = state.rewards.map((r, i)=>`
     <div class="listitem" style="background:#fff; margin:6px 0;">
@@ -630,59 +653,68 @@ function updateProgressUI(){
   }).join('');
 }
 
+// SEPARAÇÃO CLARA NA TELA DO PAI
 function renderLists(){
-  let p=document.getElementById('parentList'), s=document.getElementById('studentList');
+  let pPending = document.getElementById('parentListPending');
+  let pOutros = document.getElementById('parentList');
+  let s = document.getElementById('studentList');
   
-  if(p){
-    if(!state.items.length){ p.innerHTML='<p class="muted">Nenhum item cadastrado.</p>'; }
-    else{
-      // Coloca os 'submitted' (aguardando correção) no topo da lista do pai
-      let sortedItems = [...state.items].sort((a,b) => {
-         if(a.status === 'submitted' && b.status !== 'submitted') return -1;
-         if(b.status === 'submitted' && a.status !== 'submitted') return 1;
-         return 0;
-      });
-        
-      p.innerHTML=sortedItems.map((x,i)=>{
-        let desc = x.isProblem ? `📖 ${x.title}` : `${x.n1} ${x.type} ${x.n2}`;
-        let mathAns = `(Resultado exato: <b>${x.expected}</b>)`;
-        
-        let painelAcoes = "";
-        let classCard = "listitem";
-        
-        if(x.status === 'submitted'){
-            classCard += " submitted";
-            painelAcoes = `
-              <div style="width:100%; display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; border-top:1px dashed #ccc; padding-top:8px;">
-                 <span style="color:#e65100; font-weight:bold; width:100%;">Sofia respondeu: ${x.studentAnswer}</span>
-                 <button type="button" class="soft" onclick="viewWork('${x.id}')">👁️ Corrigir Rascunho</button>
-                 <button type="button" class="success" onclick="markAsCorrect('${x.id}')">✅ Acertou (Dar 10⭐)</button>
-                 <button type="button" class="warn" onclick="markAsIncorrect('${x.id}')">❌ Errou (Refazer)</button>
-              </div>`;
-        } else if (x.status === 'correct') {
-            painelAcoes = `<div style="width:100%; color:#2e7d32; font-weight:bold; margin-top:4px;">⭐ Corrigido: Acertou</div>`;
-        } else if (x.status === 'incorrect') {
-            painelAcoes = `<div style="width:100%; color:#c62828; font-weight:bold; margin-top:4px;">❌ Corrigido: Mandou refazer</div>`;
-        } else {
-            painelAcoes = `<div style="width:100%; color:#666; font-weight:bold; margin-top:4px;">Aguardando Sofia resolver...</div>`;
-        }
+  if(pPending && pOutros){
+      let pendentes = state.items.filter(x => x.status === 'submitted');
+      let outros = state.items.filter(x => x.status !== 'submitted');
 
-        return `<div class="${classCard}">
-          <div style="width:100%; display:flex; justify-content:space-between;">
-             <div><b>${desc}</b><br><small>${mathAns}</small></div>
-             <button type="button" class="warn" style="padding:4px 8px; font-size:12px; height:fit-content;" onclick="removeItem('${x.id}')">Excluir</button>
-          </div>
-          ${painelAcoes}
-        </div>`;
-      }).join('');
-    }
+      // 1. RENDERIZA OS PENDENTES (AMARELO)
+      if(!pendentes.length) {
+          pPending.innerHTML = '<p class="muted" style="color:#795548; font-weight:bold;">Nenhuma tarefa aguardando correção no momento.</p>';
+      } else {
+          pPending.innerHTML = pendentes.map(x => {
+             let desc = x.isProblem ? `📖 ${x.title}` : `${x.n1} ${x.type} ${x.n2}`;
+             let mathAns = `(Resultado matemático exato: <b>${x.expected}</b>)`;
+             return `<div class="listitem submitted">
+                <div style="width:100%; display:flex; justify-content:space-between;">
+                   <div><b>${desc}</b><br><small>${mathAns}</small></div>
+                   <button type="button" class="warn" style="padding:4px 8px; font-size:12px; height:fit-content;" onclick="removeItem('${x.id}')">Excluir</button>
+                </div>
+                <div style="width:100%; display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; border-top:1px dashed #ccc; padding-top:8px;">
+                   <span style="color:#e65100; font-weight:bold; width:100%;">Sofia respondeu: ${x.studentAnswer}</span>
+                   <button type="button" class="soft" onclick="viewWork('${x.id}')">👁️ Corrigir Rascunho</button>
+                   <button type="button" class="success" onclick="markAsCorrect('${x.id}')">✅ Acertou (Dar 10⭐)</button>
+                   <button type="button" class="warn" onclick="markAsIncorrect('${x.id}')">❌ Errou (Refazer)</button>
+                </div>
+             </div>`;
+          }).join('');
+      }
+
+      // 2. RENDERIZA OS OUTROS DESAFIOS (CADASTRADOS E CORRIGIDOS)
+      if(!outros.length) {
+          pOutros.innerHTML = '<p class="muted">Nenhum desafio registrado.</p>';
+      } else {
+          pOutros.innerHTML = outros.map(x => {
+             let desc = x.isProblem ? `📖 ${x.title}` : `${x.n1} ${x.type} ${x.n2}`;
+             let painelStatus = "";
+             if (x.status === 'correct') {
+                 painelStatus = `<div style="width:100%; color:#2e7d32; font-weight:bold; margin-top:4px;">⭐ Corrigido: Acertou</div>`;
+             } else if (x.status === 'incorrect') {
+                 painelStatus = `<div style="width:100%; color:#c62828; font-weight:bold; margin-top:4px;">❌ Corrigido: Você mandou ela refazer</div>`;
+             } else {
+                 painelStatus = `<div style="width:100%; color:#666; font-weight:bold; margin-top:4px;">Aguardando a Sofia resolver...</div>`;
+             }
+             return `<div class="listitem">
+                <div style="width:100%; display:flex; justify-content:space-between;">
+                   <div><b>${desc}</b></div>
+                   <button type="button" class="warn" style="padding:4px 8px; font-size:12px; height:fit-content;" onclick="removeItem('${x.id}')">Excluir</button>
+                </div>
+                ${painelStatus}
+             </div>`;
+          }).join('');
+      }
   }
   
   if(s){
     if(!state.items.length){ s.innerHTML='<p class="muted">Nenhum desafio no momento! 🌸</p>'; }
     else{
       s.innerHTML=state.items.map((x,i)=>{
-        if(x.status === 'correct') return ''; // Se tá certo não aparece mais na lista
+        if(x.status === 'correct') return ''; 
         
         let desc = x.isProblem ? `📖 ${x.title}` : `${x.n1} ${x.type} ${x.n2}`;
         
@@ -692,7 +724,7 @@ function renderLists(){
              </div>`;
         } else if (x.status === 'incorrect') {
              return `<div class="listitem" style="background:#ffebee; border-color:#ef9a9a;">
-                <div><b>${desc}</b><div style="color:#c62828; font-weight:bold;">❌ Papai pediu para você refazer! (Resposta antiga: ${x.studentAnswer})</div></div>
+                <div><b>${desc}</b><div style="color:#c62828; font-weight:bold;">❌ Papai pediu para você refazer! (Sua resposta foi: ${x.studentAnswer})</div></div>
                 <button type="button" class="primary" style="background:#c62828;" onclick="openChalkboard('${x.id}')">Refazer 📝</button>
              </div>`;
         } else {
@@ -703,7 +735,6 @@ function renderLists(){
         }
       }).join('');
       
-      // Mensagem se ela já fez tudo
       let temPendente = state.items.some(x => x.status === 'pending' || x.status === 'incorrect' || x.status === 'submitted');
       if(!temPendente && state.items.length > 0){
           s.innerHTML += '<p style="color:#2e7d32; font-weight:bold; text-align:center; margin-top:20px;">🎉 Você já entregou todos os desafios! Aguarde o papai colocar mais.</p>';
@@ -718,7 +749,7 @@ function removeItem(id){
 }
 
 /* =========================================
-   LOUSA
+   LOUSA E PINTURA
    ========================================= */
 
 function openChalkboard(id){
@@ -849,7 +880,7 @@ function cbClear(){
 }
 
 // =========================================
-// SUBMETER AO PAI (NOVO FLUXO SOFIA)
+// SUBMETER AO PAI (SOFIA)
 // =========================================
 function submitToDad(){
   if(active === null) return;
@@ -865,16 +896,15 @@ function submitToDad(){
   let rawVal = document.getElementById('cbDirectAnswer').value.trim();
   if(!rawVal){ alert('Digite a resposta para o papai!'); return; }
 
-  // Salva a resposta do jeito que ela digitou
   x.studentAnswer = rawVal;
   x.work = cbCanvas.toDataURL('image/png'); 
-  x.status = 'submitted'; // Status muda para Aguardando Pai
+  x.status = 'submitted'; 
   
   if(timerInterval) clearInterval(timerInterval);
   x.timeSpent = timerSeconds; 
   
   document.getElementById('chalkboardOverlay').classList.add('hidden');
-  document.getElementById('waitingDadOverlay').classList.remove('hidden'); // Nova tela!
+  document.getElementById('waitingDadOverlay').classList.remove('hidden'); 
   
   persist();
   active = null;
@@ -897,11 +927,9 @@ function viewWork(id){
   document.getElementById('parentPanel').classList.add('hidden');
   document.getElementById('viewWorkModal').classList.remove('hidden');
   
-  // Ativa os botões de correção rápida com o ID certo
   document.getElementById('btnQuickRight').onclick = function() { markAsCorrect(id); };
   document.getElementById('btnQuickWrong').onclick = function() { markAsIncorrect(id); };
   
-  // Se for item antigo que não precisa de correção rápida, esconde a barra
   if(x.status !== 'submitted') {
       document.getElementById('quickCorrectBar').style.display = 'none';
   } else {
