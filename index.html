@@ -8,25 +8,69 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <style>
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#fff0f5,#f0f4ff);color:#333;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-header{background:linear-gradient(120deg,#ff758c,#ff7eb3);color:white;padding:22px 16px;text-align:center;border-bottom-left-radius:25px;border-bottom-right-radius:25px;box-shadow:0 4px 15px rgba(255,117,140,0.3)}
+:root {
+  --bg-grad: linear-gradient(135deg,#fff0f5,#f0f4ff);
+  --header-grad: linear-gradient(120deg,#ff758c,#ff7eb3);
+  --card-bg: #ffffff;
+  --card-border: #ffd1dc;
+  --text-color: #333333;
+  --accent-color: #d81b60;
+}
+
+/* TEMAS DA SOFIA */
+body.theme-rosa {
+  --bg-grad: linear-gradient(135deg,#fff0f5,#f0f4ff);
+  --header-grad: linear-gradient(120deg,#ff758c,#ff7eb3);
+  --card-bg: #ffffff;
+  --card-border: #ffd1dc;
+  --text-color: #333333;
+  --accent-color: #d81b60;
+}
+body.theme-lilas {
+  --bg-grad: linear-gradient(135deg,#f3e5f5,#e8eaf6);
+  --header-grad: linear-gradient(120deg,#ab47bc,#7e57c2);
+  --card-bg: #ffffff;
+  --card-border: #e1bee7;
+  --text-color: #333333;
+  --accent-color: #7b1fa2;
+}
+body.theme-menta {
+  --bg-grad: linear-gradient(135deg,#e8f8f5,#e3f2fd);
+  --header-grad: linear-gradient(120deg,#26a69a,#00acc1);
+  --card-bg: #ffffff;
+  --card-border: #b2dfdb;
+  --text-color: #333333;
+  --accent-color: #00796b;
+}
+body.theme-noite {
+  --bg-grad: linear-gradient(135deg,#121212,#1f1f1f);
+  --header-grad: linear-gradient(120deg,#333333,#222222);
+  --card-bg: #1e1e1e;
+  --card-border: #333333;
+  --text-color: #f1f1f1;
+  --accent-color: #ffb74d;
+}
+
+*{box-sizing:border-box}body{margin:0;background:var(--bg-grad);color:var(--text-color);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh;transition:background 0.3s}
+header{background:var(--header-grad);color:white;padding:22px 16px;text-align:center;border-bottom-left-radius:25px;border-bottom-right-radius:25px;box-shadow:0 4px 15px rgba(0,0,0,0.15)}
 header h1{margin:0;font-size:28px;text-shadow:0 2px 4px rgba(0,0,0,0.1)}header p{margin:6px 0 0;opacity:.95;font-size:15px}
 main{max-width:950px;margin:16px auto;padding:0 12px 30px}
-.card{background:white;border:2px solid #ffd1dc;border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:0 6px 20px rgba(255,182,193,0.15)}
-h2{font-size:20px;margin:0 0 12px;color:#d81b60}p{line-height:1.45}.muted{color:#777;font-size:13px}
-label{display:block;color:#555;font-size:13px;font-weight:700;margin:10px 0 5px}
-input,select,textarea{width:100%;padding:12px;border:2px solid #ffccd5;border-radius:12px;font:inherit;background:#fffbfd;color:#333}
-input:focus,select:focus,textarea:focus{border-color:#ff758c;outline:none}
+.card{background:var(--card-bg);border:2px solid var(--card-border);border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:0 6px 20px rgba(0,0,0,0.06);transition:background 0.3s, border 0.3s}
+h2{font-size:20px;margin:0 0 12px;color:var(--accent-color)}p{line-height:1.45}.muted{color:#777;font-size:13px}
+body.theme-noite .muted{color:#aaa}
+label{display:block;color:var(--text-color);font-size:13px;font-weight:700;margin:10px 0 5px}
+input,select,textarea{width:100%;padding:12px;border:2px solid var(--card-border);border-radius:12px;font:inherit;background:var(--card-bg);color:var(--text-color)}
+input:focus,select:focus,textarea:focus{border-color:var(--accent-color);outline:none}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 button.primary,button.soft,button.warn,button.success{border:0;border-radius:12px;padding:12px 16px;font-weight:750;font-size:14px;cursor:pointer;transition:transform 0.1s}
 button.primary:active,button.soft:active,button.warn:active,button.success:active{transform:scale(0.97)}
-.primary{background:linear-gradient(135deg,#ff758c,#ff7eb3);color:white;box-shadow:0 4px 12px rgba(255,117,140,0.4)}
+.primary{background:var(--header-grad);color:white;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
 .soft{background:#e8f4fd;color:#0277bd}.warn{background:#ffebee;color:#c62828}.success{background:#e8f5e9;color:#2e7d32}
 
-.listitem{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:12px 15px;background:#fffdfd;border:1px solid #ffccd5;border-radius:14px;margin:10px 0}
-.listitem.submitted{background:#fffde7;border-color:#fff59d;}
+.listitem{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:12px 15px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;margin:10px 0}
+.listitem.submitted{background:#fffde7;border-color:#fff59d;color:#333}
 .hidden{display:none!important}
-.goal-card{background:linear-gradient(135deg,#fff8e1,#ffe0b2);border:2px solid #ffb300;border-radius:16px;padding:15px;margin-bottom:16px;text-align:center}
+.goal-card{background:linear-gradient(135deg,#fff8e1,#ffe0b2);border:2px solid #ffb300;border-radius:16px;padding:15px;margin-bottom:16px;text-align:center;color:#5d4037}
 .goal-title{font-size:18px;font-weight:800;color:#e65100;margin-bottom:8px}
 .progress-container{background:#fff;border-radius:10px;height:22px;width:100%;border:2px solid #ffb300;overflow:hidden;position:relative;margin:10px 0}
 .progress-bar{background:linear-gradient(90deg,#ffb300,#ff8f00);height:100%;width:0%;transition:width 0.5s ease}
@@ -45,6 +89,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   border-radius: 18px;
   padding: 15px;
   animation: pulsePrize 1.8s infinite ease-in-out;
+  color: #333 !important;
 }
 
 /* LOUSA TELA CHEIA */
@@ -77,7 +122,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
 @media(max-width:520px){.row{grid-template-columns:1fr}}
 </style>
 </head>
-<body>
+<body class="theme-rosa">
 <header><h1>🌸 Caderno da Sofia 🌸</h1><p>Sincronizado na Nuvem em Tempo Real</p></header>
 <main>
 
@@ -270,9 +315,17 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
 
 <!-- CADERNO DA SOFIA -->
 <section id="studentPanel" class="hidden">
-  <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+  <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
     <div><h2>⭐ Caderno da Sofia</h2><p class="muted" style="margin:0;">Resolva os desafios para o papai corrigir!</p></div>
-    <button type="button" class="warn" onclick="logout()">Sair</button>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <select id="themeSelector" onchange="changeTheme(this.value)" style="padding:8px 12px; font-size:13px; font-weight:bold; border-radius:10px;">
+        <option value="theme-rosa">🌸 Rosa Mágico</option>
+        <option value="theme-lilas">🦄 Unicórnio (Lilás)</option>
+        <option value="theme-menta">🌿 Natureza (Menta)</option>
+        <option value="theme-noite">🌙 Noite Estrelada</option>
+      </select>
+      <button type="button" class="warn" onclick="logout()">Sair</button>
+    </div>
   </div>
 
   <div class="goal-card">
@@ -281,7 +334,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
     <div id="studentRewardsContainer"></div>
   </div>
 
-  <div class="card" style="background:linear-gradient(135deg,#e1f5fe,#b3e5fc); border-color:#0288d1;">
+  <div class="card" style="background:linear-gradient(135deg,#e1f5fe,#b3e5fc); border-color:#0288d1; color:#01579b;">
     <div class="goal-title" style="color:#01579b;">🏆 Sala de Conquistas e Medalhas</div>
     <div class="muted" style="font-weight:700; color:#0277bd; margin-bottom:8px;">Suas Medalhas Desbloqueadas:</div>
     <div id="studentBadgesContainer" style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;"></div>
@@ -312,7 +365,8 @@ let state = {
   stars: 0, 
   rewards: [{name:"Viagem com a Tia Selma na praia", total:10000}], 
   notifications: {correct: 0, incorrect: 0, show: false},
-  badges: []
+  badges: [],
+  theme: "theme-rosa"
 };
 
 let active=null; 
@@ -337,7 +391,9 @@ db.collection("caderno").doc("dados_oficiais").onSnapshot((doc) => {
     if(cloudData.rewards && cloudData.rewards.length > 0) state.rewards = cloudData.rewards;
     if(cloudData.notifications) state.notifications = cloudData.notifications;
     if(cloudData.badges) state.badges = cloudData.badges;
+    if(cloudData.theme) state.theme = cloudData.theme;
     
+    applyTheme(state.theme);
     refreshCurrentView();
   } else {
     persist();
@@ -345,6 +401,18 @@ db.collection("caderno").doc("dados_oficiais").onSnapshot((doc) => {
 }, (error) => {
   console.log("Aviso: ", error);
 });
+
+function applyTheme(themeName){
+  document.body.className = themeName;
+  let selector = document.getElementById('themeSelector');
+  if(selector) selector.value = themeName;
+}
+
+function changeTheme(themeName){
+  state.theme = themeName;
+  applyTheme(themeName);
+  persist();
+}
 
 function refreshCurrentView(){
   if(loggedRole === 'pai'){
@@ -462,9 +530,9 @@ function renderBadgesUI(){
     return;
   }
   container.innerHTML = state.badges.map(b => `
-    <div style="background:white; border:2px solid #0288d1; border-radius:12px; padding:8px 12px; text-align:center; min-width:130px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-      <div style="font-size:15px; font-weight:800; color:#0277bd;">${b.name}</div>
-      <div style="font-size:11px; color:#555; margin-top:2px;">${b.desc}</div>
+    <div style="background:var(--card-bg); border:2px solid var(--accent-color); border-radius:12px; padding:8px 12px; text-align:center; min-width:130px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+      <div style="font-size:15px; font-weight:800; color:var(--accent-color);">${b.name}</div>
+      <div style="font-size:11px; color:var(--text-color); opacity:0.8; margin-top:2px;">${b.desc}</div>
     </div>
   `).join('');
 }
@@ -652,9 +720,9 @@ function renderProblemBatchPreview(){
   if(!currentProblemBatch.length){ container.innerHTML = '<p class="muted">Nenhum lote gerado.</p>'; return; }
   container.innerHTML = `
     <h3 style="font-size:15px; color:#0277bd; margin-bottom:8px;">Revise os ${currentProblemBatch.length} Probleminhas Gerados:</h3>
-    <div style="max-height:220px; overflow-y:auto; border:1px solid #b9e2fc; border-radius:12px; padding:10px; background:#fff;">
+    <div style="max-height:220px; overflow-y:auto; border:1px solid #b9e2fc; border-radius:12px; padding:10px; background:var(--card-bg);">
       ${currentProblemBatch.map((item, idx) => `
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid #f0f0f0; gap:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid rgba(0,0,0,0.05); gap:10px;">
           <span style="font-size:13px;"><b>${idx+1}.</b> ${item.title}</span>
           <button type="button" class="warn" style="padding:4px 10px; font-size:12px; flex-shrink:0;" onclick="removeProblemBatchItem(${idx})">Remover</button>
         </div>
@@ -711,9 +779,9 @@ function renderBatchPreview(){
   if(!currentBatch.length){ container.innerHTML = '<p class="muted">Nenhum lote gerado.</p>'; return; }
   container.innerHTML = `
     <h3 style="font-size:15px; color:#0277bd; margin-bottom:8px;">Revise as ${currentBatch.length} Contas:</h3>
-    <div style="max-height:220px; overflow-y:auto; border:1px solid #b9e2fc; border-radius:12px; padding:10px; background:#fff;">
+    <div style="max-height:220px; overflow-y:auto; border:1px solid #b9e2fc; border-radius:12px; padding:10px; background:var(--card-bg);">
       ${currentBatch.map((item, idx) => `
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; border-bottom:1px solid #f0f0f0;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; border-bottom:1px solid rgba(0,0,0,0.05);">
           <span><b>${idx+1}.</b> ${item.n1} ${item.type} ${item.n2}</span>
           <button type="button" class="warn" style="padding:4px 10px; font-size:12px;" onclick="removeBatchItem(${idx})">Remover</button>
         </div>
@@ -749,8 +817,8 @@ function renderStats(){
   let goalPercent = Math.min(100, ((currentStars / mainGoalTotal) * 100).toFixed(1));
 
   container.innerHTML = `
-    <div style="background:white; padding:14px; border-radius:14px; border:1px solid #e0e0e0; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-      <div style="font-size:13px; color:#555; font-weight:bold;">🎯 Progresso da Meta Geral</div>
+    <div style="background:var(--card-bg); padding:14px; border-radius:14px; border:1px solid var(--card-border); box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+      <div style="font-size:13px; color:var(--text-color); font-weight:bold;">🎯 Progresso da Meta Geral</div>
       <div style="font-size:22px; font-weight:900; color:#e65100; margin:6px 0;">${currentStars} / ${mainGoalTotal} ⭐</div>
       <div style="background:#eee; border-radius:10px; height:12px; width:100%; overflow:hidden; margin-top:6px;">
         <div style="background:linear-gradient(90deg,#ffb300,#ff8f00); height:100%; width:${goalPercent}%;"></div>
@@ -758,20 +826,20 @@ function renderStats(){
       <div style="font-size:12px; font-weight:bold; color:#2e7d32; margin-top:4px;">${goalPercent}% Conquistado rumo ao prêmio</div>
     </div>
 
-    <div style="background:white; padding:14px; border-radius:14px; border:1px solid #e0e0e0; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-      <div style="font-size:13px; color:#555; font-weight:bold;">📈 Taxa de Acerto e Gráfico</div>
+    <div style="background:var(--card-bg); padding:14px; border-radius:14px; border:1px solid var(--card-border); box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+      <div style="font-size:13px; color:var(--text-color); font-weight:bold;">📈 Taxa de Acerto e Gráfico</div>
       <div style="font-size:22px; font-weight:900; color:#2e7d32; margin:6px 0;">${taxaAcerto}% de Acertos</div>
       <div style="display:flex; height:12px; width:100%; border-radius:10px; overflow:hidden; background:#ffebee; margin-top:6px;">
         <div style="background:#2e7d32; width:${taxaAcerto}%; transition:width 0.5s;"></div>
       </div>
-      <div style="font-size:12px; color:#666; margin-top:4px; display:flex; justify-content:space-between;">
+      <div style="font-size:12px; color:var(--text-color); opacity:0.8; margin-top:4px; display:flex; justify-content:space-between;">
         <span>✅ Acertos: ${acertos}</span>
         <span>❌ Erros: ${erros}</span>
       </div>
     </div>
 
-    <div style="background:white; padding:14px; border-radius:14px; border:1px solid #e0e0e0; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-      <div style="font-size:13px; color:#555; font-weight:bold;">📉 Status das Tarefas</div>
+    <div style="background:var(--card-bg); padding:14px; border-radius:14px; border:1px solid var(--card-border); box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+      <div style="font-size:13px; color:var(--text-color); font-weight:bold;">📉 Status das Tarefas</div>
       <div style="margin-top:8px; display:flex; flex-direction:column; gap:6px; font-size:13px; font-weight:bold;">
         <div style="color:#d81b60;">⏳ Aguardando Correção: ${aguardando}</div>
         <div style="color:#1976d2;">📝 Total Registradas: ${totalTasks}</div>
@@ -797,7 +865,7 @@ function renderRewardsParent(){
   if(!container) return;
   if(!state.rewards.length){ container.innerHTML = '<p class="muted">Nenhum prêmio.</p>'; return; }
   container.innerHTML = state.rewards.map((r, i)=>`
-    <div class="listitem" style="background:#fff; margin:6px 0;">
+    <div class="listitem" style="margin:6px 0;">
       <div><b>${r.name}</b> — 🌟 ${r.total} estrelas</div>
       <button type="button" class="warn" onclick="removeReward(${i})">Remover</button>
     </div>
@@ -813,7 +881,7 @@ function updateProgressUI(){
   container.innerHTML = state.rewards.map(r=>{
     let percent = Math.min(100, Math.round((stars / r.total) * 100));
     return `
-      <div style="margin-bottom:12px; text-align:left; background:#fff; padding:10px; border-radius:12px; border:1px solid #ffe0b2;">
+      <div style="margin-bottom:12px; text-align:left; background:var(--card-bg); padding:10px; border-radius:12px; border:1px solid #ffe0b2;">
         <div style="font-weight:700; color:#e65100; font-size:15px;">🎁 ${r.name} (${stars} / ${r.total} ⭐)</div>
         <div class="progress-container" style="margin:6px 0 2px;">
           <div class="progress-bar" style="width:${percent}%"></div>
@@ -868,7 +936,7 @@ function renderLists(){
              } else if (x.status === 'incorrect') {
                  painelStatus = `<div style="width:100%; color:#c62828; font-weight:bold; margin-top:4px;">❌ Corrigido: Você mandou ela refazer</div>`;
              } else {
-                 painelStatus = `<div style="width:100%; color:#666; font-weight:bold; margin-top:4px;">Aguardando a Sofia resolver...</div>`;
+                 painelStatus = `<div style="width:100%; color:var(--text-color); opacity:0.7; font-weight:bold; margin-top:4px;">Aguardando a Sofia resolver...</div>`;
              }
              return `<div class="listitem">
                 <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
@@ -896,11 +964,11 @@ function renderLists(){
         }
         
         if(x.status === 'submitted') {
-             return `<div class="listitem" style="background:#f3e5f5; border-color:#ce93d8;">
+             return `<div class="listitem" style="background:#f3e5f5; border-color:#ce93d8; color:#333;">
                 <div><b>${desc}</b><div style="color:#8e24aa; font-weight:bold;">⏳ Aguardando correção do Papai...</div></div>
              </div>`;
         } else if (x.status === 'incorrect') {
-             return `<div class="listitem" style="background:#ffebee; border-color:#ef9a9a;">
+             return `<div class="listitem" style="background:#ffebee; border-color:#ef9a9a; color:#333;">
                 <div><b>${desc}</b><div style="color:#c62828; font-weight:bold;">❌ Papai pediu para você refazer! (Sua resposta foi: ${x.studentAnswer})</div></div>
                 <button type="button" class="primary" style="background:#c62828;" onclick="openChalkboard('${x.id}')">Refazer 📝</button>
              </div>`;
