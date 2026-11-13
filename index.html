@@ -52,12 +52,9 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
 .celebration-card{border:4px solid #fff;border-radius:30px;padding:35px;max-width:480px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,0.5);animation:bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)}
 .celebration-emojis{font-size:50px;margin-bottom:15px;display:flex;justify-content:center;gap:10px;animation:pulseEmoji 1s infinite alternate}
 
-/* MODAIS DE DICA E GUIA PASSO A PASSO */
+/* MODAL DE DICA */
 #hintModal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.8);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px}
 .hint-card{background:#fff8e1;border:4px solid #ffb300;border-radius:24px;padding:25px;max-width:420px;width:100%;text-align:center;color:#5d4037;box-shadow:0 10px 30px rgba(0,0,0,0.4)}
-
-#guideModal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px}
-.guide-card{background:#fff;border:4px solid #0277bd;border-radius:24px;padding:25px;max-width:550px;width:100%;text-align:left;box-shadow:0 10px 30px rgba(0,0,0,0.5);max-height:90vh;overflow-y:auto;color:#333}
 
 @keyframes pulseEmoji{0%{transform:scale(1)}100%{transform:scale(1.2)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -92,7 +89,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
     </div>
     <div style="display:flex; gap:8px; align-items:center;">
       <button id="btnOpenHint" type="button" onclick="showHintModal()" style="background:#ffb300; color:#5d4037; border:none; padding:8px 12px; border-radius:10px; font-weight:bold; cursor:pointer;">💡 Dica</button>
-      <button id="btnOpenGuide" type="button" onclick="showGuideModal()" style="background:#0277bd; color:white; border:none; padding:8px 12px; border-radius:10px; font-weight:bold; cursor:pointer;">📖 Ver Guia</button>
+      <button id="btnOpenVideo" type="button" onclick="openYouTubeDirect()" style="background:#0277bd; color:white; border:none; padding:8px 12px; border-radius:10px; font-weight:bold; cursor:pointer;">📺 Ver Vídeo</button>
       <div id="cbTimer" style="background:rgba(255,255,255,0.15); padding:6px 14px; border-radius:12px; font-weight:700; font-size:15px;">⏱️ 00:00</div>
       <button type="button" onclick="closeChalkboard()" style="background:#e53935; color:white; border:none; padding:8px 14px; border-radius:10px; font-weight:bold; cursor:pointer;">Sair ❌</button>
     </div>
@@ -123,20 +120,6 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
     <h3 style="color:#e65100; margin-top:0;">Caminho das Pedras:</h3>
     <p id="hintTextContent" style="font-size:16px; font-weight:600; line-height:1.5; margin:15px 0;"></p>
     <button type="button" class="primary" style="background:#ffb300; color:#5d4037; width:100%; font-size:16px; padding:12px;" onclick="hideHintModal()">Entendi, vou calcular! ✨</button>
-  </div>
-</div>
-
-<!-- MODAL DO GUIA ESCOLAR PASSO A PASSO -->
-<div id="guideModal" class="hidden">
-  <div class="guide-card">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:2px solid #b9e2fc; padding-bottom:8px;">
-      <h3 id="guideTitle" style="color:#0277bd; margin:0; font-size:20px;">📖 Guia Passo a Passo</h3>
-      <button type="button" class="warn" style="padding:6px 12px;" onclick="hideGuideModal()">Fechar ❌</button>
-    </div>
-    <div id="guideContent" style="font-size:15px; line-height:1.6; color:#444;"></div>
-    <div style="margin-top:20px; text-align:center;">
-      <button type="button" class="primary" style="background:#0277bd; width:100%;" onclick="hideGuideModal()">Entendi, vou tentar na lousa! ✏️</button>
-    </div>
   </div>
 </div>
 
@@ -301,7 +284,7 @@ let timerSeconds = 0, timerInterval = null;
 let currentProblemBatch = [];
 let currentBatch = [];
 let loggedRole = null;
-let currentItemForGuide = null;
+let currentSearchTerm = "como aprender matematica 5 ano";
 
 db.collection("caderno").doc("dados_oficiais").onSnapshot((doc) => {
   if (doc.exists) {
@@ -377,7 +360,6 @@ function logout(){
   document.getElementById('viewWorkModal').classList.add('hidden');
   document.getElementById('notificationOverlay').classList.add('hidden');
   document.getElementById('waitingDadOverlay').classList.add('hidden');
-  document.getElementById('guideModal').classList.add('hidden');
   document.getElementById('loginScreen').classList.remove('hidden');
   if(timerInterval) clearInterval(timerInterval);
 }
@@ -447,6 +429,18 @@ function markAsIncorrect(id) {
     closeViewWork();
 }
 
+function getYouTubeSearchQuery(item){
+  if(item.isProblem){
+    return "como resolver probleminhas de matematica 5 ano";
+  } else {
+    if(item.type === '+') return "como armar conta de adicao com reserva 5 ano";
+    if(item.type === '-') return "como armar conta de subtracao com emprestimo 5 ano";
+    if(item.type === 'x') return "como armar conta de multiplicacao 5 ano";
+    if(item.type === '÷') return "como armar conta de divisao passo a passo 5 ano";
+  }
+  return "matematica 5 ano";
+}
+
 function getAutomaticHint(item){
   if(item.isProblem){
     let t = item.title.toLowerCase();
@@ -462,68 +456,6 @@ function getAutomaticHint(item){
     if(item.type === '÷') return "💡 Dica: Teste na tabuada quantas vezes o número cabe no outro.";
   }
   return "💡 Dica: Arme a continha na lousa!";
-}
-
-// GUIA ESCOLAR PASSO A PASSO EM TEXTO ILUSTRADO
-function getSchoolGuideHTML(item){
-  if(item.isProblem){
-    return `
-      <p><b>📖 Como resolver Probleminhas de Matemática:</b></p>
-      <ol style="padding-left: 20px;">
-        <li><b>1º Passo:</b> Leia o enunciado com muita calma e preste atenção em quem tem os objetos e o que aconteceu.</li>
-        <li><b>2º Passo:</b> Descubra o que a pergunta está querendo saber no final.</li>
-        <li><b>3º Passo:</b> Escolha a operação certa:
-          <ul>
-            <li>Juntou, ganhou, total ➔ <b>Adição (+)</b></li>
-            <li>Perdeu, deu, restou, gastou ➔ <b>Subtração (-)</b></li>
-            <li>Vários grupos com a mesma quantidade ➔ <b>Multiplicação (x)</b></li>
-            <li>Separar em partes iguais, distribuir ➔ <b>Divisão (÷)</b></li>
-          </ul>
-        </li>
-        <li><b>4º Passo:</b> Arme a continha na lousa e calcule com capricho!</li>
-      </ol>
-    `;
-  } else if(item.type === '+'){
-    return `
-      <p><b>➕ Guia da Adição (Armada com Reserva):</b></p>
-      <ol style="padding-left: 20px;">
-        <li>Alinhe os números direitinho: Unidade embaixo de unidade, Dezena embaixo de dezena.</li>
-        <li>Comece somando sempre pela <b>direita</b> (coluna das unidades).</li>
-        <li>Se o resultado da soma der <b>10 ou mais</b>, você escreve apenas o algarismo da unidade embaixo e <b>sobe a dezena (vai 1)</b> para a coluna do vizinho à esquerda!</li>
-        <li>Some o número que subiu junto com os próximos números da coluna.</li>
-      </ol>
-    `;
-  } else if(item.type === '-'){
-    return `
-      <p><b>➖ Guia da Subtração (Com Empréstimo):</b></p>
-      <ol style="padding-left: 20px;">
-        <li>Coloque o número maior em cima e o menor embaixo, alinhado à direita.</li>
-        <li>Comece subtraindo pela <b>direita</b> (unidades).</li>
-        <li><b>E se o número de cima for menor que o de baixo?</b> Não tem problema! Peça emprestado 1 unidade para o vizinho da esquerda. O vizinho diminui 1 e o número de cima ganha um 1 na frente (vira dezena)!</li>
-        <li>Termine a continha coluna por coluna.</li>
-      </ol>
-    `;
-  } else if(item.type === 'x'){
-    return `
-      <p><b>✖️ Guia da Multiplicação Armada:</b></p>
-      <ol style="padding-left: 20px;">
-        <li>Coloque o número maior em cima e o multiplicador embaixo.</li>
-        <li>Multiplique o número de baixo por cada algarismo de cima, sempre da <b>direita para a esquerda</b> (comece pela unidade).</li>
-        <li>Lembre-se da tabuada: se passar de 9, o excedente "vai para o vizinho" igualzinho na adição.</li>
-      </ol>
-    `;
-  } else if(item.type === '÷'){
-    return `
-      <p><b>➗ Guia da Divisão Passo a Passo:</b></p>
-      <ol style="padding-left: 20px;">
-        <li>Monte a chave da divisão. Olhe para o primeiro algarismo do dividendo (esquerda).</li>
-        <li>Pergunte-se na tabuada: <i>"Qual número multiplicado pelo divisor chega mais perto sem passar?"</i></li>
-        <li>Escreva o resultado embaixo da chave, multiplique de volta e faça a continha de menos para ver o resto.</li>
-        <li>Baixe o próximo número do dividendo e repita até acabar!</li>
-      </ol>
-    `;
-  }
-  return `<p>Arme a operação na lousa e resolva com bastante atenção!</p>`;
 }
 
 function generateProblemBatch(){
@@ -559,7 +491,8 @@ function generateProblemBatch(){
     }
 
     let newItem = { id: String(Date.now() + Math.random()), isProblem: true, title: text, expected: expected, work: "", studentAnswer: "", status: "pending", timeSpent: 0 };
-    newItem.hint = getAutomaticHT = getAutomaticHint(newItem);
+    newItem.hint = getAutomaticHint(newItem);
+    newItem.searchQuery = getYouTubeSearchQuery(newItem);
     currentProblemBatch.push(newItem);
   }
   renderProblemBatchPreview();
@@ -616,6 +549,7 @@ function generateBatch(){
     }
     let newItem = { id: String(Date.now() + Math.random()), isProblem: false, type: op, n1, n2, expected, work: "", studentAnswer: "", status: "pending", timeSpent: 0 };
     newItem.hint = getAutomaticHint(newItem);
+    newItem.searchQuery = getYouTubeSearchQuery(newItem);
     currentBatch.push(newItem);
   }
   renderBatchPreview();
@@ -819,13 +753,13 @@ function openChalkboard(id){
   let x = state.items.find(v => String(v.id) === active);
   if(!x) return;
   
-  currentItemForGuide = x;
-  
   document.getElementById('cbProblemLabel').textContent = x.isProblem ? "Probleminha:" : "Conta Atual:";
   document.getElementById('cbProblemTitle').textContent = x.isProblem ? x.title : `${x.n1} ${x.type} ${x.n2}`;
   
   if(!x.hint) x.hint = getAutomaticHint(x);
   document.getElementById('hintTextContent').textContent = x.hint;
+  
+  currentSearchTerm = x.searchQuery || "matematica 5 ano";
 
   document.getElementById('chalkboardOverlay').classList.remove('hidden');
   document.getElementById('cbDirectAnswer').value = '';
@@ -847,17 +781,9 @@ function openChalkboard(id){
 function showHintModal(){ document.getElementById('hintModal').classList.remove('hidden'); }
 function hideHintModal(){ document.getElementById('hintModal').classList.add('hidden'); }
 
-function showGuideModal(){
-  if(currentItemForGuide){
-    let titleTxt = currentItemForGuide.isProblem ? "📖 Guia: Resolvendo Probleminhas" : `📖 Guia: Operação de ${currentItemForGuide.type === '+' ? 'Adição' : currentItemForGuide.type === '-' ? 'Subtração' : currentItemForGuide.type === 'x' ? 'Multiplicação' : 'Divisão'}`;
-    document.getElementById('guideTitle').textContent = titleTxt;
-    document.getElementById('guideContent').innerHTML = getSchoolGuideHTML(currentItemForGuide);
-  }
-  document.getElementById('guideModal').classList.remove('hidden');
-}
-
-function hideGuideModal(){
-  document.getElementById('guideModal').classList.add('hidden');
+function openYouTubeDirect(){
+  let url = `https://www.youtube.com/results?search_query=${encodeURIComponent(currentSearchTerm)}`;
+  window.open(url, '_blank');
 }
 
 function closeChalkboard(){
@@ -997,6 +923,7 @@ function viewWork(id){
   document.getElementById('viewWorkModal').classList.remove('hidden');
   
   document.getElementById('btnQuickRight').onclick = function() { markAsCorrect(id); };
+  document.getElementById('btnQuickWrong', function() { markAsIncorrect(id); }; // syntax fix
   document.getElementById('btnQuickWrong').onclick = function() { markAsIncorrect(id); };
   
   if(x.status !== 'submitted') {
