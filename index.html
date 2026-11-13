@@ -923,7 +923,6 @@ function viewWork(id){
   document.getElementById('viewWorkModal').classList.remove('hidden');
   
   document.getElementById('btnQuickRight').onclick = function() { markAsCorrect(id); };
-  document.getElementById('btnQuickWrong', function() { markAsIncorrect(id); }; // syntax fix
   document.getElementById('btnQuickWrong').onclick = function() { markAsIncorrect(id); };
   
   if(x.status !== 'submitted') {
