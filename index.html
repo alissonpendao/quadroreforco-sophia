@@ -165,7 +165,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   </div>
 
   <div class="card" style="background:linear-gradient(135deg,#f8f9fa,#e9ecef); border-color:#ced4da;">
-    <h2>📊 Central de Desempenho Escolar</h2>
+    <h2>📊 Gráficos e Desempenho Escolar</h2>
     <div id="statsContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-top:10px;"></div>
   </div>
 
@@ -736,26 +736,47 @@ function sendBatchToStudent(){
 function renderStats(){
   let container = document.getElementById('statsContainer');
   if(!container) return;
+  
+  let totalTasks = state.items.length;
   let corrigidas = state.items.filter(x => x.status === 'correct' || x.status === 'incorrect');
   let acertos = corrigidas.filter(x => x.status === 'correct').length;
   let erros = corrigidas.filter(x => x.status === 'incorrect').length;
+  let aguardando = state.items.filter(x => x.status === 'submitted').length;
   let taxaAcerto = corrigidas.length > 0 ? Math.round((acertos / corrigidas.length) * 100) : 0;
   
-  let aguardando = state.items.filter(x => x.status === 'submitted').length;
   let mainGoalTotal = state.rewards.length > 0 ? state.rewards[0].total : 10000;
   let currentStars = state.stars || 0;
   let goalPercent = Math.min(100, ((currentStars / mainGoalTotal) * 100).toFixed(1));
 
   container.innerHTML = `
-    <div style="background:white; padding:12px; border-radius:12px; border:1px solid #ddd;">
-      <div style="font-size:12px; color:#666; font-weight:bold;">🎯 Progresso da Meta</div>
-      <div style="font-size:20px; font-weight:900; color:#e65100; margin:4px 0;">${currentStars} / ${mainGoalTotal} ⭐</div>
-      <div style="font-size:13px; font-weight:bold; color:#2e7d32;">${goalPercent}% Conquistado</div>
+    <div style="background:white; padding:14px; border-radius:14px; border:1px solid #e0e0e0; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+      <div style="font-size:13px; color:#555; font-weight:bold;">🎯 Progresso da Meta Geral</div>
+      <div style="font-size:22px; font-weight:900; color:#e65100; margin:6px 0;">${currentStars} / ${mainGoalTotal} ⭐</div>
+      <div style="background:#eee; border-radius:10px; height:12px; width:100%; overflow:hidden; margin-top:6px;">
+        <div style="background:linear-gradient(90deg,#ffb300,#ff8f00); height:100%; width:${goalPercent}%;"></div>
+      </div>
+      <div style="font-size:12px; font-weight:bold; color:#2e7d32; margin-top:4px;">${goalPercent}% Conquistado rumo ao prêmio</div>
     </div>
-    <div style="background:white; padding:12px; border-radius:12px; border:1px solid #ddd;">
-      <div style="font-size:12px; color:#666; font-weight:bold;">📉 Aguardando Correção</div>
-      <div style="font-size:20px; font-weight:900; color:#d81b60; margin:4px 0;">${aguardando} <span style="font-size:14px;">tarefas</span></div>
-      <div style="font-size:12px; color:#555;">Corrija na caixa abaixo!</div>
+
+    <div style="background:white; padding:14px; border-radius:14px; border:1px solid #e0e0e0; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+      <div style="font-size:13px; color:#555; font-weight:bold;">📈 Taxa de Acerto e Gráfico</div>
+      <div style="font-size:22px; font-weight:900; color:#2e7d32; margin:6px 0;">${taxaAcerto}% de Acertos</div>
+      <div style="display:flex; height:12px; width:100%; border-radius:10px; overflow:hidden; background:#ffebee; margin-top:6px;">
+        <div style="background:#2e7d32; width:${taxaAcerto}%; transition:width 0.5s;"></div>
+      </div>
+      <div style="font-size:12px; color:#666; margin-top:4px; display:flex; justify-content:space-between;">
+        <span>✅ Acertos: ${acertos}</span>
+        <span>❌ Erros: ${erros}</span>
+      </div>
+    </div>
+
+    <div style="background:white; padding:14px; border-radius:14px; border:1px solid #e0e0e0; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+      <div style="font-size:13px; color:#555; font-weight:bold;">📉 Status das Tarefas</div>
+      <div style="margin-top:8px; display:flex; flex-direction:column; gap:6px; font-size:13px; font-weight:bold;">
+        <div style="color:#d81b60;">⏳ Aguardando Correção: ${aguardando}</div>
+        <div style="color:#1976d2;">📝 Total Registradas: ${totalTasks}</div>
+        <div style="color:#7b1fa2;">🏅 Medalhas Desbloqueadas: ${state.badges ? state.badges.length : 0}</div>
+      </div>
     </div>
   `;
 }
