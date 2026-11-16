@@ -108,7 +108,6 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
 .cb-answer-bar button{background:linear-gradient(135deg,#ff758c,#ffb300);padding:10px 18px;font-size:14px;box-shadow:0 4px 12px rgba(0,0,0,0.4);color:white;border:none;border-radius:10px;font-weight:800;cursor:pointer;transition:transform 0.1s}
 .cb-answer-bar button:active{transform:scale(0.95)}
 
-/* MODAL DE MÚLTIPLA ESCOLHA PARA TEORIA */
 #theoryModal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;overflow-y:auto}
 .theory-card{background:var(--card-bg);border:4px solid var(--accent-color);border-radius:24px;padding:25px;max-width:550px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,0.5);color:var(--text-color);text-align:left}
 .theory-option-btn{display:block;width:100%;text-align:left;background:rgba(0,0,0,0.03);border:2px solid var(--card-border);border-radius:14px;padding:12px 15px;font-size:15px;font-weight:700;color:var(--text-color);cursor:pointer;margin-bottom:10px;transition:all 0.2s}
@@ -152,7 +151,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   <p class="muted" id="loginMsg" style="color:#d92d20; margin-top:10px; font-weight:700;"></p>
 </section>
 
-<!-- MODAL DE MÚLTIPLA ESCOLHA PARA TEORIA (SEM LOUSA) -->
+<!-- MODAL DE MÚLTIPLA ESCOLHA PARA TEORIA -->
 <div id="theoryModal" class="hidden">
   <div class="theory-card">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
@@ -168,7 +167,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   </div>
 </div>
 
-<!-- LOUSA DE ESCOLA TELA CHEIA (APENAS PARA MATEMÁTICA) -->
+<!-- LOUSA DE ESCOLA TELA CHEIA (APENAS MATEMÁTICA) -->
 <div id="chalkboardOverlay" class="hidden">
   <div class="cb-topbar">
     <div style="max-width:65%;">
@@ -202,7 +201,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   </div>
 </div>
 
-<!-- MODAL DA TABUADA DE BOLSO NA LOUSA -->
+<!-- MODAL DA TABUADA DE BOLSO -->
 <div id="pocketTabuadaModal" class="hidden">
   <div class="tabuada-modal-card">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
@@ -258,13 +257,13 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   </div>
 </div>
 
-<!-- TELA 2: NOTIFICAÇÃO DO ALUNO -->
+<!-- TELA 2: NOTIFICAÇÃO DE CORREÇÃO E FESTEJO -->
 <div id="notificationOverlay" class="full-overlay hidden">
   <div class="celebration-card" style="background:linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-    <div class="celebration-emojis">🔔 🌟 🏆</div>
-    <h2 style="color:white; font-size:30px; margin-bottom:10px; text-shadow:0 2px 4px rgba(0,0,0,0.2);">CORREÇÃO PRONTA!</h2>
+    <div class="celebration-emojis">🎉 🌟 🏆 🚀</div>
+    <h2 style="color:white; font-size:30px; margin-bottom:10px; text-shadow:0 2px 4px rgba(0,0,0,0.2);">PARABÉNS, SOPHIA!</h2>
     <p id="notifText" style="font-size:18px; font-weight:700; line-height:1.5; margin-bottom:20px;"></p>
-    <button type="button" class="primary" style="background:#fff; color:#0277bd; font-size:18px; width:100%; padding:14px; box-shadow:0 4px 15px rgba(0,0,0,0.2);" onclick="playClickSound(); closeNotification()">Eba! Entendi!</button>
+    <button type="button" class="primary" style="background:#fff; color:#0277bd; font-size:18px; width:100%; padding:14px; box-shadow:0 4px 15px rgba(0,0,0,0.2);" onclick="playClickSound(); closeNotification()">Eba! Continuar 💖</button>
   </div>
 </div>
 
@@ -278,7 +277,6 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
     <button type="button" class="warn" onclick="logout()">Sair</button>
   </div>
 
-  <!-- BARRA DE NAVEGAÇÃO POR MATÉRIAS E GESTÃO -->
   <div class="tab-bar">
     <button type="button" class="tab-btn active" id="tabBtn_geral" onclick="switchParentTab('geral')">📊 Correções & Geral</button>
     <button type="button" class="tab-btn" id="tabBtn_matematica" onclick="switchParentTab('matematica')">🔢 Matemática</button>
@@ -517,7 +515,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
     </div>
   </div>
 
-  <!-- ABA 8: GERENCIAR FAMÍLIAS / LOGINS (EXCLUSIVO ADMIN MASTER) -->
+  <!-- ABA 8: GERENCIAR FAMÍLIAS / LOGINS -->
   <div id="tabContent_familias" class="parent-tab-section hidden">
     <div class="card" style="background:#fff0f5; border:2px solid #d81b60;">
       <h2>👥 Criar Novo Acesso para Colega / Família</h2>
@@ -734,6 +732,7 @@ let audioCtx = null;
 function initAudio(){
   if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 }
+
 function playClickSound(){
   try {
     initAudio();
@@ -747,19 +746,45 @@ function playClickSound(){
     osc.start(); osc.stop(audioCtx.currentTime + 0.08);
   } catch(e) {}
 }
+
+function playChalkSound(){
+  try {
+    initAudio();
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    let bufferSize = audioCtx.sampleRate * 0.03;
+    let buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    let output = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+    let whiteNoise = audioCtx.createBufferSource();
+    whiteNoise.buffer = buffer;
+    let filter = audioCtx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 1200;
+    let gain = audioCtx.createGain();
+    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+    whiteNoise.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioCtx.destination);
+    whiteNoise.start();
+  } catch(e) {}
+}
+
 function playVictorySound(){
   try {
     initAudio();
     if(audioCtx.state === 'suspended') audioCtx.resume();
-    let notes = [523.25, 659.25, 783.99, 1046.50];
+    let notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
     notes.forEach((freq, idx) => {
       let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
       osc.type = 'triangle'; osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (idx * 0.12));
-      gain.gain.setValueAtTime(0.15, audioCtx.currentTime + (idx * 0.12));
-      gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + (idx * 0.12) + 0.2);
+      gain.gain.setValueAtTime(0.18, audioCtx.currentTime + (idx * 0.12));
+      gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + (idx * 0.12) + 0.25);
       osc.connect(gain); gain.connect(audioCtx.destination);
       osc.start(audioCtx.currentTime + (idx * 0.12));
-      osc.stop(audioCtx.currentTime + (idx * 0.12) + 0.2);
+      osc.stop(audioCtx.currentTime + (idx * 0.12) + 0.25);
     });
   } catch(e) {}
 }
@@ -1163,7 +1188,7 @@ function markAsIncorrect(id, fromModal = false) {
 }
 
 // ==========================================
-// BANCO EXPANDIDO (QUESTÕES DE MÚLTIPLA ESCOLHA)
+// BANCO EXPANDIDO COMPLETO DE TEORIA (5º ANO)
 // ==========================================
 const QUESTION_BANK = {
   portugues: {
@@ -1177,12 +1202,12 @@ const QUESTION_BANK = {
       { q: "Complete com X ou CH: A palavra 'me___er' escreve-se com X ou CH?", a: "X", options: ["X", "CH", "G", "J"], h: "Depois da sílaba 'me-', geralmente usa-se X." },
       { q: "Qual é o feminino de 'bode'?", a: "Cabra", options: ["Cabra", "Boda", "Ovelha", "Vaca"], h: "Animal que dá leite e vive na fazenda." },
       { q: "Complete com S ou Z: A palavra 'atravé___' termina com S ou Z?", a: "S", options: ["S", "Z", "X", "N"], h: "Termina com S acentuado." },
-      { q: "Complete com X ou CH: A palavra 'en___er' (colocar líquido) escreve-se com X ou CH?", a: "CH", options: ["CH", "X", "J", "G"], h: "Vem de 'cheio', por isso mantém o CH." },
+      { q: "Complete com X ou CH: A palavra 'en___er' escreve-se com X ou CH?", a: "CH", options: ["CH", "X", "J", "G"], h: "Vem de 'cheio', por isso mantém o CH." },
       { q: "Complete com G ou J: A palavra 'via___em' (substantivo) usa G ou J?", a: "G", options: ["G", "J", "X", "CH"], h: "Substantivos terminados em -agem usam G." },
       { q: "Complete com S ou Z: A palavra 'princesa' escreve-se com S ou Z?", a: "S", options: ["S", "Z", "SS", "Ç"], h: "Títulos de nobreza como princesa e duquesa usam S." }
     ],
     acentuacao: [
-      { q: "A palavra 'lâmpada' é oxítona, paroxítona ou proparoxítona?", a: "Proparoxítona", options: ["Proparoxítona", "Paroxítona", "Oxítona", "Monossílaba"], h: "A sílaba mais forte é a antepenúltima (lâm-pa-da). Todas são acentuadas!" },
+      { q: "A palavra 'lâmpada' é oxítona, paroxítona ou proparoxítona?", a: "Proparoxítona", options: ["Proparoxítona", "Paroxítona", "Oxítona", "Monossílaba"], h: "A sílaba mais forte é a antepenúltima (lâm-pa-da)." },
       { q: "A palavra 'café' é oxítona, paroxítona ou proparoxítona?", a: "Oxítona", options: ["Oxítona", "Paroxítona", "Proparoxítona", "Monossílaba"], h: "A sílaba mais forte é a última (ca-fé)." },
       { q: "A palavra 'árvore' é oxítona, paroxítona ou proparoxítona?", a: "Proparoxítona", options: ["Proparoxítona", "Paroxítona", "Oxítona", "Dissílaba"], h: "A sílaba forte é a antepenúltima (ár-vo-re)." },
       { q: "A palavra 'açúcar' é oxítona, paroxítona ou proparoxítona?", a: "Paroxítona", options: ["Paroxítona", "Oxítona", "Proparoxítona", "Trissílaba"], h: "A sílaba forte é a penúltima (a-çú-car)." },
@@ -1393,9 +1418,6 @@ function sendSubjectBatch(subj){
   document.getElementById('preview_' + subj).innerHTML = '<p style="color:#2e7d32; font-weight:700;">✨ Perguntas enviadas para o caderno do aluno!</p>';
 }
 
-// ==========================================
-// FUNÇÕES DE MATEMÁTICA (CONTAS EXATAS E PROBLEMAS)
-// ==========================================
 function getYouTubeSearchQuery(item){
   if(item.subject && item.subject !== 'matematica') return item.searchQuery || "aula 5 ano ensino fundamental";
   if(item.isProblem) return "passo a passo como resolver probleminhas de matematica";
@@ -2041,11 +2063,6 @@ function setupCbCanvas(itemX){
     img.onload = () => { cbCtx.drawImage(img, 0, 0, cbCanvas.width, cbCanvas.height); };
     img.src = itemX.work;
     hasDrawnOnBoard = true; 
-  } else {
-    cbCtx.fillStyle = "rgba(255, 255, 255, 0.25)";
-    cbCtx.font = "16px sans-serif";
-    cbCtx.textAlign = "center";
-    cbCtx.fillText("Faça seus cálculos ou rascunho aqui com o giz ✏️", cbCanvas.width / 2, cbCanvas.height / 2);
   }
   
   cbCanvas.onpointerdown = e => {
@@ -2055,12 +2072,14 @@ function setupCbCanvas(itemX){
     if(cbSnapshots.length > 8) cbSnapshots.shift(); 
     let r = cbCanvas.getBoundingClientRect();
     cbCtx.beginPath(); cbCtx.moveTo(e.clientX - r.left, e.clientY - r.top);
+    playChalkSound();
   };
   cbCanvas.onpointermove = e => {
     if(!cbDrawing) return;
     let r = cbCanvas.getBoundingClientRect();
     cbCtx.strokeStyle = currentChalkColor; cbCtx.lineWidth = currentChalkWidth;
     cbCtx.lineTo(e.clientX - r.left, e.clientY - r.top); cbCtx.stroke();
+    if(Math.random() < 0.25) playChalkSound();
   };
   cbCanvas.onpointerup = cbCanvas.onpointercancel = () => { cbDrawing = false; };
 }
