@@ -172,7 +172,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   
   <div class="cb-answer-bar">
     <span style="color:white; font-size:18px; font-weight:bold;">Sua Resposta:</span>
-    <input id="cbDirectAnswer" type="text" inputmode="numeric" placeholder="..." onkeydown="if(event.key==='Enter'){event.preventDefault(); submitToDad();}">
+    <input id="cbDirectAnswer" type="text" inputmode="decimal" placeholder="..." onkeydown="if(event.key==='Enter'){event.preventDefault(); submitToDad();}">
     <button type="button" onclick="playClickSound(); submitToDad()">Entregar ao Papai 🚀</button>
   </div>
 </div>
@@ -306,14 +306,14 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   <!-- GERADOR DE CONTA MANUAL / SURPRESA -->
   <div class="card" style="background:#e8f8f5; border-color:#a3e4d7;">
     <h2>✍️ Criar Conta Manual / Surpresa Valendo Brinde</h2>
-    <p class="muted">Digite os números e escolha a operação; o resultado é calculado sozinho!</p>
+    <p class="muted">Digite os números (pode usar vírgula, ex: 540,5) e escolha a operação; o resultado sai sozinho!</p>
     <div class="row" style="margin-bottom:10px;">
-      <div><label>Número 1</label><input id="manualN1" type="number" placeholder="Ex: 145" oninput="autoCalcManual()"></div>
+      <div><label>Número 1</label><input id="manualN1" type="text" inputmode="decimal" placeholder="Ex: 540,5" oninput="autoCalcManual()"></div>
       <div><label>Operação</label><select id="manualOp" onchange="autoCalcManual()"><option value="+">Adição (+)</option><option value="-">Subtração (-)</option><option value="x">Multiplicação (x)</option><option value="÷">Divisão (÷)</option></select></div>
     </div>
     <div class="row" style="margin-bottom:10px;">
-      <div><label>Número 2</label><input id="manualN2" type="number" placeholder="Ex: 12" oninput="autoCalcManual()"></div>
-      <div><label>Resultado Exato (Calculado Sozinho ✨)</label><input id="manualExpected" type="number" placeholder="Automático..." style="background:#e8f8f5; font-weight:bold; color:#16a085;"></div>
+      <div><label>Número 2</label><input id="manualN2" type="text" inputmode="decimal" placeholder="Ex: 2,5" oninput="autoCalcManual()"></div>
+      <div><label>Resultado Exato (Calculado Sozinho ✨)</label><input id="manualExpected" type="text" placeholder="Automático..." style="background:#e8f8f5; font-weight:bold; color:#16a085;"></div>
     </div>
     <div style="margin-bottom:10px;">
       <label>🎁 O que está valendo? (Ex: 100 estrelas, Caixa de bombom, Pizza...)</label>
@@ -336,8 +336,18 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   <div class="card" style="background:#fffaf0; border-color:#ffe0b2;">
     <h2>🤖 Gerador de Contas Armadas (Com Filtro de Operação)</h2>
     <div class="row" style="margin-bottom:10px;">
-      <div><label>Tipo de Operação</label><select id="calcType"><option value="all" selected>Misturado (Todas)</option><option value="+">Somente Adição (+)</option><option value="-">Somente Subtração (-)</option><option value="x">Somente Multiplicação (x)</option><option value="÷">Somente Divisão (÷)</option></select></div>
-      <div><label>Dificuldade</label><select id="calcDifficulty"><option value="easy">Fácil</option><option value="medium" selected>Médio (Padrão 5º ano)</option><option value="hard">Avançado</option></select></div>
+      <div>
+        <label>Tipo de Operação</label>
+        <select id="calcType">
+          <option value="all" selected>Misturado (Todas)</option>
+          <option value="+">Somente Adição (+)</option>
+          <option value="-">Somente Subtração (-)</option>
+          <option value="x">Somente Multiplicação (x)</option>
+          <option value="÷">Divisão Inteira Exata (÷)</option>
+          <option value="÷_dec">Divisão com Vírgula / Decimal Exato (÷)</option>
+        </select>
+      </div>
+      <div><label>Dificuldade</label><select id="calcDifficulty"><option value="easy">Fácil (Ex: 54,5 ÷ 2)</option><option value="medium" selected>Médio (Ex: 540,5 ÷ 5)</option><option value="hard">Avançado (Ex: 62,5 ÷ 2,5)</option></select></div>
     </div>
     <div class="actions"><button type="button" class="primary" style="background:linear-gradient(135deg,#ffb300,#ff8f00);" onclick="generateBatch()">Gerar 10 Contas ✨</button></div>
     <div id="batchPreviewContainer" style="margin-top:15px;"></div>
@@ -358,11 +368,15 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
 <!-- VISUALIZADOR DE RASCUNHO DO PAI -->
 <section id="viewWorkModal" class="card hidden">
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-    <h2 id="modalTitle" style="margin:0;">Rascunho da Sofia</h2>
+    <div>
+      <h2 id="modalTitle" style="margin:0;">Rascunho da Sofia</h2>
+      <span id="pendingQueueCount" style="font-size:12px; font-weight:bold; color:#e65100;"></span>
+    </div>
     <button type="button" class="warn" onclick="closeViewWork()">Fechar ❌</button>
   </div>
   <p class="muted">Avalie se ela armou a conta certo antes de dar os pontos (ou reveja a resolução passada)!</p>
   <div id="parentProblemHeader" style="text-align:center; margin-bottom:10px; font-size:18px; font-weight:bold; color:#1b4332;"></div>
+  <div id="parentStudentAnswerHeader" style="text-align:center; margin-bottom:12px; font-size:15px; font-weight:bold; color:#d81b60;"></div>
   
   <div id="quickCorrectBar" style="background:#fff3e0; padding:12px; border-radius:12px; margin-bottom:15px; border:2px solid #ffb74d; display:flex; justify-content:space-around; align-items:center;">
       <span style="font-weight:bold; color:#e65100;">O rascunho tá bom?</span>
@@ -515,7 +529,6 @@ let currentBatch = [];
 let loggedRole = null;
 let currentSearchTerm = "passo a passo como fazer conta de matematica";
 
-// Quiz de Tabuada vars
 let quizData = { num: 7, val1: 0, val2: 0, expected: 0, streak: 0 };
 
 let audioCtx = null;
@@ -563,12 +576,16 @@ function playVictorySound(){
   } catch(e) {}
 }
 
+function formatBR(val){
+  return String(val).replace('.', ',');
+}
+
 let lastCloudStateStr = "";
 db.collection("caderno").doc("dados_oficiais").onSnapshot((doc) => {
   if (doc.exists) {
     let cloudData = doc.data();
     let cloudStr = JSON.stringify(cloudData);
-    if(cloudStr === lastCloudStateStr) return; // Evitar re-renderizações desnecessárias que travam cliques no mobile
+    if(cloudStr === lastCloudStateStr) return;
     lastCloudStateStr = cloudStr;
 
     if(cloudData.items) state.items = cloudData.items;
@@ -826,7 +843,7 @@ function adjustStars(action) {
   persist();
 }
 
-function markAsCorrect(id) {
+function markAsCorrect(id, fromModal = false) {
     playVictorySound();
     let x = state.items.find(v => String(v.id) === String(id));
     if(!x) return;
@@ -849,10 +866,18 @@ function markAsCorrect(id) {
     
     checkAndUnlockBadges();
     persist();
-    closeViewWork(); 
+
+    if(fromModal){
+        let nextPending = state.items.find(item => item.status === 'submitted');
+        if(nextPending){
+            viewWork(nextPending.id);
+        } else {
+            closeViewWork();
+        }
+    }
 }
 
-function markAsIncorrect(id) {
+function markAsIncorrect(id, fromModal = false) {
     playClickSound();
     let x = state.items.find(v => String(v.id) === String(id));
     if(!x) return;
@@ -865,7 +890,15 @@ function markAsIncorrect(id) {
     state.notifications.show = true;
     
     persist();
-    closeViewWork();
+
+    if(fromModal){
+        let nextPending = state.items.find(item => item.status === 'submitted');
+        if(nextPending){
+            viewWork(nextPending.id);
+        } else {
+            closeViewWork();
+        }
+    }
 }
 
 function getYouTubeSearchQuery(item){
@@ -875,7 +908,13 @@ function getYouTubeSearchQuery(item){
     if(item.type === '+') return "passo a passo como fazer conta de mais adicao";
     if(item.type === '-') return "passo a passo como fazer conta de menos subtracao com emprestimo";
     if(item.type === 'x') return "passo a passo como fazer conta de vezes multiplicacao";
-    if(item.type === '÷') return "passo a passo como fazer conta de dividir divisao";
+    if(item.type === '÷') {
+      let hasDec = String(item.n1).includes('.') || String(item.n2).includes('.') || String(item.expected).includes('.');
+      if(hasDec) {
+        return "passo a passo divisao com virgula numeros decimais 5 ano";
+      }
+      return "passo a passo como fazer conta de dividir divisao";
+    }
   }
   return "passo a passo como fazer conta de matematica";
 }
@@ -892,14 +931,22 @@ function getAutomaticHint(item){
     if(item.type === '+') return "💡 Dica: Comece pela direita. Se passar de 9, sobe 1!";
     if(item.type === '-') return "💡 Dica: O número de cima é menor? Peça emprestado ao vizinho!";
     if(item.type === 'x') return "💡 Dica: Multiplique sempre começando pela unidade.";
-    if(item.type === '÷') return "💡 Dica: Teste na tabuada quantas vezes o número cabe no outro.";
+    if(item.type === '÷') {
+      if(String(item.n2).includes('.')) {
+        return "💡 Dica: Iguale as casas depois da vírgula nos dois números, corte a vírgula e divida normal!";
+      }
+      if(String(item.n1).includes('.') || String(item.expected).includes('.')) {
+        return "💡 Dica: Na hora de baixar o número depois da vírgula (ou colocar zero no resto), coloque a vírgula na resposta!";
+      }
+      return "💡 Dica: Teste na tabuada quantas vezes o número cabe no outro.";
+    }
   }
   return "💡 Dica: Arme a continha na lousa!";
 }
 
 function autoCalcManual(){
-  let n1 = parseFloat(document.getElementById('manualN1').value);
-  let n2 = parseFloat(document.getElementById('manualN2').value);
+  let n1 = parseFloat(document.getElementById('manualN1').value.replace(',', '.'));
+  let n2 = parseFloat(document.getElementById('manualN2').value.replace(',', '.'));
   let op = document.getElementById('manualOp').value;
   let expField = document.getElementById('manualExpected');
 
@@ -909,23 +956,23 @@ function autoCalcManual(){
   }
 
   let res = 0;
-  if(op === '+') res = n1 + n2;
-  else if(op === '-') res = n1 - n2;
-  else if(op === 'x') res = n1 * n2;
-  else if(op === '÷') res = n2 !== 0 ? Number((n1 / n2).toFixed(2)) : 0;
+  if(op === '+') res = Number((n1 + n2).toFixed(4));
+  else if(op === '-') res = Number((n1 - n2).toFixed(4));
+  else if(op === 'x') res = Number((n1 * n2).toFixed(4));
+  else if(op === '÷') res = n2 !== 0 ? Number((n1 / n2).toFixed(4)) : 0;
 
-  expField.value = res;
+  expField.value = formatBR(res);
 }
 
 function createManualProblem(){
   playClickSound();
-  let n1 = document.getElementById('manualN1').value.trim();
-  let n2 = document.getElementById('manualN2').value.trim();
+  let n1Raw = document.getElementById('manualN1').value.trim().replace(',', '.');
+  let n2Raw = document.getElementById('manualN2').value.trim().replace(',', '.');
   let op = document.getElementById('manualOp').value;
-  let expected = document.getElementById('manualExpected').value.trim();
+  let expectedRaw = document.getElementById('manualExpected').value.trim().replace(',', '.');
   let prize = document.getElementById('manualPrize').value.trim();
 
-  if(!n1 || !n2 || !expected){
+  if(!n1Raw || !n2Raw || !expectedRaw || isNaN(Number(n1Raw)) || isNaN(Number(n2Raw)) || isNaN(Number(expectedRaw))){
     alert('Preencha os números e o resultado exato da conta!');
     return;
   }
@@ -935,9 +982,9 @@ function createManualProblem(){
     isProblem: false,
     isManual: true,
     type: op,
-    n1: Number(n1),
-    n2: Number(n2),
-    expected: Number(expected),
+    n1: Number(n1Raw),
+    n2: Number(n2Raw),
+    expected: Number(expectedRaw),
     prize: prize,
     work: "",
     studentAnswer: "",
@@ -1035,25 +1082,59 @@ function generateBatch(){
   currentBatch = [];
   let diff = document.getElementById('calcDifficulty').value;
   let selectedOp = document.getElementById('calcType').value;
-  let ops = selectedOp === 'all' ? ['÷', 'x', '-', '+'] : [selectedOp];
+  let ops = selectedOp === 'all' ? ['÷', '÷_dec', 'x', '-', '+'] : [selectedOp];
 
   for(let i=0; i<10; i++){
-    let op = ops[Math.floor(Math.random() * ops.length)];
+    let opMode = ops[Math.floor(Math.random() * ops.length)];
+    let displayOp = opMode === '÷_dec' ? '÷' : opMode;
     let n1, n2, expected;
-    if(op === '÷') {
+
+    if(opMode === '÷') {
       let div = diff === 'easy' ? (Math.floor(Math.random() * 4) + 2) : (Math.floor(Math.random() * 7) + 2);
       let q = diff === 'easy' ? (Math.floor(Math.random() * 20) + 5) : (Math.floor(Math.random() * 50) + 10);
       n1 = div * q; n2 = div; expected = q;
-    } else if(op === 'x') {
+    } else if(opMode === '÷_dec') {
+      if(diff === 'easy') {
+        // Ex: 54,5 ÷ 2 ou 84,4 ÷ 4 (dividendo com ,5 ou ,2 ou ,4 ou ,8 e divisor inteiro 2, 4, 5)
+        let divs = [2, 4, 5];
+        n2 = divs[Math.floor(Math.random() * divs.length)];
+        let intPart = Math.floor(Math.random() * 80) + 12;
+        let decPart = [0.2, 0.4, 0.5, 0.6, 0.8][Math.floor(Math.random() * 5)];
+        n1 = Number((intPart + decPart).toFixed(1));
+        expected = Number((n1 / n2).toFixed(4));
+      } else if(diff === 'medium') {
+        // Ex: 540,5 ÷ 5 ou 980,5 ÷ 2 (números maiores na casa das centenas com vírgula)
+        let divs = [2, 4, 5, 8];
+        n2 = divs[Math.floor(Math.random() * divs.length)];
+        let intPart = Math.floor(Math.random() * 850) + 120;
+        let decPart = [0.2, 0.4, 0.5, 0.6, 0.8][Math.floor(Math.random() * 5)];
+        n1 = Number((intPart + decPart).toFixed(1));
+        expected = Number((n1 / n2).toFixed(4));
+      } else {
+        // Avançado: Tanto o dividendo quanto o divisor possuem vírgula, fechando exato! Ex: 62,5 ÷ 2,5 ou 18,75 ÷ 1,5
+        let decDivisors = [1.5, 2.5, 0.5, 1.2, 0.4, 0.8];
+        n2 = decDivisors[Math.floor(Math.random() * decDivisors.length)];
+        let qInt = Math.floor(Math.random() * 35) + 4;
+        let qDec = [0, 0.5, 0.25][Math.floor(Math.random() * 3)];
+        expected = Number((qInt + qDec).toFixed(2));
+        n1 = Number((expected * n2).toFixed(3));
+        // Garante que n1 tenha casa decimal visível; se der inteiro, soma 0.5 * n2
+        if(Number.isInteger(n1)) {
+          expected = Number((expected + 0.5).toFixed(2));
+          n1 = Number((expected * n2).toFixed(3));
+        }
+      }
+    } else if(opMode === 'x') {
       n1 = diff === 'easy' ? (Math.floor(Math.random() * 15) + 2) : (Math.floor(Math.random() * 40) + 10);
       n2 = diff === 'easy' ? (Math.floor(Math.random() * 5) + 2) : (Math.floor(Math.random() * 8) + 2);
       expected = n1 * n2;
-    } else if(op === '+') {
+    } else if(opMode === '+') {
       n1 = Math.floor(Math.random() * 200) + 20; n2 = Math.floor(Math.random() * 200) + 20; expected = n1 + n2;
-    } else if(op === '-') {
+    } else if(opMode === '-') {
       n1 = Math.floor(Math.random() * 300) + 50; n2 = Math.floor(Math.random() * n1) + 10; expected = n1 - n2;
     }
-    let newItem = { id: String(Date.now() + Math.random()), isProblem: false, type: op, n1, n2, expected, work: "", studentAnswer: "", status: "pending", timeSpent: 0, createdAt: new Date().toISOString() };
+
+    let newItem = { id: String(Date.now() + Math.random()), isProblem: false, type: displayOp, n1, n2, expected, work: "", studentAnswer: "", status: "pending", timeSpent: 0, createdAt: new Date().toISOString() };
     newItem.hint = getAutomaticHint(newItem);
     newItem.searchQuery = getYouTubeSearchQuery(newItem);
     currentBatch.push(newItem);
@@ -1071,7 +1152,7 @@ function renderBatchPreview(){
     <div style="max-height:220px; overflow-y:auto; border:1px solid #b9e2fc; border-radius:12px; padding:10px; background:var(--card-bg);">
       ${currentBatch.map((item, idx) => `
         <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; border-bottom:1px solid rgba(0,0,0,0.05);">
-          <span><b>${idx+1}.</b> ${item.n1} ${item.type} ${item.n2}</span>
+          <span><b>${idx+1}.</b> ${formatBR(item.n1)} ${item.type} ${formatBR(item.n2)} <span style="color:#16a085; font-size:12px; font-weight:bold;">(= ${formatBR(item.expected)})</span></span>
           <button type="button" class="warn" style="padding:4px 10px; font-size:12px;" onclick="removeBatchItem(${idx})">Remover</button>
         </div>
       `).join('')}
@@ -1095,7 +1176,6 @@ function renderStats(){
   let container = document.getElementById('statsContainer');
   if(!container) return;
   
-  let totalTasks = state.items.length;
   let corrigidas = state.items.filter(x => x.status === 'correct' || x.status === 'incorrect');
   let acertos = corrigidas.filter(x => x.status === 'correct').length;
   let erros = corrigidas.filter(x => x.status === 'incorrect').length;
@@ -1208,9 +1288,9 @@ function renderLists(){
           pPending.innerHTML = '<p class="muted" style="color:#795548; font-weight:bold;">Nenhuma tarefa aguardando correção no momento.</p>';
       } else {
           pPending.innerHTML = pendentes.map(x => {
-             let desc = x.isProblem ? `📖 ${x.title}` : `${x.n1} ${x.type} ${x.n2}`;
+             let desc = x.isProblem ? `📖 ${x.title}` : `${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
              if(x.prize) desc += ` <span style="color:#d81b60; font-weight:bold;">(🎁 Brinde: ${x.prize})</span>`;
-             let mathAns = `<span style="background:#e8f8f5; color:#16a085; padding:2px 8px; border-radius:6px; font-weight:bold; border:1px solid #a3e4d7;">⚡ Resposta Correta: ${x.expected}</span>`;
+             let mathAns = `<span style="background:#e8f8f5; color:#16a085; padding:2px 8px; border-radius:6px; font-weight:bold; border:1px solid #a3e4d7;">⚡ Resposta Correta: ${formatBR(x.expected)}</span>`;
              let timeInfo = x.timeSpent ? `<span style="background:#fff3e0; color:#e65100; padding:2px 8px; border-radius:6px; font-weight:bold; font-size:12px; margin-left:6px;">⏱️ Tempo: ${Math.floor(x.timeSpent/60)}m ${x.timeSpent%60}s</span>` : '';
              return `<div class="listitem submitted">
                 <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
@@ -1218,12 +1298,12 @@ function renderLists(){
                    <button type="button" class="warn" style="padding:4px 8px; font-size:12px; height:fit-content;" onclick="removeItem('${x.id}')">Excluir</button>
                 </div>
                 <div style="width:100%; display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; border-top:1px dashed #ccc; padding-top:8px;">
-                   <span style="color:#e65100; font-weight:bold; width:100%;">Sofia respondeu: ${x.studentAnswer}</span>
+                   <span style="color:#e65100; font-weight:bold; width:100%;">Sofia respondeu: ${formatBR(x.studentAnswer)}</span>
                    <button type="button" class="soft" onclick="viewWork('${x.id}')">👁️ Corrigir Rascunho</button>
-                   <button type="button" class="success" onclick="markAsCorrect('${x.id}')">✅ Acertou (Dar 10⭐)</button>
-                   <button type="button" class="warn" onclick="markAsIncorrect('${x.id}')">❌ Errou (Refazer)</button>
+                   <button type="button" class="success" onclick="markAsCorrect('${x.id}', false)">✅ Acertou (Dar 10⭐)</button>
+                   <button type="button" class="warn" onclick="markAsIncorrect('${x.id}', false)">❌ Errou (Refazer)</button>
                 </div>
-             `;
+             </div>`;
           }).join('');
       }
 
@@ -1231,9 +1311,9 @@ function renderLists(){
           pOutros.innerHTML = '<p class="muted">Nenhum desafio registrado.</p>';
       } else {
           pOutros.innerHTML = outros.map(x => {
-             let desc = x.isProblem ? `📖 ${x.title}` : `${x.n1} ${x.type} ${x.n2}`;
+             let desc = x.isProblem ? `📖 ${x.title}` : `${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
              if(x.prize) desc += ` <span style="color:#d81b60; font-weight:bold;">(🎁 Brinde: ${x.prize})</span>`;
-             let mathAns = `<span style="font-size:12px; color:#555;">(Resultado: <b>${x.expected}</b>)</span>`;
+             let mathAns = `<span style="font-size:12px; color:#555;">(Resultado: <b>${formatBR(x.expected)}</b>)</span>`;
              let painelStatus = "";
              if (x.status === 'correct') {
                  painelStatus = `<div style="width:100%; color:#2e7d32; font-weight:bold; margin-top:4px;">⭐ Corrigido: Acertou</div>`;
@@ -1263,11 +1343,11 @@ function renderLists(){
       s.innerHTML=state.items.map((x,i)=>{
         if(x.status === 'correct') return ''; 
         
-        let desc = x.isProblem ? `📖 ${x.title}` : `${x.n1} ${x.type} ${x.n2}`;
+        let desc = x.isProblem ? `📖 ${x.title}` : `${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
         let itemClass = "listitem";
         
         if(x.prize) {
-            desc = `🎁 <span style="color:#d81b60; font-weight:900; font-size:16px;">NOVO DESAFIO VALENDO: ${x.prize}!</span><br><span style="font-size:18px; color:#1b4332; font-weight:bold;">Conta: ${x.n1} ${x.type} ${x.n2}</span>`;
+            desc = `🎁 <span style="color:#d81b60; font-weight:900; font-size:16px;">NOVO DESAFIO VALENDO: ${x.prize}!</span><br><span style="font-size:18px; color:#1b4332; font-weight:bold;">Conta: ${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}</span>`;
             itemClass = "listitem prize-animated-card";
         }
         
@@ -1277,7 +1357,7 @@ function renderLists(){
              </div>`;
         } else if (x.status === 'incorrect') {
              return `<div class="listitem" style="background:#ffebee; border-color:#ef9a9a; color:#333;">
-                <div><b>${desc}</b><div style="color:#c62828; font-weight:bold;">❌ Papai pediu para você refazer! (Sua resposta foi: ${x.studentAnswer})</div></div>
+                <div><b>${desc}</b><div style="color:#c62828; font-weight:bold;">❌ Papai pediu para você refazer! (Sua resposta foi: ${formatBR(x.studentAnswer)})</div></div>
                 <button type="button" class="primary" style="background:#c62828;" onclick="playClickSound(); openChalkboard('${x.id}')">Refazer 📝</button>
              </div>`;
         } else {
@@ -1310,7 +1390,7 @@ function openChalkboard(id){
   if(!x) return;
   
   document.getElementById('cbProblemLabel').textContent = x.prize ? `🎁 Desafio Valendo Prêmio (${x.prize}):` : (x.isProblem ? "Probleminha:" : "Conta Atual:");
-  document.getElementById('cbProblemTitle').textContent = x.isProblem ? x.title : `${x.n1} ${x.type} ${x.n2}`;
+  document.getElementById('cbProblemTitle').textContent = x.isProblem ? x.title : `${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
   
   if(!x.hint) x.hint = getAutomaticHint(x);
   document.getElementById('hintTextContent').textContent = x.hint;
@@ -1545,16 +1625,31 @@ function closeWaitingDad(){
 function viewWork(id){
   let x = state.items.find(v => String(v.id) === String(id));
   if(!x) return;
+
+  let pendentesCount = state.items.filter(item => item.status === 'submitted').length;
+  let queueLabel = document.getElementById('pendingQueueCount');
+  if(queueLabel){
+      queueLabel.textContent = x.status === 'submitted' ? `📋 Pendentes na fila: ${pendentesCount}` : '';
+  }
   
   document.getElementById('modalTitle').textContent = `Rascunho / Histórico da Lousa`;
-  let titleHeader = x.isProblem ? x.title : `${x.n1} ${x.type} ${x.n2}`;
+  let titleHeader = x.isProblem ? x.title : `${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
   if(x.prize) titleHeader += ` (🎁 Brinde: ${x.prize})`;
   document.getElementById('parentProblemHeader').textContent = titleHeader;
+
+  let ansHeader = document.getElementById('parentStudentAnswerHeader');
+  if(ansHeader){
+      ansHeader.innerHTML = x.status === 'submitted' 
+        ? `Sofia respondeu: <span style="background:#fff3e0; padding:2px 8px; border-radius:6px; border:1px solid #ffb74d;">${formatBR(x.studentAnswer)}</span> &nbsp;|&nbsp; Correto: <span style="color:#16a085;">${formatBR(x.expected)}</span>` 
+        : '';
+  }
+
   document.getElementById('parentPanel').classList.add('hidden');
   document.getElementById('viewWorkModal').classList.remove('hidden');
+  window.scrollTo({top: 0, behavior: 'smooth'});
   
-  document.getElementById('btnQuickRight').onclick = function() { markAsCorrect(id); };
-  document.getElementById('btnQuickWrong').onclick = function() { markAsIncorrect(id); };
+  document.getElementById('btnQuickRight').onclick = function() { markAsCorrect(id, true); };
+  document.getElementById('btnQuickWrong').onclick = function() { markAsIncorrect(id, true); };
   
   if(x.status !== 'submitted') {
       document.getElementById('quickCorrectBar').style.display = 'none';
