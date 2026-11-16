@@ -130,7 +130,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
 </style>
 </head>
 <body class="theme-rosa">
-<header><h1 id="mainHeaderTitle">🌸 Caderno da Sofia 🌸</h1><p id="mainHeaderSub">Plataforma de Estudos & Reforço Escolar (5º Ano)</p></header>
+<header><h1 id="mainHeaderTitle">🌸 Caderno da Sophia 🌸</h1><p id="mainHeaderSub">Plataforma de Estudos & Reforço Escolar (5º Ano)</p></header>
 <main>
 
 <!-- TELA DE LOGIN -->
@@ -500,7 +500,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   <div id="tabContent_familias" class="parent-tab-section hidden">
     <div class="card" style="background:#fff0f5; border:2px solid #d81b60;">
       <h2>👥 Criar Novo Acesso para Colega / Família</h2>
-      <p class="muted">Cada família criada tem seu próprio banco de dados na nuvem, sem interferir nos dados da Sofia.</p>
+      <p class="muted">Cada família criada tem seu próprio banco de dados na nuvem, sem interferir nos dados da Sophia.</p>
       <div class="row">
         <div><label>Nome do Aluno(a) / Família</label><input id="newFamStudent" type="text" placeholder="Ex: Pedro (Filho do Marcos)"></div>
         <div><label>Senha do Professor (Pai)</label><input id="newFamParentPass" type="text" placeholder="Ex: 3344"></div>
@@ -514,7 +514,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
 
     <div class="card">
       <h2>📋 Famílias Cadastradas na Plataforma</h2>
-      <p class="muted">Sua conta principal (Sofia) fica protegida como Master.</p>
+      <p class="muted">Sua conta principal (Sophia) fica protegida como Master.</p>
       <div id="familiesListContainer"></div>
     </div>
   </div>
@@ -549,7 +549,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
 <!-- CADERNO DO ALUNO -->
 <section id="studentPanel" class="hidden">
   <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-    <div><h2 id="studentPanelTitle">⭐ Caderno da Sofia</h2><p class="muted" style="margin:0;">Resolva os desafios de todas as matérias!</p></div>
+    <div><h2 id="studentPanelTitle">⭐ Caderno da Sophia</h2><p class="muted" style="margin:0;">Resolva os desafios de todas as matérias!</p></div>
     <div style="display:flex; gap:10px; align-items:center;">
       <select id="themeSelector" onchange="changeTheme(this.value)" style="padding:8px 12px; font-size:13px; font-weight:bold; border-radius:10px;">
         <option value="theme-rosa">🌸 Rosa Mágico</option>
@@ -667,7 +667,7 @@ const MASTER_SOFIA_PASS = "25022016";
 
 let registeredFamilies = [];
 let activeDocId = "dados_oficiais";
-let activeStudentName = "Sofia";
+let activeStudentName = "Sophia";
 let isMasterAdmin = false;
 let unsubscribeDoc = null;
 
@@ -843,7 +843,7 @@ function renderFamiliesList(){
   let html = `
     <div class="listitem" style="background:#fff0f5; border-color:#d81b60;">
       <div>
-        <b>🌸 Sofia (Conta Principal Master)</b><br>
+        <b>🌸 Sophia (Conta Principal Master)</b><br>
         <span class="muted">Senha Pai: <b>2191</b> | Senha Aluna: <b>25022016</b></span>
       </div>
       <span style="color:#d81b60; font-weight:800; font-size:12px;">PROTEGIDA</span>
@@ -877,8 +877,8 @@ function tryLogin(){
   let msg = document.getElementById('loginMsg');
   isMasterAdmin = false;
 
-  if(val === MASTER_PAI_PASS){ isMasterAdmin = true; activeStudentName = "Sofia"; setupSession('pai', 'dados_oficiais'); return; }
-  if(val === MASTER_SOFIA_PASS){ activeStudentName = "Sofia"; setupSession('sofia', 'dados_oficiais'); return; }
+  if(val === MASTER_PAI_PASS){ isMasterAdmin = true; activeStudentName = "Sophia"; setupSession('pai', 'dados_oficiais'); return; }
+  if(val === MASTER_SOFIA_PASS){ activeStudentName = "Sophia"; setupSession('sofia', 'dados_oficiais'); return; }
 
   let foundFamParent = registeredFamilies.find(f => f.parentPass === val);
   if(foundFamParent){ activeStudentName = foundFamParent.studentName; setupSession('pai', foundFamParent.id); return; }
@@ -896,7 +896,7 @@ function setupSession(role, docId){
   document.getElementById('loginMsg').textContent = '';
   document.getElementById('loginScreen').classList.add('hidden');
 
-  document.getElementById('mainHeaderTitle').textContent = activeStudentName === "Sofia" ? "🌸 Caderno da Sofia 🌸" : `📚 Caderno de ${activeStudentName}`;
+  document.getElementById('mainHeaderTitle').textContent = activeStudentName === "Sophia" ? "🌸 Caderno da Sophia 🌸" : `📚 Caderno de ${activeStudentName}`;
   document.getElementById('parentPanelTitle').textContent = `👨‍🏫 Sala do Professor (${activeStudentName})`;
   document.getElementById('studentPanelTitle').textContent = `⭐ Caderno de ${activeStudentName}`;
 
@@ -1336,7 +1336,7 @@ const QUESTION_BANK = {
       { q: "Complete com 'am', 'is' ou 'are': She ___ a student.", a: "is", h: "Para He, She, It usamos 'is'." },
       { q: "Complete com 'am', 'is' ou 'are': I ___ happy.", a: "am", h: "Com 'I' (Eu) sempre usamos 'am'." },
       { q: "Complete com 'am', 'is' ou 'are': They ___ friends.", a: "are", h: "Para plural (We, You, They) usamos 'are'." },
-      { q: "Traduza para o português: 'My name is Sofia'", a: "Meu nome é Sofia", h: "Name = nome." },
+      { q: "Traduza para o português: 'My name is Sophia'", a: "Meu nome é Sophia", h: "Name = nome." },
       { q: "Traduza para o português: 'I have a dog'", a: "Eu tenho um cachorro", h: "Have = ter." },
       { q: "Traduza para o português: 'The sun is yellow'", a: "O sol é amarelo", h: "Sun = sol, Yellow = amarelo." },
       { q: "O que significa 'Happy birthday' em português?", a: "Feliz aniversário", h: "Cantamos nas festas de aniversário." }
@@ -1344,7 +1344,6 @@ const QUESTION_BANK = {
   }
 };
 
-// GERADORES COMBINATÓRIOS DINÂMICOS (PARA NUNCA REPETIR!)
 function generateDynamicGeoQuestions(){
   const estados = [
     ["Acre", "Rio Branco"], ["Alagoas", "Maceió"], ["Amapá", "Macapá"], ["Amazonas", "Manaus"],
@@ -1397,14 +1396,10 @@ function generateSubjectBatch(subj){
     if(subj === 'ingles' && topic === 'vocabulario') pool = pool.concat(generateDynamicEnglishQuestions());
   }
 
-  // Trava Anti-Repetição: filtra perguntas que já estão no histórico do aluno
   let usedTitles = new Set(state.items.map(i => (i.title || '').trim().toLowerCase()));
   let freshPool = pool.filter(item => !usedTitles.has(item.q.trim().toLowerCase()));
-
-  // Se o aluno já respondeu quase tudo, usa o pool completo para não travar
   let finalPool = freshPool.length >= 10 ? freshPool : pool;
 
-  // Embaralha usando algoritmo Fisher-Yates real
   for (let i = finalPool.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [finalPool[i], finalPool[j]] = [finalPool[j], finalPool[i]];
@@ -1571,7 +1566,7 @@ function generateProblemBatch(){
   playClickSound();
   currentProblemBatch = [];
   let diff = document.getElementById('probDifficulty').value;
-  let nomes = ['Pedro', 'Maria', 'Lucas', 'Sofia', 'Ana', 'João', 'Julia', 'Carlos', 'Beatriz', 'Gabriel'];
+  let nomes = ['Pedro', 'Maria', 'Lucas', 'Sophia', 'Ana', 'João', 'Julia', 'Carlos', 'Beatriz', 'Gabriel'];
   let itens = ['balas', 'figurinhas', 'livros', 'bombons', 'laranjas', 'canetas', 'pães', 'adesivos', 'lápis'];
   
   for(let i=0; i<10; i++){
