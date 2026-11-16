@@ -563,9 +563,14 @@ function playVictorySound(){
   } catch(e) {}
 }
 
+let lastCloudStateStr = "";
 db.collection("caderno").doc("dados_oficiais").onSnapshot((doc) => {
   if (doc.exists) {
     let cloudData = doc.data();
+    let cloudStr = JSON.stringify(cloudData);
+    if(cloudStr === lastCloudStateStr) return; // Evitar re-renderizações desnecessárias que travam cliques no mobile
+    lastCloudStateStr = cloudStr;
+
     if(cloudData.items) state.items = cloudData.items;
     if(cloudData.stars !== undefined) state.stars = cloudData.stars;
     if(cloudData.rewards && cloudData.rewards.length > 0) state.rewards = cloudData.rewards;
