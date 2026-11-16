@@ -2,8 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#1b4332"><title>Caderno da Sofia 🌸</title>
-<!-- Firebase SDKs (Nuvem em Tempo Real) -->
+<meta name="theme-color" content="#1b4332"><title>Caderno Digital 🌸</title>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
@@ -53,7 +52,7 @@ body.theme-noite {
 *{box-sizing:border-box}body{margin:0;background:var(--bg-grad);color:var(--text-color);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh;transition:background 0.3s}
 header{background:var(--header-grad);color:white;padding:22px 16px;text-align:center;border-bottom-left-radius:25px;border-bottom-right-radius:25px;box-shadow:0 4px 15px rgba(0,0,0,0.15)}
 header h1{margin:0;font-size:28px;text-shadow:0 2px 4px rgba(0,0,0,0.1)}header p{margin:6px 0 0;opacity:.95;font-size:15px}
-main{max-width:950px;margin:16px auto;padding:0 12px 30px}
+main{max-width:960px;margin:16px auto;padding:0 12px 30px}
 .card{background:var(--card-bg);border:2px solid var(--card-border);border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:0 6px 20px rgba(0,0,0,0.06);transition:background 0.3s, border 0.3s}
 h2{font-size:20px;margin:0 0 12px;color:var(--accent-color)}p{line-height:1.45}.muted{color:#777;font-size:13px}
 body.theme-noite .muted{color:#aaa}
@@ -65,6 +64,11 @@ button.primary,button.soft,button.warn,button.success{border:0;border-radius:12p
 button.primary:active,button.soft:active,button.warn:active,button.success:active{transform:scale(0.97)}
 .primary{background:var(--header-grad);color:white;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
 .soft{background:#e8f4fd;color:#0277bd}.warn{background:#ffebee;color:#c62828}.success{background:#e8f5e9;color:#2e7d32}
+
+.tab-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;background:var(--card-bg);padding:10px;border-radius:18px;border:2px solid var(--card-border);box-shadow:0 4px 12px rgba(0,0,0,0.04)}
+.tab-btn{flex:1;min-width:110px;border:2px solid transparent;border-radius:12px;padding:10px 12px;font-weight:800;font-size:13px;cursor:pointer;background:#f4f6f8;color:#444;transition:all 0.2s;text-align:center}
+.tab-btn.active{background:var(--header-grad);color:white;box-shadow:0 3px 10px rgba(0,0,0,0.18)}
+.subject-badge{display:inline-block;padding:3px 9px;border-radius:8px;font-size:11px;font-weight:800;margin-bottom:4px;text-transform:uppercase}
 
 .listitem{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:12px 15px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;margin:10px 0}
 .listitem.submitted{background:#fffde7;border-color:#fff59d;color:#333}
@@ -90,9 +94,8 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   color: #333 !important;
 }
 
-/* LOUSA TELA CHEIA */
 #chalkboardOverlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:#1b4332;z-index:9999;display:flex;flex-direction:column;overflow:hidden}
-.cb-topbar{background:rgba(0,0,0,0.35);padding:6px 12px;display:flex;justify-content:space-between;align-items:center;color:white;border-bottom:2px solid rgba(255,255,255,0.1);flex-wrap:wrap;gap:6px}
+.cb-topbar{background:rgba(0,0,0,0.45);padding:8px 12px;display:flex;justify-content:space-between;align-items:center;color:white;border-bottom:2px solid rgba(255,255,255,0.1);flex-wrap:wrap;gap:6px}
 .cb-canvas-container{flex:1;position:relative;width:100%;height:100%;overflow:hidden}
 #cbCanvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair;background:#1b4332}
 
@@ -100,8 +103,8 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
 .cb-tool{width:38px;height:38px;border-radius:50%;border:2px solid rgba(255,255,255,0.5);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;background:transparent;transition:all 0.2s}
 .cb-tool.active{border-color:#fff;transform:scale(1.15);box-shadow:0 0 10px rgba(255,255,255,0.6);background:rgba(255,255,255,0.2)}
 
-.cb-answer-bar{background:rgba(0,0,0,0.8);padding:8px 12px;display:flex;justify-content:center;align-items:center;gap:10px;border-top:2px solid rgba(255,255,255,0.2)}
-.cb-answer-bar input{width:110px;padding:8px;font-size:18px;font-weight:900;text-align:center;border-radius:10px;border:2px solid #ffea79;background:#fff;color:#1b4332}
+.cb-answer-bar{background:rgba(0,0,0,0.85);padding:8px 12px;display:flex;justify-content:center;align-items:center;gap:10px;border-top:2px solid rgba(255,255,255,0.2);flex-wrap:wrap}
+.cb-answer-bar input{width:190px;padding:8px 12px;font-size:16px;font-weight:800;text-align:center;border-radius:10px;border:2px solid #ffea79;background:#fff;color:#1b4332}
 .cb-answer-bar button{background:linear-gradient(135deg,#ff758c,#ffb300);padding:10px 18px;font-size:14px;box-shadow:0 4px 12px rgba(0,0,0,0.4);color:white;border:none;border-radius:10px;font-weight:800;cursor:pointer;transition:transform 0.1s}
 .cb-answer-bar button:active{transform:scale(0.95)}
 
@@ -119,15 +122,15 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
 
 @media print {
   body { background: white !important; color: black !important; }
-  header, .actions, button, #loginScreen, #parentPanel section:not(#printArea), .cb-toolbar { display: none !important; }
+  header, .actions, button, #loginScreen, .tab-bar, #parentPanel section:not(#printArea), .cb-toolbar { display: none !important; }
   .card { border: 1px solid #000 !important; box-shadow: none !important; background: white !important; }
 }
 
-@media(max-width:520px){.row{grid-template-columns:1fr}}
+@media(max-width:520px){.row{grid-template-columns:1fr}.cb-answer-bar input{width:145px;}}
 </style>
 </head>
 <body class="theme-rosa">
-<header><h1>🌸 Caderno da Sofia 🌸</h1><p>Sincronizado na Nuvem em Tempo Real</p></header>
+<header><h1 id="mainHeaderTitle">🌸 Caderno da Sofia 🌸</h1><p id="mainHeaderSub">Plataforma de Estudos & Reforço Escolar (5º Ano)</p></header>
 <main>
 
 <!-- TELA DE LOGIN -->
@@ -146,15 +149,15 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
 <!-- LOUSA DE ESCOLA TELA CHEIA -->
 <div id="chalkboardOverlay" class="hidden">
   <div class="cb-topbar">
-    <div>
-      <span style="font-size:13px; opacity:0.8; display:block;" id="cbProblemLabel">Desafio Atual:</span>
-      <span id="cbProblemTitle" style="font-size:18px; font-weight:800; color:#ffea79; line-height:1.3;"></span>
+    <div style="max-width:65%;">
+      <span style="font-size:12px; opacity:0.85; display:block;" id="cbProblemLabel">Desafio Atual:</span>
+      <span id="cbProblemTitle" style="font-size:16px; font-weight:800; color:#ffea79; line-height:1.3; display:block;"></span>
     </div>
-    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-      <button type="button" onclick="playClickSound(); openPocketTabuada()" style="background:#26a69a; color:white; border:none; padding:5px 9px; border-radius:8px; font-weight:bold; font-size:12px; cursor:pointer;">🧮 Tabuada de Bolso</button>
-      
-      <button id="btnOpenVideo" type="button" onclick="playClickSound(); openYouTubeDirect()" style="background:#0277bd; color:white; border:none; padding:5px 9px; border-radius:8px; font-weight:bold; font-size:12px; cursor:pointer;">📺 Ver Vídeo</button>
-      <div id="cbTimer" style="background:rgba(255,255,255,0.15); padding:6px 14px; border-radius:12px; font-weight:700; font-size:15px;">⏱️ 00:00</div>
+    <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+      <button id="btnPocketTabuada" type="button" onclick="playClickSound(); openPocketTabuada()" style="background:#26a69a; color:white; border:none; padding:5px 9px; border-radius:8px; font-weight:bold; font-size:12px; cursor:pointer;">🧮 Tabuada</button>
+      <button type="button" onclick="playClickSound(); showHintModal()" style="background:#ffb300; color:#5d4037; border:none; padding:5px 9px; border-radius:8px; font-weight:bold; font-size:12px; cursor:pointer;">💡 Dica</button>
+      <button id="btnOpenVideo" type="button" onclick="playClickSound(); openYouTubeDirect()" style="background:#0277bd; color:white; border:none; padding:5px 9px; border-radius:8px; font-weight:bold; font-size:12px; cursor:pointer;">📺 Vídeo</button>
+      <div id="cbTimer" style="background:rgba(255,255,255,0.15); padding:5px 10px; border-radius:10px; font-weight:700; font-size:13px;">⏱️ 00:00</div>
       <button type="button" onclick="playClickSound(); closeChalkboard()" style="background:#e53935; color:white; border:none; padding:5px 10px; border-radius:8px; font-weight:bold; font-size:12px; cursor:pointer;">Sair ❌</button>
     </div>
   </div>
@@ -171,9 +174,9 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   </div>
   
   <div class="cb-answer-bar">
-    <span style="color:white; font-size:18px; font-weight:bold;">Sua Resposta:</span>
-    <input id="cbDirectAnswer" type="text" inputmode="decimal" placeholder="..." onkeydown="if(event.key==='Enter'){event.preventDefault(); submitToDad();}">
-    <button type="button" onclick="playClickSound(); submitToDad()">Entregar ao Papai 🚀</button>
+    <span style="color:white; font-size:16px; font-weight:bold;">Sua Resposta:</span>
+    <input id="cbDirectAnswer" type="text" placeholder="Digite aqui..." onkeydown="if(event.key==='Enter'){event.preventDefault(); submitToDad();}">
+    <button type="button" onclick="playClickSound(); submitToDad()">Entregar 🚀</button>
   </div>
 </div>
 
@@ -185,7 +188,6 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
       <button type="button" onclick="playClickSound(); closePocketTabuada()" style="background:#e53935; color:white; border:none; border-radius:8px; padding:6px 12px; font-weight:bold; cursor:pointer;">X</button>
     </div>
     <p style="font-size:13px; opacity:0.9; margin-bottom:12px;">Consulte rapidinho para tirar dúvidas na conta:</p>
-    
     <div class="row" style="margin-bottom:12px;">
       <div>
         <label style="color:#ffea79;">Número:</label>
@@ -209,12 +211,8 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
         </select>
       </div>
     </div>
-
-    <div id="pocketTableContent" style="background:#143829; border:2px solid rgba(255,255,255,0.2); border-radius:12px; padding:12px; max-height:220px; overflow-y:auto; font-family:monospace; font-size:16px; text-align:left;">
-      <!-- Gerado via JS -->
-    </div>
-    
-    <button type="button" class="primary" style="background:#ffb300; color:#5d4037; width:100%; margin-top:15px;" onclick="playClickSound(); closePocketTabuada()">Fechar e Continuar Conta ✨</button>
+    <div id="pocketTableContent" style="background:#143829; border:2px solid rgba(255,255,255,0.2); border-radius:12px; padding:12px; max-height:220px; overflow-y:auto; font-family:monospace; font-size:16px; text-align:left;"></div>
+    <button type="button" class="primary" style="background:#ffb300; color:#5d4037; width:100%; margin-top:15px;" onclick="playClickSound(); closePocketTabuada()">Fechar e Continuar ✨</button>
   </div>
 </div>
 
@@ -224,7 +222,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
     <div style="font-size:40px; margin-bottom:10px;">💡</div>
     <h3 style="color:#e65100; margin-top:0;">Caminho das Pedras:</h3>
     <p id="hintTextContent" style="font-size:16px; font-weight:600; line-height:1.5; margin:15px 0;"></p>
-    <button type="button" class="primary" style="background:#ffb300; color:#5d4037; width:100%; font-size:16px; padding:12px;" onclick="playClickSound(); hideHintModal()">Entendi, vou calcular! ✨</button>
+    <button type="button" class="primary" style="background:#ffb300; color:#5d4037; width:100%; font-size:16px; padding:12px;" onclick="playClickSound(); hideHintModal()">Entendi, vou responder! ✨</button>
   </div>
 </div>
 
@@ -233,26 +231,41 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   <div class="celebration-card" style="background:linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);">
     <div class="celebration-emojis">⏳ 👨‍👧 📝</div>
     <h2 style="color:white; font-size:32px; margin-bottom:10px; text-shadow:0 2px 4px rgba(0,0,0,0.2);">TAREFA ENVIADA!</h2>
-    <p style="font-size:18px; font-weight:700; line-height:1.5; margin-bottom:20px;">O papai vai corrigir seu rascunho. Se estiver certinho, ele vai te dar os pontos e as estrelas!</p>
+    <p style="font-size:18px; font-weight:700; line-height:1.5; margin-bottom:20px;">Sua resposta foi enviada! Se estiver certinha, você vai ganhar os pontos e as estrelas!</p>
     <button type="button" class="primary" style="background:#fff; color:#8e24aa; font-size:18px; width:100%; padding:14px; box-shadow:0 4px 15px rgba(0,0,0,0.2);" onclick="playClickSound(); closeWaitingDad()">Entendi!</button>
   </div>
 </div>
 
-<!-- TELA 2: NOTIFICAÇÃO DA SOFIA -->
+<!-- TELA 2: NOTIFICAÇÃO DO ALUNO -->
 <div id="notificationOverlay" class="full-overlay hidden">
   <div class="celebration-card" style="background:linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
     <div class="celebration-emojis">🔔 🌟 🏆</div>
-    <h2 style="color:white; font-size:30px; margin-bottom:10px; text-shadow:0 2px 4px rgba(0,0,0,0.2);">RECADO DO PAPAI!</h2>
+    <h2 style="color:white; font-size:30px; margin-bottom:10px; text-shadow:0 2px 4px rgba(0,0,0,0.2);">CORREÇÃO PRONTA!</h2>
     <p id="notifText" style="font-size:18px; font-weight:700; line-height:1.5; margin-bottom:20px;"></p>
     <button type="button" class="primary" style="background:#fff; color:#0277bd; font-size:18px; width:100%; padding:14px; box-shadow:0 4px 15px rgba(0,0,0,0.2);" onclick="playClickSound(); closeNotification()">Eba! Entendi!</button>
   </div>
 </div>
 
-<!-- PAINEL DO PAI -->
+<!-- PAINEL DO PAI / PROFESSOR -->
 <section id="parentPanel" class="hidden">
-  <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-    <div><h2>👨‍🏫 Sala do Professor (Pai)</h2><p class="muted" style="margin:0;">Gerencie desafios, gráficos, calendário e impressão.</p></div>
+  <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+    <div>
+      <h2 id="parentPanelTitle">👨‍🏫 Sala do Professor</h2>
+      <p class="muted" id="parentPanelSub" style="margin:0;">Gerencie tarefas por matéria, correções e prêmios.</p>
+    </div>
     <button type="button" class="warn" onclick="logout()">Sair</button>
+  </div>
+
+  <!-- BARRA DE NAVEGAÇÃO POR MATÉRIAS E GESTÃO -->
+  <div class="tab-bar">
+    <button type="button" class="tab-btn active" id="tabBtn_geral" onclick="switchParentTab('geral')">📊 Correções & Geral</button>
+    <button type="button" class="tab-btn" id="tabBtn_matematica" onclick="switchParentTab('matematica')">🔢 Matemática</button>
+    <button type="button" class="tab-btn" id="tabBtn_portugues" onclick="switchParentTab('portugues')">📚 Português</button>
+    <button type="button" class="tab-btn" id="tabBtn_geografia" onclick="switchParentTab('geografia')">🌍 Geografia</button>
+    <button type="button" class="tab-btn" id="tabBtn_historia" onclick="switchParentTab('historia')">🏛️ História</button>
+    <button type="button" class="tab-btn" id="tabBtn_ciencias" onclick="switchParentTab('ciencias')">🔬 Ciências</button>
+    <button type="button" class="tab-btn" id="tabBtn_ingles" onclick="switchParentTab('ingles')">🇺🇸 Inglês</button>
+    <button type="button" class="tab-btn hidden" id="tabBtn_familias" style="border-color:#d81b60;" onclick="switchParentTab('familias')">👥 Famílias / Logins</button>
   </div>
 
   <!-- ALERTA DE 1 HORA DE TELA CONQUISTADA -->
@@ -266,136 +279,277 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
     </div>
   </div>
 
-  <div class="card" style="background:linear-gradient(135deg,#f8f9fa,#e9ecef); border-color:#ced4da;">
-    <h2>📊 Gráficos, Desempenho e Calendário de Estudos</h2>
-    <div id="statsContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top:10px;"></div>
-  </div>
+  <!-- ABA 1: CORREÇÕES & GERAL -->
+  <div id="tabContent_geral" class="parent-tab-section">
+    <div class="card" style="background:#fffde7; border:3px solid #fbc02d; box-shadow: 0 4px 15px rgba(251, 192, 45, 0.3);">
+      <h2 style="color:#f57f17; font-size:22px;">⚠️ Aguardando Sua Correção</h2>
+      <p class="muted" style="margin-top:0;">Tudo o que for entregue em qualquer matéria cai direto aqui:</p>
+      <div id="parentListPending" style="margin-top:10px;"></div>
+    </div>
 
-  <div class="card" style="background:#e3f2fd; border-color:#90caf9;">
-    <h2>🖨️ Imprimir Prova / Folha de Exercícios</h2>
-    <p class="muted">Gere uma folha limpa para imprimir e resolver no papel offline.</p>
-    <div class="actions">
-      <button type="button" class="primary" style="background:#0277bd; width:100%;" onclick="window.print()">🖨️ Imprimir Desafios Atuais em Papel</button>
+    <div class="card" style="background:linear-gradient(135deg,#f8f9fa,#e9ecef); border-color:#ced4da;">
+      <h2>📊 Gráficos, Desempenho e Calendário de Estudos</h2>
+      <div id="statsContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top:10px;"></div>
     </div>
-  </div>
 
-  <div class="card" style="background:#fff3e0; border-color:#ffb74d;">
-    <h2>⭐ Controle Manual de Estrelas</h2>
-    <p class="muted" style="margin-top:0;">Dê bônus extras ou tire pontos da Sofia livremente.</p>
-    <div class="row">
-       <div><input id="manualStarAmount" type="number" placeholder="Quantas estrelas? Ex: 10"></div>
-    </div>
-    <div class="actions" style="margin-top:10px;">
-       <button type="button" class="primary" style="background:#f57c00; box-shadow:0 4px 12px rgba(245,124,0,0.3);" onclick="adjustStars('add')">Dar Estrelas ➕</button>
-       <button type="button" class="warn" style="background:#e53935; color:white;" onclick="adjustStars('remove')">Tirar Estrelas ➖</button>
-    </div>
-  </div>
-  
-  <div class="card" style="background:#fffde7; border:3px solid #fbc02d; box-shadow: 0 4px 15px rgba(251, 192, 45, 0.3);">
-    <h2 style="color:#f57f17; font-size:22px;">⚠️ Aguardando Sua Correção</h2>
-    <p class="muted" style="margin-top:0;">O que a Sofia resolver vai cair direto aqui (com o tempo de resolução e rascunho):</p>
-    <div id="parentListPending" style="margin-top:10px;"></div>
-  </div>
-
-  <div class="card">
-    <h2>📋 Todos os Desafios & Histórico de Lousa</h2>
-    <p class="muted">Lista geral das tarefas ativas e já corrigidas. Você pode revisar o rascunho da Sofia a qualquer momento!</p>
-    <div id="parentList" style="margin-top:10px;"></div>
-  </div>
-
-  <!-- GERADOR DE CONTA MANUAL / SURPRESA -->
-  <div class="card" style="background:#e8f8f5; border-color:#a3e4d7;">
-    <h2>✍️ Criar Conta Manual / Surpresa Valendo Brinde</h2>
-    <p class="muted">Digite os números (pode usar vírgula, ex: 540,5) e escolha a operação; o resultado sai sozinho!</p>
-    <div class="row" style="margin-bottom:10px;">
-      <div><label>Número 1</label><input id="manualN1" type="text" inputmode="decimal" placeholder="Ex: 540,5" oninput="autoCalcManual()"></div>
-      <div><label>Operação</label><select id="manualOp" onchange="autoCalcManual()"><option value="+">Adição (+)</option><option value="-">Subtração (-)</option><option value="x">Multiplicação (x)</option><option value="÷">Divisão (÷)</option></select></div>
-    </div>
-    <div class="row" style="margin-bottom:10px;">
-      <div><label>Número 2</label><input id="manualN2" type="text" inputmode="decimal" placeholder="Ex: 2,5" oninput="autoCalcManual()"></div>
-      <div><label>Resultado Exato (Calculado Sozinho ✨)</label><input id="manualExpected" type="text" placeholder="Automático..." style="background:#e8f8f5; font-weight:bold; color:#16a085;"></div>
-    </div>
-    <div style="margin-bottom:10px;">
-      <label>🎁 O que está valendo? (Ex: 100 estrelas, Caixa de bombom, Pizza...)</label>
-      <input id="manualPrize" type="text" placeholder="Ex: 100 estrelas">
-    </div>
-    <div class="actions">
-      <button type="button" class="primary" style="background:#16a085; width:100%;" onclick="createManualProblem()">✨ Enviar Conta Manual para a Sofia</button>
-    </div>
-  </div>
-
-  <div class="card" style="background:#e8f4fd; border-color:#b9e2fc;">
-    <h2>📖 Gerador de Probleminhas (5º Ano)</h2>
-    <div class="row" style="margin-bottom:10px;">
-      <div><label>Dificuldade</label><select id="probDifficulty"><option value="easy">Fácil</option><option value="medium" selected>Médio (Padrão 5º ano)</option><option value="hard">Desafio</option></select></div>
-    </div>
-    <div class="actions"><button type="button" class="primary" style="background:#0277bd;" onclick="generateProblemBatch()">🎲 Gerar 10 Probleminhas 📚</button></div>
-    <div id="problemBatchPreview" style="margin-top:15px;"></div>
-  </div>
-
-  <div class="card" style="background:#fffaf0; border-color:#ffe0b2;">
-    <h2>🤖 Gerador de Contas Armadas (Com Filtro de Operação)</h2>
-    <div class="row" style="margin-bottom:10px;">
-      <div>
-        <label>Tipo de Operação</label>
-        <select id="calcType">
-          <option value="all" selected>Misturado (Todas)</option>
-          <option value="+">Somente Adição (+)</option>
-          <option value="-">Somente Subtração (-)</option>
-          <option value="x">Somente Multiplicação (x)</option>
-          <option value="÷">Divisão Inteira Exata (÷)</option>
-          <option value="÷_dec">Divisão com Vírgula / Decimal Exato (÷)</option>
-        </select>
+    <div class="card" style="background:#fff3e0; border-color:#ffb74d;">
+      <h2>⭐ Controle Manual de Estrelas</h2>
+      <div class="row">
+         <div><input id="manualStarAmount" type="number" placeholder="Quantas estrelas? Ex: 10"></div>
       </div>
-      <div><label>Dificuldade</label><select id="calcDifficulty"><option value="easy">Fácil (Ex: 54,5 ÷ 2)</option><option value="medium" selected>Médio (Ex: 540,5 ÷ 5)</option><option value="hard">Avançado (Ex: 62,5 ÷ 2,5)</option></select></div>
+      <div class="actions" style="margin-top:10px;">
+         <button type="button" class="primary" style="background:#f57c00;" onclick="adjustStars('add')">Dar Estrelas ➕</button>
+         <button type="button" class="warn" style="background:#e53935; color:white;" onclick="adjustStars('remove')">Tirar Estrelas ➖</button>
+      </div>
     </div>
-    <div class="actions"><button type="button" class="primary" style="background:linear-gradient(135deg,#ffb300,#ff8f00);" onclick="generateBatch()">Gerar 10 Contas ✨</button></div>
-    <div id="batchPreviewContainer" style="margin-top:15px;"></div>
+
+    <div class="card" style="background:#fff5f8; border-color:#ffd1dc;">
+      <h2>🎁 Adicionar Prêmios e Metas</h2>
+      <div class="row">
+        <div><label>Nome do Prêmio</label><input id="newRewardName" type="text" placeholder="Ex: Viagem com a Tia Selma na praia"></div>
+        <div><label>Estrelas Necessárias</label><input id="newRewardStars" type="number" placeholder="Ex: 10000"></div>
+      </div>
+      <div class="actions"><button type="button" class="primary" onclick="addReward()">Adicionar Prêmio 🌟</button></div>
+      <p class="muted" id="rewardMsg" style="margin-top:6px; color:#e65100; font-weight:700;"></p>
+      <div style="margin-top:15px;"><div id="rewardsListParent"></div></div>
+    </div>
+
+    <div class="card">
+      <h2>📋 Histórico Geral de Todas as Matérias</h2>
+      <div class="actions" style="margin-bottom:10px;">
+        <button type="button" class="soft" onclick="window.print()">🖨️ Imprimir Folha de Exercícios</button>
+      </div>
+      <div id="parentList" style="margin-top:10px;"></div>
+    </div>
   </div>
 
-  <div class="card" style="background:#fff5f8; border-color:#ffd1dc;">
-    <h2>🎁 Adicionar Prêmios e Metas</h2>
-    <div class="row">
-      <div><label>Nome do Prêmio</label><input id="newRewardName" type="text" placeholder="Ex: Viagem com a Tia Selma na praia"></div>
-      <div><label>Estrelas Necessárias</label><input id="newRewardStars" type="number" placeholder="Ex: 10000"></div>
+  <!-- ABA 2: MATEMÁTICA -->
+  <div id="tabContent_matematica" class="parent-tab-section hidden">
+    <div class="card" style="background:#e8f8f5; border-color:#a3e4d7;">
+      <h2>✍️ Criar Conta Manual / Surpresa Valendo Brinde</h2>
+      <p class="muted">Digite os números (pode usar vírgula, ex: 540,5) e escolha a operação; o resultado sai sozinho!</p>
+      <div class="row" style="margin-bottom:10px;">
+        <div><label>Número 1</label><input id="manualN1" type="text" inputmode="decimal" placeholder="Ex: 540,5" oninput="autoCalcManual()"></div>
+        <div><label>Operação</label><select id="manualOp" onchange="autoCalcManual()"><option value="+">Adição (+)</option><option value="-">Subtração (-)</option><option value="x">Multiplicação (x)</option><option value="÷">Divisão (÷)</option></select></div>
+      </div>
+      <div class="row" style="margin-bottom:10px;">
+        <div><label>Número 2</label><input id="manualN2" type="text" inputmode="decimal" placeholder="Ex: 2,5" oninput="autoCalcManual()"></div>
+        <div><label>Resultado Exato (Calculado Sozinho ✨)</label><input id="manualExpected" type="text" placeholder="Automático..." style="background:#e8f8f5; font-weight:bold; color:#16a085;"></div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <label>🎁 O que está valendo? (Opcional)</label>
+        <input id="manualPrize" type="text" placeholder="Ex: 100 estrelas">
+      </div>
+      <div class="actions">
+        <button type="button" class="primary" style="background:#16a085; width:100%;" onclick="createManualProblem()">✨ Enviar Conta Manual</button>
+      </div>
     </div>
-    <div class="actions"><button type="button" class="primary" onclick="addReward()">Adicionar Prêmio 🌟</button></div>
-    <p class="muted" id="rewardMsg" style="margin-top:6px; color:#e65100; font-weight:700;"></p>
-    <div style="margin-top:15px;"><div id="rewardsListParent"></div></div>
+
+    <div class="card" style="background:#fffaf0; border-color:#ffe0b2;">
+      <h2>🤖 Gerador de Contas Armadas (Com Filtro de Operação)</h2>
+      <div class="row" style="margin-bottom:10px;">
+        <div>
+          <label>Tipo de Operação</label>
+          <select id="calcType">
+            <option value="all" selected>Misturado (Todas)</option>
+            <option value="+">Somente Adição (+)</option>
+            <option value="-">Somente Subtração (-)</option>
+            <option value="x">Somente Multiplicação (x)</option>
+            <option value="÷">Divisão Inteira Exata (÷)</option>
+            <option value="÷_dec">Divisão com Vírgula / Decimal Exato (÷)</option>
+          </select>
+        </div>
+        <div><label>Dificuldade</label><select id="calcDifficulty"><option value="easy">Fácil (Ex: 54,5 ÷ 2)</option><option value="medium" selected>Médio (Ex: 540,5 ÷ 5)</option><option value="hard">Avançado (Ex: 62,5 ÷ 2,5)</option></select></div>
+      </div>
+      <div class="actions"><button type="button" class="primary" style="background:linear-gradient(135deg,#ffb300,#ff8f00);" onclick="generateBatch()">Gerar 10 Contas ✨</button></div>
+      <div id="batchPreviewContainer" style="margin-top:15px;"></div>
+    </div>
+
+    <div class="card" style="background:#e8f4fd; border-color:#b9e2fc;">
+      <h2>📖 Gerador de Probleminhas de Matemática (5º Ano)</h2>
+      <div class="row" style="margin-bottom:10px;">
+        <div><label>Dificuldade</label><select id="probDifficulty"><option value="easy">Fácil</option><option value="medium" selected>Médio (Padrão 5º ano)</option><option value="hard">Desafio</option></select></div>
+      </div>
+      <div class="actions"><button type="button" class="primary" style="background:#0277bd;" onclick="generateProblemBatch()">🎲 Gerar 10 Probleminhas 📚</button></div>
+      <div id="problemBatchPreview" style="margin-top:15px;"></div>
+    </div>
+  </div>
+
+  <!-- ABA 3: PORTUGUÊS -->
+  <div id="tabContent_portugues" class="parent-tab-section hidden">
+    <div class="card" style="background:#f3e5f5; border-color:#ce93d8;">
+      <h2 style="color:#7b1fa2;">📚 Gerador de Português (5º Ano)</h2>
+      <p class="muted">Gera 10 perguntas inéditas (com trava anti-repetição) e gabarito pronto.</p>
+      <div class="row">
+        <div>
+          <label>Conteúdo / Tema:</label>
+          <select id="topic_portugues">
+            <option value="all">Misturado (Todo o 5º Ano)</option>
+            <option value="ortografia">Ortografia (S/Z, X/CH, G/J, SS/Ç)</option>
+            <option value="acentuacao">Acentuação e Separação Silábica</option>
+            <option value="gramatica">Classes Gramaticais (Substantivo, Adjetivo, Verbo)</option>
+            <option value="sinonimos">Sinônimos, Antônimos, Coletivos e Pontuação</option>
+          </select>
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button type="button" class="primary" style="background:#8e24aa; width:100%;" onclick="generateSubjectBatch('portugues')">🎲 Gerar 10 de Português</button>
+        </div>
+      </div>
+      <div id="preview_portugues" style="margin-top:15px;"></div>
+    </div>
+  </div>
+
+  <!-- ABA 4: GEOGRAFIA -->
+  <div id="tabContent_geografia" class="parent-tab-section hidden">
+    <div class="card" style="background:#e8f5e9; border-color:#a5d6a7;">
+      <h2 style="color:#2e7d32;">🌍 Gerador de Geografia (5º Ano)</h2>
+      <p class="muted">Inclui gerador dinâmico de todos os 26 estados + DF, regiões, relevo e clima.</p>
+      <div class="row">
+        <div>
+          <label>Conteúdo / Tema:</label>
+          <select id="topic_geografia">
+            <option value="all">Misturado (Todo o 5º Ano)</option>
+            <option value="regioes">Regiões, Estados e Capitais do Brasil</option>
+            <option value="natureza">Relevo, Clima, Biomas e Hidrografia</option>
+            <option value="populacao">Zona Urbana, Rural, Economia e População</option>
+          </select>
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button type="button" class="primary" style="background:#2e7d32; width:100%;" onclick="generateSubjectBatch('geografia')">🎲 Gerar 10 de Geografia</button>
+        </div>
+      </div>
+      <div id="preview_geografia" style="margin-top:15px;"></div>
+    </div>
+  </div>
+
+  <!-- ABA 5: HISTÓRIA -->
+  <div id="tabContent_historia" class="parent-tab-section hidden">
+    <div class="card" style="background:#fff3e0; border-color:#ffcc80;">
+      <h2 style="color:#e65100;">🏛️ Gerador de História (5º Ano)</h2>
+      <p class="muted">Formação do Brasil, povos indígenas, independência, república e cidadania.</p>
+      <div class="row">
+        <div>
+          <label>Conteúdo / Tema:</label>
+          <select id="topic_historia">
+            <option value="all">Misturado (Todo o 5º Ano)</option>
+            <option value="colonia">Chegada dos Portugueses e Brasil Colônia</option>
+            <option value="independencia">Independência, Império e República</option>
+            <option value="cultura">Povos Indígenas, Cultura Afro e Cidadania</option>
+          </select>
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button type="button" class="primary" style="background:#ef6c00; width:100%;" onclick="generateSubjectBatch('historia')">🎲 Gerar 10 de História</button>
+        </div>
+      </div>
+      <div id="preview_historia" style="margin-top:15px;"></div>
+    </div>
+  </div>
+
+  <!-- ABA 6: CIÊNCIAS -->
+  <div id="tabContent_ciencias" class="parent-tab-section hidden">
+    <div class="card" style="background:#e0f7fa; border-color:#80deea;">
+      <h2 style="color:#00838f;">🔬 Gerador de Ciências (5º Ano)</h2>
+      <p class="muted">Corpo humano, sistema solar, água, energia, materiais e ecologia.</p>
+      <div class="row">
+        <div>
+          <label>Conteúdo / Tema:</label>
+          <select id="topic_ciencias">
+            <option value="all">Misturado (Todo o 5º Ano)</option>
+            <option value="corpo">Corpo Humano e Sistemas</option>
+            <option value="universo">Sistema Solar, Terra, Lua e Estações</option>
+            <option value="materia">Água, Energia, Reciclagem e Cadeia Alimentar</option>
+          </select>
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button type="button" class="primary" style="background:#00838f; width:100%;" onclick="generateSubjectBatch('ciencias')">🎲 Gerar 10 de Ciências</button>
+        </div>
+      </div>
+      <div id="preview_ciencias" style="margin-top:15px;"></div>
+    </div>
+  </div>
+
+  <!-- ABA 7: INGLÊS -->
+  <div id="tabContent_ingles" class="parent-tab-section hidden">
+    <div class="card" style="background:#e8eaf6; border-color:#9fa8da;">
+      <h2 style="color:#283593;">🇺🇸 Gerador de Inglês (5º Ano)</h2>
+      <p class="muted">Gerador combinatório com dezenas de palavras, números, animais, cores e frases.</p>
+      <div class="row">
+        <div>
+          <label>Conteúdo / Tema:</label>
+          <select id="topic_ingles">
+            <option value="all">Misturado (Todo o 5º Ano)</option>
+            <option value="vocabulario">Cores, Números, Animais e Objetos</option>
+            <option value="saudacoes">Saudações, Família, Meses e Dias da Semana</option>
+            <option value="frases">Verbo To Be e Tradução de Frases Simples</option>
+          </select>
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button type="button" class="primary" style="background:#283593; width:100%;" onclick="generateSubjectBatch('ingles')">🎲 Gerar 10 de Inglês</button>
+        </div>
+      </div>
+      <div id="preview_ingles" style="margin-top:15px;"></div>
+    </div>
+  </div>
+
+  <!-- ABA 8: GERENCIAR FAMÍLIAS / LOGINS (EXCLUSIVO ADMIN MASTER) -->
+  <div id="tabContent_familias" class="parent-tab-section hidden">
+    <div class="card" style="background:#fff0f5; border:2px solid #d81b60;">
+      <h2>👥 Criar Novo Acesso para Colega / Família</h2>
+      <p class="muted">Cada família criada tem seu próprio banco de dados na nuvem, sem interferir nos dados da Sofia.</p>
+      <div class="row">
+        <div><label>Nome do Aluno(a) / Família</label><input id="newFamStudent" type="text" placeholder="Ex: Pedro (Filho do Marcos)"></div>
+        <div><label>Senha do Professor (Pai)</label><input id="newFamParentPass" type="text" placeholder="Ex: 3344"></div>
+      </div>
+      <div class="row">
+        <div><label>Senha do Aluno(a)</label><input id="newFamStudentPass" type="text" placeholder="Ex: 5566"></div>
+        <div><label>&nbsp;</label><button type="button" class="primary" style="width:100%;" onclick="createNewFamily()">➕ Criar Acesso Isolado</button></div>
+      </div>
+      <p id="famMsg" style="font-weight:bold; color:#2e7d32; margin-top:8px;"></p>
+    </div>
+
+    <div class="card">
+      <h2>📋 Famílias Cadastradas na Plataforma</h2>
+      <p class="muted">Sua conta principal (Sofia) fica protegida como Master.</p>
+      <div id="familiesListContainer"></div>
+    </div>
   </div>
 </section>
 
-<!-- VISUALIZADOR DE RASCUNHO DO PAI -->
+<!-- VISUALIZADOR DE RASCUNHO / RESPOSTA DO PAI -->
 <section id="viewWorkModal" class="card hidden">
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
     <div>
-      <h2 id="modalTitle" style="margin:0;">Rascunho da Sofia</h2>
+      <h2 id="modalTitle" style="margin:0;">Correção da Tarefa</h2>
       <span id="pendingQueueCount" style="font-size:12px; font-weight:bold; color:#e65100;"></span>
     </div>
     <button type="button" class="warn" onclick="closeViewWork()">Fechar ❌</button>
   </div>
-  <p class="muted">Avalie se ela armou a conta certo antes de dar os pontos (ou reveja a resolução passada)!</p>
   <div id="parentProblemHeader" style="text-align:center; margin-bottom:10px; font-size:18px; font-weight:bold; color:#1b4332;"></div>
   <div id="parentStudentAnswerHeader" style="text-align:center; margin-bottom:12px; font-size:15px; font-weight:bold; color:#d81b60;"></div>
   
   <div id="quickCorrectBar" style="background:#fff3e0; padding:12px; border-radius:12px; margin-bottom:15px; border:2px solid #ffb74d; display:flex; justify-content:space-around; align-items:center;">
-      <span style="font-weight:bold; color:#e65100;">O rascunho tá bom?</span>
+      <span style="font-weight:bold; color:#e65100;">A resposta está certa?</span>
       <div style="display:flex; gap:10px;">
           <button id="btnQuickRight" class="success" style="font-size:16px;">✅ Dar 10⭐</button>
           <button id="btnQuickWrong" class="warn" style="font-size:16px;">❌ Errado (Refazer)</button>
       </div>
   </div>
 
-  <div style="width:100%; height:450px; background:#1b4332; border-radius:16px; overflow:hidden; position:relative; border:4px solid #2d6a4f;">
+  <div id="parentCanvasWrapper" style="width:100%; height:450px; background:#1b4332; border-radius:16px; overflow:hidden; position:relative; border:4px solid #2d6a4f;">
     <canvas id="parentPaper" style="width:100%; height:100%; display:block;"></canvas>
   </div>
   <div class="actions" style="margin-top:15px;"><button type="button" class="soft" onclick="closeViewWork()">Voltar ao Painel</button></div>
 </section>
 
-<!-- CADERNO DA SOFIA -->
+<!-- CADERNO DO ALUNO -->
 <section id="studentPanel" class="hidden">
   <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-    <div><h2>⭐ Caderno da Sofia</h2><p class="muted" style="margin:0;">Resolva os desafios para o papai corrigir!</p></div>
+    <div><h2 id="studentPanelTitle">⭐ Caderno da Sofia</h2><p class="muted" style="margin:0;">Resolva os desafios de todas as matérias!</p></div>
     <div style="display:flex; gap:10px; align-items:center;">
       <select id="themeSelector" onchange="changeTheme(this.value)" style="padding:8px 12px; font-size:13px; font-weight:bold; border-radius:10px;">
         <option value="theme-rosa">🌸 Rosa Mágico</option>
@@ -407,7 +561,6 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
     </div>
   </div>
 
-  <!-- OFENSIVA DE DIAS (STREAK) -->
   <div class="card" style="background:linear-gradient(135deg,#e8f8f5,#e3f2fd); border:2px solid #26a69a; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
     <div>
       <div style="font-size:16px; font-weight:900; color:#00796b;">🔥 Ofensiva de Estudos: <span id="streakCount" style="color:#d81b60; font-size:20px;">0</span> dias seguidos!</div>
@@ -415,9 +568,8 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
     </div>
   </div>
 
-  <!-- CARD DE META DE 1 HORA DE TELA (10 ACERTOS) -->
   <div class="card" style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9); border:2px solid #4caf50; text-align:center;">
-    <div style="font-size:18px; font-weight:800; color:#2e7d32; margin-bottom:6px;">📱 Meta de 1 Hora de Tela (TikTok / WhatsApp)</div>
+    <div style="font-size:18px; font-weight:800; color:#2e7d32; margin-bottom:6px;">📱 Meta de 1 Hora de Tela</div>
     <div class="muted" style="font-weight:700; color:#1b5e20; margin-bottom:8px;">Acertos para a próxima hora: <span id="screenProgressCount" style="color:#d81b60; font-size:20px;">0</span> / 10</div>
     <div class="progress-container" style="border-color:#4caf50;">
       <div id="screenProgressBar" class="progress-bar" style="background:linear-gradient(90deg,#66bb6a,#43a047); width:0%;"></div>
@@ -426,10 +578,9 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
     <div style="font-size:13px; font-weight:bold; color:#2e7d32; margin-top:6px;">🏆 Total de Horas de Tela Conquistadas: <span id="screenHoursTotal" style="color:#e65100; font-size:16px;">0</span>h</div>
   </div>
 
-  <!-- CARD DE PATENTE / NÍVEL DA SOFIA -->
   <div class="card" style="background:linear-gradient(135deg,#fff3e0,#ffe0b2); border:2px solid #ffb300; text-align:center;">
     <div style="font-size:16px; font-weight:800; color:#e65100;">⭐ Sua Patente Atual:</div>
-    <div id="sofiaPatentBadge" style="font-size:22px; font-weight:900; color:#d81b60; margin:6px 0;">Recruta dos Números 🎯</div>
+    <div id="sofiaPatentBadge" style="font-size:22px; font-weight:900; color:#d81b60; margin:6px 0;">Recruta dos Estudos 🎯</div>
     <div class="muted" style="font-size:12px; color:#5d4037;">Continue acertando desafios para subir de patente!</div>
   </div>
 
@@ -439,7 +590,22 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
     <div id="studentRewardsContainer"></div>
   </div>
 
-  <!-- MÓDULO DE ESTUDO DE TABUADA -->
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+      <h2 style="margin:0;">Escolha seu desafio 🌟</h2>
+      <select id="studentSubjectFilter" onchange="renderLists()" style="width:auto; padding:8px 12px; font-weight:bold; font-size:13px;">
+        <option value="all">Todas as Matérias</option>
+        <option value="matematica">🔢 Matemática</option>
+        <option value="portugues">📚 Português</option>
+        <option value="geografia">🌍 Geografia</option>
+        <option value="historia">🏛️ História</option>
+        <option value="ciencias">🔬 Ciências</option>
+        <option value="ingles">🇺🇸 Inglês</option>
+      </select>
+    </div>
+    <div id="studentList"></div>
+  </div>
+
   <div class="card" style="background:linear-gradient(135deg,#fff8e1,#e0f2f1); border:2px solid #26a69a;">
     <h2 style="color:#00796b;">🧠 Treino Relâmpago de Tabuada</h2>
     <p class="muted" style="margin-top:0;">Treine aqui para ficar craque na tabuada e ganhar estrelas bônus!</p>
@@ -480,8 +646,6 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
     <div class="muted" style="font-weight:700; color:#0277bd; margin-bottom:8px;">Suas Medalhas Desbloqueadas:</div>
     <div id="studentBadgesContainer" style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;"></div>
   </div>
-
- <div class="card"><h2>Escolha seu desafio 🌟</h2><div id="studentList"></div></div>
 </section>
 </main>
 
@@ -498,8 +662,14 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-const SENHA_PAI = "2191";
-const SENHA_SOFIA = "25022016";
+const MASTER_PAI_PASS = "2191";
+const MASTER_SOFIA_PASS = "25022016";
+
+let registeredFamilies = [];
+let activeDocId = "dados_oficiais";
+let activeStudentName = "Sofia";
+let isMasterAdmin = false;
+let unsubscribeDoc = null;
 
 let state = { 
   items: [], 
@@ -526,50 +696,46 @@ let hasDrawnOnBoard = false;
 let timerSeconds = 0, timerInterval = null;
 let currentProblemBatch = [];
 let currentBatch = [];
+let subjectBatches = { portugues: [], geografia: [], historia: [], ciencias: [], ingles: [] };
 let loggedRole = null;
-let currentSearchTerm = "passo a passo como fazer conta de matematica";
-
+let currentSearchTerm = "aula 5 ano ensino fundamental";
 let quizData = { num: 7, val1: 0, val2: 0, expected: 0, streak: 0 };
+
+db.collection("caderno").doc("config_familias").onSnapshot((doc) => {
+  if (doc.exists && doc.data().list) {
+    registeredFamilies = doc.data().list;
+    if(isMasterAdmin) renderFamiliesList();
+  }
+});
 
 let audioCtx = null;
 function initAudio(){
-  if(!audioCtx){
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
+  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 }
-
 function playClickSound(){
   try {
     initAudio();
     if(audioCtx.state === 'suspended') audioCtx.resume();
-    let osc = audioCtx.createOscillator();
-    let gain = audioCtx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(580, audioCtx.currentTime);
+    let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+    osc.type = 'sine'; osc.frequency.setValueAtTime(580, audioCtx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.08);
     gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
     gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.08);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.08);
   } catch(e) {}
 }
-
 function playVictorySound(){
   try {
     initAudio();
     if(audioCtx.state === 'suspended') audioCtx.resume();
     let notes = [523.25, 659.25, 783.99, 1046.50];
     notes.forEach((freq, idx) => {
-      let osc = audioCtx.createOscillator();
-      let gain = audioCtx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (idx * 0.12));
+      let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+      osc.type = 'triangle'; osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (idx * 0.12));
       gain.gain.setValueAtTime(0.15, audioCtx.currentTime + (idx * 0.12));
       gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + (idx * 0.12) + 0.2);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
+      osc.connect(gain); gain.connect(audioCtx.destination);
       osc.start(audioCtx.currentTime + (idx * 0.12));
       osc.stop(audioCtx.currentTime + (idx * 0.12) + 0.2);
     });
@@ -580,34 +746,198 @@ function formatBR(val){
   return String(val).replace('.', ',');
 }
 
-let lastCloudStateStr = "";
-db.collection("caderno").doc("dados_oficiais").onSnapshot((doc) => {
-  if (doc.exists) {
-    let cloudData = doc.data();
-    let cloudStr = JSON.stringify(cloudData);
-    if(cloudStr === lastCloudStateStr) return;
-    lastCloudStateStr = cloudStr;
+function getSubjectMeta(subj){
+  const map = {
+    matematica: { label: "🔢 Matemática", bg: "#e3f2fd", color: "#0277bd" },
+    portugues: { label: "📚 Português", bg: "#f3e5f5", color: "#7b1fa2" },
+    geografia: { label: "🌍 Geografia", bg: "#e8f5e9", color: "#2e7d32" },
+    historia: { label: "🏛️ História", bg: "#fff3e0", color: "#e65100" },
+    ciencias: { label: "🔬 Ciências", bg: "#e0f7fa", color: "#00838f" },
+    ingles: { label: "🇺🇸 Inglês", bg: "#e8eaf6", color: "#283593" }
+  };
+  return map[subj || 'matematica'] || map.matematica;
+}
 
-    if(cloudData.items) state.items = cloudData.items;
-    if(cloudData.stars !== undefined) state.stars = cloudData.stars;
-    if(cloudData.rewards && cloudData.rewards.length > 0) state.rewards = cloudData.rewards;
-    if(cloudData.notifications) state.notifications = cloudData.notifications;
-    if(cloudData.badges) state.badges = cloudData.badges;
-    if(cloudData.theme) state.theme = cloudData.theme;
-    if(cloudData.streak !== undefined) state.streak = cloudData.streak;
-    if(cloudData.lastActiveDate) state.lastActiveDate = cloudData.lastActiveDate;
-    if(cloudData.screenTimeProgress !== undefined) state.screenTimeProgress = cloudData.screenTimeProgress;
-    if(cloudData.screenHoursEarned !== undefined) state.screenHoursEarned = cloudData.screenHoursEarned;
-    if(cloudData.parentAlert) state.parentAlert = cloudData.parentAlert;
-    
-    applyTheme(state.theme);
-    refreshCurrentView();
-  } else {
-    persist();
+let lastCloudStateStr = "";
+function connectToFamilyDoc(docId){
+  if(unsubscribeDoc) unsubscribeDoc();
+  lastCloudStateStr = "";
+  activeDocId = docId;
+
+  unsubscribeDoc = db.collection("caderno").doc(activeDocId).onSnapshot((doc) => {
+    if (doc.exists) {
+      let cloudData = doc.data();
+      let cloudStr = JSON.stringify(cloudData);
+      if(cloudStr === lastCloudStateStr) return;
+      lastCloudStateStr = cloudStr;
+
+      state.items = cloudData.items || [];
+      state.stars = cloudData.stars !== undefined ? cloudData.stars : 0;
+      state.rewards = (cloudData.rewards && cloudData.rewards.length > 0) ? cloudData.rewards : [{name:"Prêmio Especial", total:1000}];
+      state.notifications = cloudData.notifications || {correct: 0, incorrect: 0, show: false};
+      state.badges = cloudData.badges || [];
+      state.theme = cloudData.theme || "theme-rosa";
+      state.streak = cloudData.streak !== undefined ? cloudData.streak : 0;
+      state.lastActiveDate = cloudData.lastActiveDate || "";
+      state.screenTimeProgress = cloudData.screenTimeProgress !== undefined ? cloudData.screenTimeProgress : 0;
+      state.screenHoursEarned = cloudData.screenHoursEarned !== undefined ? cloudData.screenHoursEarned : 0;
+      state.parentAlert = cloudData.parentAlert || { active: false, message: "" };
+      
+      applyTheme(state.theme);
+      refreshCurrentView();
+    } else {
+      state = {
+        items: [], stars: 0, rewards: [{name:"1 Hora Livre / Passeio", total:500}],
+        notifications: {correct: 0, incorrect: 0, show: false}, badges: [],
+        theme: "theme-rosa", streak: 0, lastActiveDate: "",
+        screenTimeProgress: 0, screenHoursEarned: 0,
+        parentAlert: { active: false, message: "" }
+      };
+      persist();
+    }
+  });
+}
+
+function persist(){
+  db.collection("caderno").doc(activeDocId).set(state)
+    .then(() => { refreshCurrentView(); })
+    .catch((error) => { console.error("Erro ao salvar: ", error); });
+}
+
+function createNewFamily(){
+  playClickSound();
+  let student = document.getElementById('newFamStudent').value.trim();
+  let pPass = document.getElementById('newFamParentPass').value.trim();
+  let sPass = document.getElementById('newFamStudentPass').value.trim();
+  let msg = document.getElementById('famMsg');
+
+  if(!student || !pPass || !sPass){ alert("Preencha o nome do aluno e as duas senhas!"); return; }
+  if(pPass === sPass){ alert("A senha do Pai e a senha do Aluno devem ser diferentes!"); return; }
+  let allPasswords = [MASTER_PAI_PASS, MASTER_SOFIA_PASS];
+  registeredFamilies.forEach(f => { allPasswords.push(f.parentPass, f.studentPass); });
+  if(allPasswords.includes(pPass) || allPasswords.includes(sPass)){ alert("⚠️ Uma dessas senhas já está em uso!"); return; }
+
+  let slug = "familia_" + student.toLowerCase().replace(/[^a-z0-9]/g, '_') + "_" + Math.floor(Math.random()*900 + 100);
+  registeredFamilies.push({ id: slug, studentName: student, parentPass: pPass, studentPass: sPass });
+
+  db.collection("caderno").doc("config_familias").set({ list: registeredFamilies }).then(() => {
+    document.getElementById('newFamStudent').value = '';
+    document.getElementById('newFamParentPass').value = '';
+    document.getElementById('newFamStudentPass').value = '';
+    msg.textContent = `✅ Acesso criado para ${student}! Pai: ${pPass} | Aluno: ${sPass}`;
+    setTimeout(() => { msg.textContent = ''; }, 5000);
+    renderFamiliesList();
+  });
+}
+
+function removeFamily(idx){
+  playClickSound();
+  if(!confirm("Remover este acesso da lista de logins?")) return;
+  registeredFamilies.splice(idx, 1);
+  db.collection("caderno").doc("config_familias").set({ list: registeredFamilies }).then(() => { renderFamiliesList(); });
+}
+
+function renderFamiliesList(){
+  let container = document.getElementById('familiesListContainer');
+  if(!container) return;
+  let html = `
+    <div class="listitem" style="background:#fff0f5; border-color:#d81b60;">
+      <div>
+        <b>🌸 Sofia (Conta Principal Master)</b><br>
+        <span class="muted">Senha Pai: <b>2191</b> | Senha Aluna: <b>25022016</b></span>
+      </div>
+      <span style="color:#d81b60; font-weight:800; font-size:12px;">PROTEGIDA</span>
+    </div>
+  `;
+  html += registeredFamilies.map((f, idx) => `
+    <div class="listitem">
+      <div>
+        <b>👤 ${f.studentName}</b><br>
+        <span class="muted">Senha Pai: <b>${f.parentPass}</b> | Senha Aluno: <b>${f.studentPass}</b></span>
+      </div>
+      <button type="button" class="warn" style="padding:6px 10px; font-size:12px;" onclick="removeFamily(${idx})">Excluir Acesso</button>
+    </div>
+  `).join('');
+  container.innerHTML = html;
+}
+
+function switchParentTab(tabName){
+  playClickSound();
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.parent-tab-section').forEach(s => s.classList.add('hidden'));
+  let btn = document.getElementById('tabBtn_' + tabName);
+  let sec = document.getElementById('tabContent_' + tabName);
+  if(btn) btn.classList.add('active');
+  if(sec) sec.classList.remove('hidden');
+}
+
+function tryLogin(){
+  playClickSound();
+  let val = document.getElementById('accessPass').value.trim();
+  let msg = document.getElementById('loginMsg');
+  isMasterAdmin = false;
+
+  if(val === MASTER_PAI_PASS){ isMasterAdmin = true; activeStudentName = "Sofia"; setupSession('pai', 'dados_oficiais'); return; }
+  if(val === MASTER_SOFIA_PASS){ activeStudentName = "Sofia"; setupSession('sofia', 'dados_oficiais'); return; }
+
+  let foundFamParent = registeredFamilies.find(f => f.parentPass === val);
+  if(foundFamParent){ activeStudentName = foundFamParent.studentName; setupSession('pai', foundFamParent.id); return; }
+
+  let foundFamStudent = registeredFamilies.find(f => f.studentPass === val);
+  if(foundFamStudent){ activeStudentName = foundFamStudent.studentName; setupSession('sofia', foundFamStudent.id); return; }
+
+  msg.style.color = '#d92d20';
+  msg.textContent = '❌ Senha incorreta! Tente novamente.';
+}
+
+function setupSession(role, docId){
+  loggedRole = role;
+  document.getElementById('accessPass').value = '';
+  document.getElementById('loginMsg').textContent = '';
+  document.getElementById('loginScreen').classList.add('hidden');
+
+  document.getElementById('mainHeaderTitle').textContent = activeStudentName === "Sofia" ? "🌸 Caderno da Sofia 🌸" : `📚 Caderno de ${activeStudentName}`;
+  document.getElementById('parentPanelTitle').textContent = `👨‍🏫 Sala do Professor (${activeStudentName})`;
+  document.getElementById('studentPanelTitle').textContent = `⭐ Caderno de ${activeStudentName}`;
+
+  let famTabBtn = document.getElementById('tabBtn_familias');
+  if(famTabBtn){
+    if(isMasterAdmin) famTabBtn.classList.remove('hidden');
+    else famTabBtn.classList.add('hidden');
   }
-}, (error) => {
-  console.log("Aviso: ", error);
-});
+
+  if(role === 'pai'){
+    document.getElementById('studentPanel').classList.add('hidden');
+    document.getElementById('parentPanel').classList.remove('hidden');
+    switchParentTab('geral');
+    if(isMasterAdmin) renderFamiliesList();
+  } else {
+    document.getElementById('parentPanel').classList.add('hidden');
+    document.getElementById('studentPanel').classList.remove('hidden');
+  }
+
+  connectToFamilyDoc(docId);
+  if(role === 'sofia') setTimeout(checkStreakOnLogin, 800);
+}
+
+function logout(){
+  playClickSound();
+  loggedRole = null;
+  isMasterAdmin = false;
+  if(unsubscribeDoc) { unsubscribeDoc(); unsubscribeDoc = null; }
+  document.getElementById('mainHeaderTitle').textContent = "🌸 Caderno Digital 🌸";
+  document.getElementById('accessPass').value='';
+  document.getElementById('loginMsg').textContent='';
+  document.getElementById('parentPanel').classList.add('hidden');
+  document.getElementById('studentPanel').classList.add('hidden');
+  document.getElementById('chalkboardOverlay').classList.add('hidden');
+  document.getElementById('viewWorkModal').classList.add('hidden');
+  document.getElementById('notificationOverlay').classList.add('hidden');
+  document.getElementById('waitingDadOverlay').classList.add('hidden');
+  document.getElementById('pocketTabuadaModal').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+  if(timerInterval) clearInterval(timerInterval);
+}
 
 function checkStreakOnLogin(){
   let today = new Date().toISOString().split('T')[0];
@@ -615,12 +945,8 @@ function checkStreakOnLogin(){
     let yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     let yStr = yesterday.toISOString().split('T')[0];
-    
-    if(state.lastActiveDate === yStr){
-      state.streak = (state.streak || 0) + 1;
-    } else if(state.lastActiveDate !== today) {
-      state.streak = 1;
-    }
+    if(state.lastActiveDate === yStr) state.streak = (state.streak || 0) + 1;
+    else state.streak = 1;
     state.lastActiveDate = today;
     persist();
   }
@@ -655,150 +981,81 @@ function refreshCurrentView(){
   }
 }
 
-function persist(){
-  db.collection("caderno").doc("dados_oficiais").set(state)
-    .then(() => { 
-      refreshCurrentView();
-    })
-    .catch((error) => { 
-      console.error("Erro ao salvar: ", error);
-    });
-}
-
 function dismissParentAlert(){
-    playClickSound();
-    state.parentAlert = { active: false, message: "" };
-    persist();
+  playClickSound();
+  state.parentAlert = { active: false, message: "" };
+  persist();
 }
 
 function checkAndTriggerParentNotification(){
-    if(state.parentAlert && state.parentAlert.active){
-        playVictorySound();
-        if(navigator.vibrate) {
-            try { navigator.vibrate([300, 100, 300, 100, 500]); } catch(e){}
-        }
-        if (window.Notification && Notification.permission === "granted") {
-            new Notification("Caderno da Sofia 🌸", { body: state.parentAlert.message });
-        } else if (window.Notification && Notification.permission !== "denied") {
-            Notification.requestPermission();
-        }
-        
-        let alertCard = document.getElementById('parentScreenAlertCard');
-        let alertMsg = document.getElementById('parentAlertMsg');
-        if(alertCard && alertMsg){
-            alertMsg.textContent = state.parentAlert.message;
-            alertCard.classList.remove('hidden');
-        }
-    } else {
-        let alertCard = document.getElementById('parentScreenAlertCard');
-        if(alertCard) alertCard.classList.add('hidden');
+  if(state.parentAlert && state.parentAlert.active){
+    playVictorySound();
+    if(navigator.vibrate) try { navigator.vibrate([300, 100, 300, 100, 500]); } catch(e){}
+    let alertCard = document.getElementById('parentScreenAlertCard');
+    let alertMsg = document.getElementById('parentAlertMsg');
+    if(alertCard && alertMsg){
+      alertMsg.textContent = state.parentAlert.message;
+      alertCard.classList.remove('hidden');
     }
-}
-
-function updateSofiaPatentAndScreenUI(){
-    let progress = state.screenTimeProgress || 0;
-    let hours = state.screenHoursEarned || 0;
-    
-    let progCountEl = document.getElementById('screenProgressCount');
-    let progBarEl = document.getElementById('screenProgressBar');
-    let progTextEl = document.getElementById('screenProgressText');
-    let hoursTotalEl = document.getElementById('screenHoursTotal');
-    
-    if(progCountEl) progCountEl.textContent = progress;
-    if(progBarEl) progBarEl.style.width = (progress * 10) + '%';
-    if(progTextEl) progTextEl.textContent = (progress * 10) + '% rumo à 1h de tela';
-    if(hoursTotalEl) hoursTotalEl.textContent = hours;
-    
-    let totalCorrect = state.items.filter(x => x.status === 'correct').length;
-    let patentName = "Recruta dos Números 🎯";
-    if(totalCorrect >= 50) patentName = "Lenda do Foguete Matemático 🚀";
-    else if(totalCorrect >= 30) patentName = "Mestre das Contas 🏆";
-    else if(totalCorrect >= 15) patentName = "Princesa da Álgebra 👑";
-    else if(totalCorrect >= 5) patentName = "Detetive da Matemática 🔍";
-    
-    let patentEl = document.getElementById('sofiaPatentBadge');
-    if(patentEl) patentEl.textContent = patentName;
-}
-
-function tryLogin(){
-  playClickSound();
-  let val = document.getElementById('accessPass').value.trim();
-  let msg = document.getElementById('loginMsg');
-  
-  if(val === SENHA_PAI){
-    loggedRole = 'pai';
-    document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('studentPanel').classList.add('hidden');
-    document.getElementById('parentPanel').classList.remove('hidden');
-    document.getElementById('accessPass').value = '';
-    msg.textContent = '';
-    refreshCurrentView();
-  }else if(val === SENHA_SOFIA){
-    loggedRole = 'sofia';
-    checkStreakOnLogin();
-    document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('parentPanel').classList.add('hidden');
-    document.getElementById('studentPanel').classList.remove('hidden');
-    document.getElementById('accessPass').value = '';
-    msg.textContent = '';
-    refreshCurrentView();
-  }else{
-    msg.style.color = '#d92d20';
-    msg.textContent = '❌ Senha incorreta! Tente novamente.';
+  } else {
+    let alertCard = document.getElementById('parentScreenAlertCard');
+    if(alertCard) alertCard.classList.add('hidden');
   }
 }
 
-function logout(){
-  playClickSound();
-  loggedRole = null;
-  document.getElementById('accessPass').value='';
-  document.getElementById('loginMsg').textContent='';
-  document.getElementById('parentPanel').classList.add('hidden');
-  document.getElementById('studentPanel').classList.add('hidden');
-  document.getElementById('chalkboardOverlay').classList.add('hidden');
-  document.getElementById('viewWorkModal').classList.add('hidden');
-  document.getElementById('notificationOverlay').classList.add('hidden');
-  document.getElementById('waitingDadOverlay').classList.add('hidden');
-  document.getElementById('pocketTabuadaModal').classList.add('hidden');
-  document.getElementById('loginScreen').classList.remove('hidden');
-  if(timerInterval) clearInterval(timerInterval);
+function updateSofiaPatentAndScreenUI(){
+  let progress = state.screenTimeProgress || 0;
+  let hours = state.screenHoursEarned || 0;
+  let progCountEl = document.getElementById('screenProgressCount');
+  let progBarEl = document.getElementById('screenProgressBar');
+  let progTextEl = document.getElementById('screenProgressText');
+  let hoursTotalEl = document.getElementById('screenHoursTotal');
+  if(progCountEl) progCountEl.textContent = progress;
+  if(progBarEl) progBarEl.style.width = (progress * 10) + '%';
+  if(progTextEl) progTextEl.textContent = (progress * 10) + '% rumo à 1h de tela';
+  if(hoursTotalEl) hoursTotalEl.textContent = hours;
+  
+  let totalCorrect = state.items.filter(x => x.status === 'correct').length;
+  let patentName = "Recruta dos Estudos 🎯";
+  if(totalCorrect >= 50) patentName = "Lenda do Foguete Escolar 🚀";
+  else if(totalCorrect >= 30) patentName = "Mestre das Matérias 🏆";
+  else if(totalCorrect >= 15) patentName = "Estrela do 5º Ano 👑";
+  else if(totalCorrect >= 5) patentName = "Detetive do Saber 🔍";
+  let patentEl = document.getElementById('sofiaPatentBadge');
+  if(patentEl) patentEl.textContent = patentName;
 }
 
 function checkNotificationsForSofia() {
-    if(loggedRole === 'sofia' && state.notifications && state.notifications.show) {
-        playVictorySound();
-        let ac = state.notifications.correct || 0;
-        let er = state.notifications.incorrect || 0;
-        let pts = ac * 10;
-        let msg = `O papai corrigiu seus exercícios!<br><br>`;
-        if(ac > 0) msg += `⭐ Você acertou <b>${ac}</b> e ganhou <b>${pts} Estrelinhas</b> para a meta!<br>`;
-        if(er > 0) msg += `❌ Você errou <b>${er}</b>. Mas o papai mandou de volta para você tentar de novo, você consegue!<br>`;
-        
-        document.getElementById('notifText').innerHTML = msg;
-        document.getElementById('notificationOverlay').classList.remove('hidden');
-    }
+  if(loggedRole === 'sofia' && state.notifications && state.notifications.show) {
+    playVictorySound();
+    let ac = state.notifications.correct || 0;
+    let er = state.notifications.incorrect || 0;
+    let pts = ac * 10;
+    let msg = `Suas atividades foram corrigidas!<br><br>`;
+    if(ac > 0) msg += `⭐ Você acertou <b>${ac}</b> e ganhou <b>${pts} Estrelinhas</b>!<br>`;
+    if(er > 0) msg += `❌ Você errou <b>${er}</b>. Tente fazer novamente, você consegue!<br>`;
+    document.getElementById('notifText').innerHTML = msg;
+    document.getElementById('notificationOverlay').classList.remove('hidden');
+  }
 }
 
 function closeNotification(){
-    document.getElementById('notificationOverlay').classList.add('hidden');
-    state.notifications = { correct: 0, incorrect: 0, show: false };
-    persist();
+  document.getElementById('notificationOverlay').classList.add('hidden');
+  state.notifications = { correct: 0, incorrect: 0, show: false };
+  persist();
 }
 
 function checkAndUnlockBadges(){
   if(!state.badges) state.badges = [];
   let totalCorrect = state.items.filter(x => x.status === 'correct').length;
   let currentStars = state.stars || 0;
-
   let possibleBadges = [
     { id: 'first_step', name: 'Primeiro Passo 🎯', desc: 'Acertou 5 desafios!', cond: totalCorrect >= 5 },
-    { id: 'math_star', name: 'Estrela da Matemática 🌟', desc: 'Acertou 25 desafios!', cond: totalCorrect >= 25 },
-    { id: 'tabuada_pro', name: 'Gênio da Tabuada 🧠', desc: 'Acertou 50 desafios!', cond: totalCorrect >= 50 },
-    { id: 'master_100', name: 'Mestre das Contas 🏆', desc: 'Acertou 100 desafios!', cond: totalCorrect >= 100 },
-    { id: 'falcon_250', name: 'Falcão dos Números 🚀', desc: 'Acertou 250 desafios!', cond: totalCorrect >= 250 },
+    { id: 'math_star', name: 'Estrela do Saber 🌟', desc: 'Acertou 25 desafios!', cond: totalCorrect >= 25 },
+    { id: 'tabuada_pro', name: 'Gênio do 5º Ano 🧠', desc: 'Acertou 50 desafios!', cond: totalCorrect >= 50 },
+    { id: 'master_100', name: 'Mestre Total 🏆', desc: 'Acertou 100 desafios!', cond: totalCorrect >= 100 },
     { id: 'expert_stars', name: 'Lenda das Estrelas ⭐', desc: 'Acumulou 500 estrelas!', cond: currentStars >= 500 }
   ];
-
   let novoUnlock = false;
   possibleBadges.forEach(b => {
     if(b.cond && !state.badges.some(existing => existing.id === b.id)){
@@ -806,7 +1063,6 @@ function checkAndUnlockBadges(){
       novoUnlock = true;
     }
   });
-
   if(novoUnlock) persist();
 }
 
@@ -814,11 +1070,11 @@ function renderBadgesUI(){
   let container = document.getElementById('studentBadgesContainer');
   if(!container) return;
   if(!state.badges || state.badges.length === 0){
-    container.innerHTML = '<span class="muted" style="font-size:13px;">Resolva mais desafios para conquistar sua primeira medalha pesada! 🏅</span>';
+    container.innerHTML = '<span class="muted" style="font-size:13px;">Resolva desafios para conquistar medalhas! 🏅</span>';
     return;
   }
   container.innerHTML = state.badges.map(b => `
-    <div style="background:var(--card-bg); border:2px solid var(--accent-color); border-radius:12px; padding:8px 12px; text-align:center; min-width:130px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+    <div style="background:var(--card-bg); border:2px solid var(--accent-color); border-radius:12px; padding:8px 12px; text-align:center; min-width:130px;">
       <div style="font-size:15px; font-weight:800; color:var(--accent-color);">${b.name}</div>
       <div style="font-size:11px; color:var(--text-color); opacity:0.8; margin-top:2px;">${b.desc}</div>
     </div>
@@ -828,116 +1084,428 @@ function renderBadgesUI(){
 function adjustStars(action) {
   playClickSound();
   let val = parseInt(document.getElementById('manualStarAmount').value);
-  if(isNaN(val) || val <= 0) {
-    alert("Digite um número válido de estrelas primeiro.");
-    return;
-  }
-  if(action === 'add') {
-    state.stars = (state.stars || 0) + val;
-  } else if(action === 'remove') {
-    state.stars = (state.stars || 0) - val;
-    if(state.stars < 0) state.stars = 0; 
-  }
+  if(isNaN(val) || val <= 0) { alert("Digite um número válido."); return; }
+  if(action === 'add') state.stars = (state.stars || 0) + val;
+  else { state.stars = Math.max(0, (state.stars || 0) - val); }
   document.getElementById('manualStarAmount').value = '';
   checkAndUnlockBadges();
   persist();
 }
 
 function markAsCorrect(id, fromModal = false) {
-    playVictorySound();
-    let x = state.items.find(v => String(v.id) === String(id));
-    if(!x) return;
-    x.status = 'correct';
-    state.stars = (state.stars || 0) + 10; 
-    
-    state.screenTimeProgress = (state.screenTimeProgress || 0) + 1;
-    if(state.screenTimeProgress >= 10){
-        state.screenTimeProgress = 0;
-        state.screenHoursEarned = (state.screenHoursEarned || 0) + 1;
-        state.parentAlert = {
-            active: true,
-            message: `A Sofia acabou de completar 10 acertos e conquistou 1 hora de tela (Total acumulado: ${state.screenHoursEarned}h)! Abra o Family Link para liberar.`
-        };
-    }
-    
-    if(!state.notifications) state.notifications = { correct:0, incorrect:0, show:false };
-    state.notifications.correct = (state.notifications.correct || 0) + 1;
-    state.notifications.show = true;
-    
-    checkAndUnlockBadges();
-    persist();
+  playVictorySound();
+  let x = state.items.find(v => String(v.id) === String(id));
+  if(!x) return;
+  x.status = 'correct';
+  state.stars = (state.stars || 0) + 10; 
+  state.screenTimeProgress = (state.screenTimeProgress || 0) + 1;
+  if(state.screenTimeProgress >= 10){
+    state.screenTimeProgress = 0;
+    state.screenHoursEarned = (state.screenHoursEarned || 0) + 1;
+    state.parentAlert = {
+      active: true,
+      message: `${activeStudentName} completou 10 acertos e conquistou 1 hora de tela (Total: ${state.screenHoursEarned}h)!`
+    };
+  }
+  if(!state.notifications) state.notifications = { correct:0, incorrect:0, show:false };
+  state.notifications.correct = (state.notifications.correct || 0) + 1;
+  state.notifications.show = true;
+  checkAndUnlockBadges();
+  persist();
 
-    if(fromModal){
-        let nextPending = state.items.find(item => item.status === 'submitted');
-        if(nextPending){
-            viewWork(nextPending.id);
-        } else {
-            closeViewWork();
-        }
-    }
+  if(fromModal){
+    let nextPending = state.items.find(item => item.status === 'submitted');
+    if(nextPending) viewWork(nextPending.id);
+    else closeViewWork();
+  }
 }
 
 function markAsIncorrect(id, fromModal = false) {
-    playClickSound();
-    let x = state.items.find(v => String(v.id) === String(id));
-    if(!x) return;
-    x.status = 'incorrect';
-    x.work = ""; 
-    x.studentAnswer = "";
-    
-    if(!state.notifications) state.notifications = { correct:0, incorrect:0, show:false };
-    state.notifications.incorrect = (state.notifications.incorrect || 0) + 1;
-    state.notifications.show = true;
-    
-    persist();
+  playClickSound();
+  let x = state.items.find(v => String(v.id) === String(id));
+  if(!x) return;
+  x.status = 'incorrect';
+  x.work = ""; 
+  x.studentAnswer = "";
+  if(!state.notifications) state.notifications = { correct:0, incorrect:0, show:false };
+  state.notifications.incorrect = (state.notifications.incorrect || 0) + 1;
+  state.notifications.show = true;
+  persist();
 
-    if(fromModal){
-        let nextPending = state.items.find(item => item.status === 'submitted');
-        if(nextPending){
-            viewWork(nextPending.id);
-        } else {
-            closeViewWork();
-        }
-    }
+  if(fromModal){
+    let nextPending = state.items.find(item => item.status === 'submitted');
+    if(nextPending) viewWork(nextPending.id);
+    else closeViewWork();
+  }
 }
 
-function getYouTubeSearchQuery(item){
-  if(item.isProblem){
-    return "passo a passo como resolver probleminhas de matematica";
+// ==========================================
+// BANCO EXPANDIDO (200+ QUESTÕES + GERADOR DINÂMICO)
+// ==========================================
+const QUESTION_BANK = {
+  portugues: {
+    ortografia: [
+      { q: "Complete com S ou Z: A palavra 'be___ouro' se escreve com qual letra?", a: "S", h: "Tem som de Z entre vogais, mas escreve-se com S." },
+      { q: "Complete com X ou CH: A palavra 'en___urrada' se escreve com X ou CH?", a: "X", h: "Depois da sílaba 'en-', geralmente usa-se X." },
+      { q: "Complete com G ou J: A palavra 'berin___ela' se escreve com G ou J?", a: "J", h: "Berinjela usa J." },
+      { q: "Qual é o plural correto de 'cidadão'?", a: "Cidadãos", h: "Basta acrescentar o S no final." },
+      { q: "Complete com SS ou Ç: A palavra 'a___úcar' se escreve com SS ou Ç?", a: "Ç", h: "Usa-se cedilha antes de U." },
+      { q: "Complete com S ou Z: A palavra 'anali___ar' se escreve com S ou Z?", a: "S", h: "Vem de 'análise', que já tem S." },
+      { q: "Complete com X ou CH: A palavra 'me___er' se escreve com X ou CH?", a: "X", h: "Depois da sílaba 'me-', geralmente usa-se X." },
+      { q: "Qual é o feminino de 'bode'?", a: "Cabra", h: "Animal que dá leite e vive na fazenda." },
+      { q: "Complete com S ou Z: A palavra 'atravé___' termina com S ou Z?", a: "S", h: "Termina com S acentuado." },
+      { q: "Complete com X ou CH: A palavra 'en___er' (colocar líquido) se escreve com X ou CH?", a: "CH", h: "Vem de 'cheio', por isso mantém o CH." },
+      { q: "Complete com G ou J: A palavra 'via___em' (quando é substantivo, ex: boa viagem) usa G ou J?", a: "G", h: "Substantivos terminados em -agem usam G." },
+      { q: "Complete com S ou Z: A palavra 'princesa' se escreve com S ou Z?", a: "S", h: "Títulos de nobreza como princesa e duquesa usam S." },
+      { q: "Qual é o plural de 'pão'?", a: "Pães", h: "Muda para -ães." },
+      { q: "Qual é o plural de 'anel'?", a: "Anéis", h: "Palavras terminadas em -el trocam por -éis." },
+      { q: "Complete com M ou N: Antes de P e B usamos sempre qual letra?", a: "M", h: "Regra clássica: antes de P e B só se usa M." },
+      { q: "Complete com SS ou C: A palavra 'pa___oca' se escreve com SS ou Ç?", a: "Ç", h: "Paçoca usa cedilha." }
+    ],
+    acentuacao: [
+      { q: "A palavra 'lâmpada' é oxítona, paroxítona ou proparoxítona?", a: "Proparoxítona", h: "A sílaba mais forte é a antepenúltima (lâm-pa-da). Todas são acentuadas!" },
+      { q: "A palavra 'café' é oxítona, paroxítona ou proparoxítona?", a: "Oxítona", h: "A sílaba mais forte é a última (ca-fé)." },
+      { q: "A palavra 'árvore' é oxítona, paroxítona ou proparoxítona?", a: "Proparoxítona", h: "A sílaba forte é a antepenúltima (ár-vo-re)." },
+      { q: "A palavra 'açúcar' é oxítona, paroxítona ou proparoxítona?", a: "Paroxítona", h: "A sílaba forte é a penúltima (a-çú-car)." },
+      { q: "Qual palavra precisa de acento agudo: 'jacare' ou 'janela'?", a: "Jacaré", h: "Oxítona terminada em E leva acento." },
+      { q: "Quantas sílabas tem a palavra 'borboleta'?", a: "4", h: "Separe: bor-bo-le-ta." },
+      { q: "A palavra 'médico' é oxítona, paroxítona ou proparoxítona?", a: "Proparoxítona", h: "A sílaba tônica é 'mé' (antepenúltima)." },
+      { q: "A palavra 'abacaxi' é oxítona, paroxítona ou proparoxítona?", a: "Oxítona", h: "A sílaba mais forte é a última: a-ba-ca-XI." },
+      { q: "Quantas sílabas tem a palavra 'computador'?", a: "4", h: "Separe: com-pu-ta-dor." },
+      { q: "Qual é a sílaba tônica (mais forte) da palavra 'caderno'?", a: "der", h: "Separe: ca-DER-no." },
+      { q: "Todas as palavras proparoxítonas são acentuadas? (Sim ou Não)", a: "Sim", h: "É uma regra sem exceções na língua portuguesa!" },
+      { q: "A palavra 'relógio' é oxítona, paroxítona ou proparoxítona?", a: "Paroxítona", h: "A sílaba forte é 'ló' (penúltima)." }
+    ],
+    gramatica: [
+      { q: "Na frase 'O cachorro rápido correu', qual palavra é o adjetivo?", a: "Rápido", h: "Adjetivo é a palavra que dá uma característica." },
+      { q: "Na frase 'A menina estudou muito', qual palavra é o verbo?", a: "Estudou", h: "Verbo indica uma ação." },
+      { q: "Na frase 'O livro azul caiu', qual palavra é o substantivo?", a: "Livro", h: "Substantivo dá nome aos seres e objetos." },
+      { q: "Na frase 'Nós viajaremos amanhã', em que tempo está o verbo (passado, presente ou futuro)?", a: "Futuro", h: "Ainda vai acontecer." },
+      { q: "Na frase 'Eles jogaram bola ontem', em que tempo está o verbo (passado, presente ou futuro)?", a: "Passado", h: "Já aconteceu ontem." },
+      { q: "Qual é o aumentativo de 'casa'?", a: "Casarão", h: "Uma casa muito grande é um..." },
+      { q: "Qual é o diminutivo de 'cão'?", a: "Cãozinho", h: "Um cão pequeno é um..." },
+      { q: "Qual pronome pessoal substitui 'Maria e João' na frase: '___ foram ao parque'?", a: "Eles", h: "Pronome na 3ª pessoa do plural." },
+      { q: "Na frase 'A flor cheirosa abriu', qual é o artigo definido?", a: "A", h: "Artigos definidos são: o, a, os, as." },
+      { q: "Qual é o substantivo próprio na frase: 'O menino Lucas mora em Minas Gerais'?", a: "Lucas", h: "Nomes de pessoas e lugares são substantivos próprios." },
+      { q: "Qual é o grau comparativo na frase: 'O leão é mais forte que o gato'?", a: "Superioridade", h: "Usa a expressão 'mais... que'." },
+      { q: "Na frase 'Eu gosto de chocolate', qual é o pronome?", a: "Eu", h: "Pronome pessoal da 1ª pessoa do singular." }
+    ],
+    sinonimos: [
+      { q: "Qual é o antônimo (contrário) de 'corajoso'?", a: "Medroso", h: "Quem não tem coragem é..." },
+      { q: "Qual é o sinônimo (mesmo sentido) de 'alegre'?", a: "Feliz", h: "Outra palavra para dizer que está contente." },
+      { q: "Qual sinal de pontuação usamos no final de uma pergunta?", a: "Ponto de interrogação (?)", h: "É aquele sinal curvo com um pontinho embaixo." },
+      { q: "Qual é o antônimo de 'escuro'?", a: "Claro", h: "O contrário de escuro." },
+      { q: "Qual sinal usamos para indicar a fala de um personagem?", a: "Travessão (—)", h: "Um traço antes da fala." },
+      { q: "Qual é o coletivo de 'lobos'?", a: "Alcateia", h: "Grupo de lobos juntos." },
+      { q: "Qual é o coletivo de 'abelhas'?", a: "Enxame", h: "Grupo de abelhas voando juntas." },
+      { q: "Qual é o coletivo de 'peixes'?", a: "Cardume", h: "Muitos peixes nadando juntos." },
+      { q: "Qual é o coletivo de 'estrelas'?", a: "Constelação", h: "Grupo de estrelas no céu." },
+      { q: "Qual é o sinônimo de 'veloz'?", a: "Rápido", h: "Que anda ou corre com rapidez." },
+      { q: "Qual é o antônimo de 'ganhar'?", a: "Perder", h: "O contrário de ganhar." },
+      { q: "Qual sinal de pontuação usamos para demonstrar surpresa ou admiração?", a: "Ponto de exclamação (!)", h: "Um traço vertical com um ponto embaixo." }
+    ]
+  },
+  geografia: {
+    regioes: [
+      { q: "Em quantas regiões o Brasil é dividido oficialmente pelo IBGE?", a: "5", h: "Norte, Nordeste, Centro-Oeste, Sudeste e Sul." },
+      { q: "Qual é a capital do Brasil?", a: "Brasília", h: "Fica no Distrito Federal." },
+      { q: "Em qual região do Brasil fica o estado de Minas Gerais?", a: "Sudeste", h: "Junto com São Paulo, Rio de Janeiro e Espírito Santo." },
+      { q: "Qual é o maior estado do Brasil em extensão territorial?", a: "Amazonas", h: "Fica na região Norte, onde está a maior floresta." },
+      { q: "Qual é o menor estado do Brasil em extensão territorial?", a: "Sergipe", h: "Fica na região Nordeste." },
+      { q: "Quantos estados o Brasil possui (sem contar o Distrito Federal)?", a: "26", h: "26 estados + 1 Distrito Federal = 27 unidades federativas." },
+      { q: "Em qual região do Brasil ficam os estados do Paraná, Santa Catarina e Rio Grande do Sul?", a: "Sul", h: "É a região mais fria do país." },
+      { q: "Em qual região do Brasil ficam Goiás, Mato Grosso e Mato Grosso do Sul?", a: "Centro-Oeste", h: "Onde também fica Brasília." },
+      { q: "Qual região brasileira possui o maior número de estados (9 estados)?", a: "Nordeste", h: "Bahia, Pernambuco, Ceará, Maranhão, etc." }
+    ],
+    natureza: [
+      { q: "Qual é o maior rio do Brasil em volume de água?", a: "Rio Amazonas", h: "Corta a região Norte." },
+      { q: "Qual é o bioma brasileiro famoso por suas árvores retorcidas e savana no centro do país?", a: "Cerrado", h: "É o bioma predominante em Minas Gerais e Goiás." },
+      { q: "Qual oceano banha o litoral do Brasil?", a: "Oceano Atlântico", h: "Fica a leste do território brasileiro." },
+      { q: "Como se chama a forma de relevo mais plana e baixa, geralmente perto de rios ou do mar?", a: "Planície", h: "Lembra a palavra 'plano'." },
+      { q: "Qual é a maior floresta tropical do mundo, localizada no norte do Brasil?", a: "Floresta Amazônica", h: "Fica na região Norte." },
+      { q: "Qual bioma brasileiro é exclusivo do Brasil e possui clima semiárido no Nordeste?", a: "Caatinga", h: "Onde crescem cactos como o mandacaru." },
+      { q: "Qual bioma brasileiro é conhecido como a maior planície alagável do mundo?", a: "Pantanal", h: "Fica em Mato Grosso e Mato Grosso do Sul." },
+      { q: "Como se chama o rio que nasce em Minas Gerais e corta o Nordeste, conhecido como 'Velho Chico'?", a: "Rio São Francisco", h: "Muito importante para o sertão nordestino." },
+      { q: "Como se chama o desgaste do solo causado pela água da chuva e pelos ventos?", a: "Erosão", h: "Forma buracos e voçorocas na terra." },
+      { q: "Como se chama a forma de relevo elevada e com topo mais plano ou ondulado, comum no interior do Brasil?", a: "Planalto", h: "Plano + alto." }
+    ],
+    populacao: [
+      { q: "Como se chama a saída de pessoas do campo (zona rural) para morar na cidade (zona urbana)?", a: "Êxodo rural", h: "Êxodo significa saída." },
+      { q: "Qual atividade econômica envolve o cultivo da terra e a criação de animais no campo?", a: "Agropecuária", h: "Junção de agricultura + pecuária." },
+      { q: "Qual é o órgão brasileiro responsável por contar a população (Censo)?", a: "IBGE", h: "Instituto Brasileiro de Geografia e Estatística." },
+      { q: "O que significa a sigla 'UF' nos documentos e mapas do Brasil?", a: "Unidade Federativa", h: "Refere-se aos estados e ao Distrito Federal." },
+      { q: "Como se chama a atividade de transformar matéria-prima em produtos fabricados?", a: "Indústria", h: "Acontece nas fábricas." },
+      { q: "Como se chama a atividade de compra e venda de mercadorias nas lojas?", a: "Comércio", h: "Faz parte do setor terciário." },
+      { q: "Qual é a língua oficial falada no Brasil?", a: "Português", h: "Herdada dos colonizadores portugueses." },
+      { q: "Como se chama o deslocamento de pessoas de um país ou região para outro?", a: "Migração", h: "Quando alguém muda de lugar para viver." }
+    ]
+  },
+  historia: {
+    colonia: [
+      { q: "Em que ano os portugueses chegaram ao Brasil?", a: "1500", h: "No dia 22 de abril de..." },
+      { q: "Quem comandava a esquadra portuguesa que chegou ao Brasil em 1500?", a: "Pedro Álvares Cabral", h: "O sobrenome é Cabral." },
+      { q: "Qual foi a primeira riqueza explorada pelos portugueses no litoral brasileiro?", a: "Pau-brasil", h: "Árvore de madeira avermelhada que deu nome ao país." },
+      { q: "Qual foi o principal produto agrícola cultivado nos engenhos do Brasil Colônia?", a: "Cana-de-açúcar", h: "Dele se fazia o açúcar." },
+      { q: "Qual foi a primeira capital do Brasil?", a: "Salvador", h: "Fica na Bahia." },
+      { q: "Como se chamava o tratado assinado em 1494 que dividiu as terras entre Portugal e Espanha?", a: "Tratado de Tordesilhas", h: "Nome de uma cidade espanhola." },
+      { q: "Como se chamavam as grandes faixas de terra doadas pelo rei de Portugal para colonizar o Brasil?", a: "Capitanias Hereditárias", h: "Passavam de pai para filho." },
+      { q: "Qual metal precioso foi encontrado em grande quantidade em Minas Gerais no século XVIII?", a: "Ouro", h: "Deu nome ao estado de Minas Gerais." },
+      { q: "Quem escreveu a famosa carta ao rei de Portugal descrevendo o descobrimento do Brasil?", a: "Pero Vaz de Caminha", h: "Era o escrivão da esquadra de Cabral." }
+    ],
+    independencia: [
+      { q: "Em que data é comemorada a Independência do Brasil?", a: "7 de setembro de 1822", h: "O famoso Grito do Ipiranga." },
+      { q: "Quem proclamou a Independência do Brasil às margens do rio Ipiranga?", a: "Dom Pedro I", h: "Filho do rei de Portugal." },
+      { q: "Qual lei assinada pela Princesa Isabel em 1888 acabou com a escravidão no Brasil?", a: "Lei Áurea", h: "Áurea significa dourada." },
+      { q: "Em que ano foi proclamada a República no Brasil?", a: "1889", h: "Um ano depois da abolição da escravidão (15 de novembro)." },
+      { q: "Quem foi o líder da Inconfidência Mineira em Vila Rica (Ouro Preto)?", a: "Tiradentes", h: "Joaquim José da Silva Xavier." },
+      { q: "Quem foi o primeiro presidente da República do Brasil?", a: "Marechal Deodoro da Fonseca", h: "Proclamou a República em 1889." },
+      { q: "Qual cidade brasileira recebeu a família real portuguesa em 1808?", a: "Rio de Janeiro", h: "Tornou-se a capital do império." },
+      { q: "Quem foi o segundo imperador do Brasil, filho de Dom Pedro I?", a: "Dom Pedro II", h: "Governou o Brasil por quase 50 anos." }
+    ],
+    cultura: [
+      { q: "Como se chamavam as comunidades formadas por escravizados que fugiam em busca de liberdade?", a: "Quilombos", h: "O mais famoso foi o de Palmares." },
+      { q: "Quem foi o principal líder do Quilombo dos Palmares?", a: "Zumbi dos Palmares", h: "Homenageado no Dia da Consciência Negra." },
+      { q: "Quais povos já habitavam as terras brasileiras antes da chegada dos portugueses?", a: "Povos indígenas", h: "Os nativos da terra." },
+      { q: "Qual documento garante os direitos e deveres de todos os cidadãos brasileiros?", a: "Constituição Federal", h: "A lei máxima do país (de 1988)." },
+      { q: "Em que dia e mês é comemorado o Dia da Consciência Negra no Brasil?", a: "20 de novembro", h: "Data da morte de Zumbi dos Palmares." },
+      { q: "Qual arte marcial e dança foi criada pelos africanos escravizados no Brasil?", a: "Capoeira", h: "Usa instrumentos como o berimbau." },
+      { q: "Qual lei protege os direitos das crianças e dos adolescentes no Brasil?", a: "ECA (Estatuto da Criança e do Adolescente)", h: "Sigla com 3 letras: E-C-A." },
+      { q: "Com quantos anos o voto passa a ser obrigatório no Brasil?", a: "18 anos", h: "Aos 16 anos é opcional." }
+    ]
+  },
+  ciencias: {
+    corpo: [
+      { q: "Qual órgão do corpo humano é responsável por bombear o sangue para todo o organismo?", a: "Coração", h: "Fica no peito e bate sem parar." },
+      { q: "Qual sistema do corpo humano é responsável pela respiração (troca de oxigênio)?", a: "Sistema respiratório", h: "Inclui nariz, traqueia e pulmões." },
+      { q: "Qual é o maior órgão do corpo humano?", a: "Pele", h: "Cobre todo o nosso corpo por fora." },
+      { q: "Qual sistema transforma os alimentos em nutrientes para o corpo?", a: "Sistema digestório", h: "Começa na boca e passa pelo estômago e intestinos." },
+      { q: "Quais órgãos filtram o sangue e produzem a urina?", a: "Rins", h: "Temos dois deles em formato de feijão." },
+      { q: "Qual órgão comanda todas as ações, pensamentos e movimentos do corpo humano?", a: "Cérebro", h: "Fica protegido dentro do crânio." },
+      { q: "Como se chama o conjunto de ossos que sustenta o corpo humano?", a: "Esqueleto", h: "Um adulto tem 206 ossos." },
+      { q: "Qual gás essencial nós inspiramos do ar para sobreviver?", a: "Oxigênio", h: "Produzido pelas plantas e algas." },
+      { q: "Qual gás eliminamos quando expiramos (soltamos o ar dos pulmões)?", a: "Gás carbônico", h: "Também chamado de dióxido de carbono." }
+    ],
+    universo: [
+      { q: "Quantos planetas existem no Sistema Solar?", a: "8", h: "Mercúrio, Vênus, Terra, Marte, Júpiter, Saturno, Urano e Netuno." },
+      { q: "Qual é o planeta mais próximo do Sol?", a: "Mercúrio", h: "É o primeiro planeta da ordem." },
+      { q: "Qual é o maior planeta do Sistema Solar?", a: "Júpiter", h: "Um gigante gasoso." },
+      { q: "Como se chama o movimento que a Terra faz em torno de si mesma, causando o dia e a noite?", a: "Rotação", h: "Dura 24 horas." },
+      { q: "Como se chama o movimento que a Terra faz ao redor do Sol, durando 365 dias?", a: "Translação", h: "Dá origem às estações do ano." },
+      { q: "Qual é o satélite natural da Terra?", a: "Lua", h: "Brilha no céu à noite." },
+      { q: "Qual planeta do Sistema Solar é famoso por seus grandes anéis brilhantes?", a: "Saturno", h: "Fica depois de Júpiter." },
+      { q: "Qual planeta é conhecido como o 'Planeta Vermelho'?", a: "Marte", h: "Fica logo depois da Terra." },
+      { q: "Quais são as quatro fases principais da Lua?", a: "Nova, Crescente, Cheia e Minguante", h: "Mudam a cada 7 dias aproximadamente." }
+    ],
+    materia: [
+      { q: "Quais são os três estados físicos da água na natureza?", a: "Sólido, líquido e gasoso", h: "Gelo, água líquida e vapor." },
+      { q: "Como se chama a passagem da água do estado líquido para o gasoso (vapor)?", a: "Evaporação", h: "Acontece quando o sol esquenta a água." },
+      { q: "Como se chama o processo pelo qual as plantas produzem seu próprio alimento usando luz solar?", a: "Fotossíntese", h: "Foto significa luz." },
+      { q: "Na cadeia alimentar, como são chamadas as plantas que produzem seu próprio alimento?", a: "Produtores", h: "Elas produzem a base da alimentação." },
+      { q: "Como se chama a passagem da água do estado sólido (gelo) para o líquido?", a: "Fusão", h: "Quando o gelo derrete." },
+      { q: "Como se chama a passagem do vapor de água para o estado líquido (formando nuvens)?", a: "Condensação", h: "O vapor esfria e vira gotículas de água." },
+      { q: "Qual é a cor da lixeira de coleta seletiva destinada ao PAPEL?", a: "Azul", h: "Azul = Papel, Vermelho = Plástico, Verde = Vidro, Amarelo = Metal." },
+      { q: "Qual é a cor da lixeira de coleta seletiva destinada ao PLÁSTICO?", a: "Vermelho", h: "Azul = Papel, Vermelho = Plástico." },
+      { q: "Como são chamados os fungos e bactérias que reciclam a matéria orgânica na natureza?", a: "Decompositores", h: "Devolvem nutrientes ao solo." }
+    ]
+  },
+  ingles: {
+    vocabulario: [
+      { q: "Qual número é 'Seven' em português?", a: "7", h: "Vem depois do six (6)." },
+      { q: "Qual número é 'Twelve' em português?", a: "12", h: "Uma dúzia." },
+      { q: "Qual número é 'Twenty' em português?", a: "20", h: "Duas dezenas." },
+      { q: "Como se escreve 'Maçã' em inglês?", a: "Apple", h: "Começa com A." },
+      { q: "Como se escreve 'Livro' em inglês?", a: "Book", h: "Começa com B e tem dois Os." },
+      { q: "Como se escreve 'Escola' em inglês?", a: "School", h: "Começa com Sc." },
+      { q: "O que significa 'Water' em português?", a: "Água", h: "Bebemos todos os dias." }
+    ],
+    saudacoes: [
+      { q: "O que significa 'Good morning' em português?", a: "Bom dia", h: "Usamos pela manhã." },
+      { q: "O que significa 'Good afternoon' em português?", a: "Boa tarde", h: "Usamos depois do meio-dia." },
+      { q: "O que significa 'Good night' em português?", a: "Boa noite", h: "Usamos ao se despedir à noite ou ir dormir." },
+      { q: "Como se diz 'Obrigado' em inglês?", a: "Thank you", h: "Ou 'Thanks'." },
+      { q: "Como se escreve 'Mãe' em inglês?", a: "Mother", h: "Ou 'Mom'." },
+      { q: "Como se escreve 'Pai' em inglês?", a: "Father", h: "Ou 'Dad'." },
+      { q: "Como se escreve 'Irmã' em inglês?", a: "Sister", h: "Começa com S." },
+      { q: "Como se escreve 'Irmão' em inglês?", a: "Brother", h: "Começa com B." },
+      { q: "Qual dia da semana é 'Sunday' em português?", a: "Domingo", h: "É o primeiro dia da semana (dia do Sol)." },
+      { q: "Qual dia da semana é 'Friday' em português?", a: "Sexta-feira", h: "Vem antes de Saturday (Sábado)." },
+      { q: "Qual dia da semana é 'Monday' em português?", a: "Segunda-feira", h: "Primeiro dia útil da semana." }
+    ],
+    frases: [
+      { q: "Traduza para o português: 'I love my family'", a: "Eu amo minha família", h: "Love = amar, Family = família." },
+      { q: "Complete com 'am', 'is' ou 'are': She ___ a student.", a: "is", h: "Para He, She, It usamos 'is'." },
+      { q: "Complete com 'am', 'is' ou 'are': I ___ happy.", a: "am", h: "Com 'I' (Eu) sempre usamos 'am'." },
+      { q: "Complete com 'am', 'is' ou 'are': They ___ friends.", a: "are", h: "Para plural (We, You, They) usamos 'are'." },
+      { q: "Traduza para o português: 'My name is Sofia'", a: "Meu nome é Sofia", h: "Name = nome." },
+      { q: "Traduza para o português: 'I have a dog'", a: "Eu tenho um cachorro", h: "Have = ter." },
+      { q: "Traduza para o português: 'The sun is yellow'", a: "O sol é amarelo", h: "Sun = sol, Yellow = amarelo." },
+      { q: "O que significa 'Happy birthday' em português?", a: "Feliz aniversário", h: "Cantamos nas festas de aniversário." }
+    ]
+  }
+};
+
+// GERADORES COMBINATÓRIOS DINÂMICOS (PARA NUNCA REPETIR!)
+function generateDynamicGeoQuestions(){
+  const estados = [
+    ["Acre", "Rio Branco"], ["Alagoas", "Maceió"], ["Amapá", "Macapá"], ["Amazonas", "Manaus"],
+    ["Bahia", "Salvador"], ["Ceará", "Fortaleza"], ["Espírito Santo", "Vitória"], ["Goiás", "Goiânia"],
+    ["Maranhão", "São Luís"], ["Mato Grosso", "Cuiabá"], ["Mato Grosso do Sul", "Campo Grande"],
+    ["Minas Gerais", "Belo Horizonte"], ["Pará", "Belém"], ["Paraíba", "João Pessoa"],
+    ["Paraná", "Curitiba"], ["Pernambuco", "Recife"], ["Piauí", "Teresina"],
+    ["Rio de Janeiro", "Rio de Janeiro"], ["Rio Grande do Norte", "Natal"], ["Rio Grande do Sul", "Porto Alegre"],
+    ["Rondônia", "Porto Velho"], ["Roraima", "Boa Vista"], ["Santa Catarina", "Florianópolis"],
+    ["São Paulo", "São Paulo"], ["Sergipe", "Aracaju"], ["Tocantins", "Palmas"]
+  ];
+  return estados.map(([est, cap]) => ({
+    q: `Qual é a capital do estado de ${est}?`,
+    a: cap,
+    h: `Capital brasileira do estado: ${est}.`
+  }));
+}
+
+function generateDynamicEnglishQuestions(){
+  const vocab = [
+    ["Azul", "Blue", "Cor do céu"], ["Vermelho", "Red", "Cor do morango"], ["Amarelo", "Yellow", "Cor do sol"],
+    ["Verde", "Green", "Cor das folhas"], ["Preto", "Black", "Cor escura"], ["Branco", "White", "Cor da neve"],
+    ["Rosa", "Pink", "Cor de flor"], ["Laranja", "Orange", "Cor e fruta"], ["Roxo", "Purple", "Cor da uva"],
+    ["Cachorro", "Dog", "Melhor amigo do homem"], ["Gato", "Cat", "Faz miau"], ["Pássaro", "Bird", "Voa no céu"],
+    ["Peixe", "Fish", "Nada na água"], ["Cavalo", "Horse", "Animal de montaria"], ["Leão", "Lion", "Rei da selva"],
+    ["Macaco", "Monkey", "Gosta de banana"], ["Elefante", "Elephant", "Tem tromba grande"], ["Tartaruga", "Turtle", "Anda devagar"],
+    ["Casa", "House", "Onde moramos"], ["Carro", "Car", "Meio de transporte"], ["Sol", "Sun", "Estrela do dia"],
+    ["Lua", "Moon", "Brilha à noite"], ["Estrela", "Star", "Brilha no céu"], ["Árvore", "Tree", "Tem tronco e folhas"]
+  ];
+  return vocab.map(([pt, en, dica]) => ({
+    q: `Como se escreve '${pt}' em inglês?`,
+    a: en,
+    h: `${dica}. Começa com a letra '${en[0]}'.`
+  }));
+}
+
+function generateSubjectBatch(subj){
+  playClickSound();
+  let topic = document.getElementById('topic_' + subj).value;
+  let bank = QUESTION_BANK[subj];
+  let pool = [];
+
+  if(topic === 'all'){
+    Object.values(bank).forEach(arr => { pool = pool.concat(arr); });
+    if(subj === 'geografia') pool = pool.concat(generateDynamicGeoQuestions());
+    if(subj === 'ingles') pool = pool.concat(generateDynamicEnglishQuestions());
   } else {
-    if(item.type === '+') return "passo a passo como fazer conta de mais adicao";
-    if(item.type === '-') return "passo a passo como fazer conta de menos subtracao com emprestimo";
-    if(item.type === 'x') return "passo a passo como fazer conta de vezes multiplicacao";
-    if(item.type === '÷') {
-      let hasDec = String(item.n1).includes('.') || String(item.n2).includes('.') || String(item.expected).includes('.');
-      if(hasDec) {
-        return "passo a passo divisao com virgula numeros decimais 5 ano";
-      }
-      return "passo a passo como fazer conta de dividir divisao";
-    }
+    pool = [...(bank[topic] || [])];
+    if(subj === 'geografia' && topic === 'regioes') pool = pool.concat(generateDynamicGeoQuestions());
+    if(subj === 'ingles' && topic === 'vocabulario') pool = pool.concat(generateDynamicEnglishQuestions());
+  }
+
+  // Trava Anti-Repetição: filtra perguntas que já estão no histórico do aluno
+  let usedTitles = new Set(state.items.map(i => (i.title || '').trim().toLowerCase()));
+  let freshPool = pool.filter(item => !usedTitles.has(item.q.trim().toLowerCase()));
+
+  // Se o aluno já respondeu quase tudo, usa o pool completo para não travar
+  let finalPool = freshPool.length >= 10 ? freshPool : pool;
+
+  // Embaralha usando algoritmo Fisher-Yates real
+  for (let i = finalPool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [finalPool[i], finalPool[j]] = [finalPool[j], finalPool[i]];
+  }
+
+  let selected = finalPool.slice(0, Math.min(10, finalPool.length));
+
+  subjectBatches[subj] = selected.map(item => ({
+    id: String(Date.now() + Math.random()),
+    subject: subj,
+    isProblem: true,
+    isTextAnswer: true,
+    title: item.q,
+    expected: item.a,
+    hint: "💡 Dica: " + item.h,
+    searchQuery: `${subj} 5 ano ensino fundamental ${item.q}`,
+    work: "",
+    studentAnswer: "",
+    status: "pending",
+    timeSpent: 0,
+    createdAt: new Date().toISOString()
+  }));
+
+  renderSubjectPreview(subj);
+}
+
+function removeSubjectBatchItem(subj, idx){
+  playClickSound();
+  subjectBatches[subj].splice(idx, 1);
+  renderSubjectPreview(subj);
+}
+
+function renderSubjectPreview(subj){
+  let container = document.getElementById('preview_' + subj);
+  let list = subjectBatches[subj];
+  if(!list || !list.length){
+    container.innerHTML = '<p class="muted">Nenhuma pergunta na pré-visualização.</p>';
+    return;
+  }
+  container.innerHTML = `
+    <h3 style="font-size:15px; margin-bottom:8px;">Revise as ${list.length} Perguntas Inéditas (com Gabarito):</h3>
+    <div style="max-height:280px; overflow-y:auto; border:1px solid #ccc; border-radius:12px; padding:10px; background:var(--card-bg);">
+      ${list.map((item, idx) => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid rgba(0,0,0,0.06); gap:10px;">
+          <div style="font-size:13px;">
+            <b>${idx+1}.</b> ${item.title}<br>
+            <span style="color:#16a085; font-weight:bold;">✅ Resposta Correta: ${item.expected}</span>
+          </div>
+          <button type="button" class="warn" style="padding:4px 10px; font-size:12px; flex-shrink:0;" onclick="removeSubjectBatchItem('${subj}', ${idx})">Remover</button>
+        </div>
+      `).join('')}
+    </div>
+    <div class="actions" style="margin-top:12px;">
+      <button type="button" class="primary" style="width:100%;" onclick="sendSubjectBatch('${subj}')">🚀 Enviar Perguntas para o Aluno (${list.length})</button>
+    </div>
+  `;
+}
+
+function sendSubjectBatch(subj){
+  playClickSound();
+  let list = subjectBatches[subj];
+  if(!list || !list.length) return;
+  list.forEach(item => state.items.unshift(item));
+  subjectBatches[subj] = [];
+  persist();
+  document.getElementById('preview_' + subj).innerHTML = '<p style="color:#2e7d32; font-weight:700;">✨ Perguntas enviadas para o caderno do aluno!</p>';
+}
+
+// ==========================================
+// FUNÇÕES DE MATEMÁTICA (CONTAS E PROBLEMAS)
+// ==========================================
+function getYouTubeSearchQuery(item){
+  if(item.subject && item.subject !== 'matematica') return item.searchQuery || "aula 5 ano ensino fundamental";
+  if(item.isProblem) return "passo a passo como resolver probleminhas de matematica";
+  if(item.type === '+') return "passo a passo como fazer conta de mais adicao";
+  if(item.type === '-') return "passo a passo como fazer conta de menos subtracao com emprestimo";
+  if(item.type === 'x') return "passo a passo como fazer conta de vezes multiplicacao";
+  if(item.type === '÷') {
+    let hasDec = String(item.n1).includes('.') || String(item.n2).includes('.') || String(item.expected).includes('.');
+    if(hasDec) return "passo a passo divisao com virgula numeros decimais 5 ano";
+    return "passo a passo como fazer conta de dividir divisao";
   }
   return "passo a passo como fazer conta de matematica";
 }
 
 function getAutomaticHint(item){
+  if(item.hint) return item.hint;
   if(item.isProblem){
     let t = item.title.toLowerCase();
     if(t.includes('ganhou') || t.includes('total') || t.includes('juntou')) return "💡 Dica: Qual operação básica usamos para juntar? (+)";
     if(t.includes('perdeu') || t.includes('deu') || t.includes('sobrou') || t.includes('gastou')) return "💡 Dica: Qual operação tira uma quantidade? (-)";
     if(t.includes('cada caixa') || t.includes('pacotes')) return "💡 Dica: Vários grupos iguais? Use a multiplicação (x)!";
     if(t.includes('dividiu') || t.includes('organizou')) return "💡 Dica: Divida igualmente com a divisão (÷).";
-    return "💡 Dica: Leia a historinha novamente com calma.";
+    return "💡 Dica: Leia com calma.";
   } else {
     if(item.type === '+') return "💡 Dica: Comece pela direita. Se passar de 9, sobe 1!";
     if(item.type === '-') return "💡 Dica: O número de cima é menor? Peça emprestado ao vizinho!";
     if(item.type === 'x') return "💡 Dica: Multiplique sempre começando pela unidade.";
     if(item.type === '÷') {
-      if(String(item.n2).includes('.')) {
-        return "💡 Dica: Iguale as casas depois da vírgula nos dois números, corte a vírgula e divida normal!";
-      }
-      if(String(item.n1).includes('.') || String(item.expected).includes('.')) {
-        return "💡 Dica: Na hora de baixar o número depois da vírgula (ou colocar zero no resto), coloque a vírgula na resposta!";
-      }
+      if(String(item.n2).includes('.')) return "💡 Dica: Iguale as casas depois da vírgula nos dois números, corte a vírgula e divida normal!";
+      if(String(item.n1).includes('.') || String(item.expected).includes('.')) return "💡 Dica: Na hora de baixar o número depois da vírgula (ou colocar zero no resto), coloque a vírgula na resposta!";
       return "💡 Dica: Teste na tabuada quantas vezes o número cabe no outro.";
     }
   }
@@ -949,18 +1517,12 @@ function autoCalcManual(){
   let n2 = parseFloat(document.getElementById('manualN2').value.replace(',', '.'));
   let op = document.getElementById('manualOp').value;
   let expField = document.getElementById('manualExpected');
-
-  if(isNaN(n1) || isNaN(n2)){
-    expField.value = '';
-    return;
-  }
-
+  if(isNaN(n1) || isNaN(n2)){ expField.value = ''; return; }
   let res = 0;
   if(op === '+') res = Number((n1 + n2).toFixed(4));
   else if(op === '-') res = Number((n1 - n2).toFixed(4));
   else if(op === 'x') res = Number((n1 * n2).toFixed(4));
   else if(op === '÷') res = n2 !== 0 ? Number((n1 / n2).toFixed(4)) : 0;
-
   expField.value = formatBR(res);
 }
 
@@ -979,6 +1541,7 @@ function createManualProblem(){
 
   let newItem = {
     id: String(Date.now() + Math.random()),
+    subject: 'matematica',
     isProblem: false,
     isManual: true,
     type: op,
@@ -992,26 +1555,24 @@ function createManualProblem(){
     timeSpent: 0,
     createdAt: new Date().toISOString()
   };
-
   newItem.hint = getAutomaticHint(newItem);
   newItem.searchQuery = getYouTubeSearchQuery(newItem);
 
   state.items.unshift(newItem);
   persist();
-
   document.getElementById('manualN1').value = '';
   document.getElementById('manualN2').value = '';
   document.getElementById('manualExpected').value = '';
   document.getElementById('manualPrize').value = '';
-  alert('✨ Conta manual enviada e calculada para a Sofia!');
+  alert('✨ Conta manual enviada!');
 }
 
 function generateProblemBatch(){
   playClickSound();
   currentProblemBatch = [];
   let diff = document.getElementById('probDifficulty').value;
-  let nomes = ['Pedro', 'Maria', 'Lucas', 'Sofia', 'Ana', 'João', 'Julia', 'Carlos'];
-  let itens = ['balas', 'figurinhas', 'livros', 'bombons', 'laranjas', 'canetas', 'pães'];
+  let nomes = ['Pedro', 'Maria', 'Lucas', 'Sofia', 'Ana', 'João', 'Julia', 'Carlos', 'Beatriz', 'Gabriel'];
+  let itens = ['balas', 'figurinhas', 'livros', 'bombons', 'laranjas', 'canetas', 'pães', 'adesivos', 'lápis'];
   
   for(let i=0; i<10; i++){
     let nome = nomes[Math.floor(Math.random() * nomes.length)];
@@ -1039,7 +1600,7 @@ function generateProblemBatch(){
       text = `${nome} organizou ${total} ${item} em ${div} prateleiras. Quantos ${item} em cada prateleira?`; expected = q;
     }
 
-    let newItem = { id: String(Date.now() + Math.random()), isProblem: true, title: text, expected: expected, work: "", studentAnswer: "", status: "pending", timeSpent: 0, createdAt: new Date().toISOString() };
+    let newItem = { id: String(Date.now() + Math.random()), subject: 'matematica', isProblem: true, title: text, expected: expected, work: "", studentAnswer: "", status: "pending", timeSpent: 0, createdAt: new Date().toISOString() };
     newItem.hint = getAutomaticHint(newItem);
     newItem.searchQuery = getYouTubeSearchQuery(newItem);
     currentProblemBatch.push(newItem);
@@ -1057,7 +1618,7 @@ function renderProblemBatchPreview(){
     <div style="max-height:220px; overflow-y:auto; border:1px solid #b9e2fc; border-radius:12px; padding:10px; background:var(--card-bg);">
       ${currentProblemBatch.map((item, idx) => `
         <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid rgba(0,0,0,0.05); gap:10px;">
-          <span style="font-size:13px;"><b>${idx+1}.</b> ${item.title}</span>
+          <span style="font-size:13px;"><b>${idx+1}.</b> ${item.title} <b style="color:#16a085;">(= ${item.expected})</b></span>
           <button type="button" class="warn" style="padding:4px 10px; font-size:12px; flex-shrink:0;" onclick="removeProblemBatchItem(${idx})">Remover</button>
         </div>
       `).join('')}
@@ -1074,7 +1635,7 @@ function sendProblemBatchToStudent(){
   currentProblemBatch.forEach(item => state.items.unshift(item));
   currentProblemBatch = [];
   persist();
-  document.getElementById('problemBatchPreview').innerHTML = '<p style="color:#2e7d32; font-weight:700;">✨ Lote enviado para o topo da nuvem!</p>';
+  document.getElementById('problemBatchPreview').innerHTML = '<p style="color:#2e7d32; font-weight:700;">✨ Lote enviado!</p>';
 }
 
 function generateBatch(){
@@ -1095,7 +1656,6 @@ function generateBatch(){
       n1 = div * q; n2 = div; expected = q;
     } else if(opMode === '÷_dec') {
       if(diff === 'easy') {
-        // Ex: 54,5 ÷ 2 ou 84,4 ÷ 4 (dividendo com ,5 ou ,2 ou ,4 ou ,8 e divisor inteiro 2, 4, 5)
         let divs = [2, 4, 5];
         n2 = divs[Math.floor(Math.random() * divs.length)];
         let intPart = Math.floor(Math.random() * 80) + 12;
@@ -1103,7 +1663,6 @@ function generateBatch(){
         n1 = Number((intPart + decPart).toFixed(1));
         expected = Number((n1 / n2).toFixed(4));
       } else if(diff === 'medium') {
-        // Ex: 540,5 ÷ 5 ou 980,5 ÷ 2 (números maiores na casa das centenas com vírgula)
         let divs = [2, 4, 5, 8];
         n2 = divs[Math.floor(Math.random() * divs.length)];
         let intPart = Math.floor(Math.random() * 850) + 120;
@@ -1111,14 +1670,12 @@ function generateBatch(){
         n1 = Number((intPart + decPart).toFixed(1));
         expected = Number((n1 / n2).toFixed(4));
       } else {
-        // Avançado: Tanto o dividendo quanto o divisor possuem vírgula, fechando exato! Ex: 62,5 ÷ 2,5 ou 18,75 ÷ 1,5
         let decDivisors = [1.5, 2.5, 0.5, 1.2, 0.4, 0.8];
         n2 = decDivisors[Math.floor(Math.random() * decDivisors.length)];
         let qInt = Math.floor(Math.random() * 35) + 4;
         let qDec = [0, 0.5, 0.25][Math.floor(Math.random() * 3)];
         expected = Number((qInt + qDec).toFixed(2));
         n1 = Number((expected * n2).toFixed(3));
-        // Garante que n1 tenha casa decimal visível; se der inteiro, soma 0.5 * n2
         if(Number.isInteger(n1)) {
           expected = Number((expected + 0.5).toFixed(2));
           n1 = Number((expected * n2).toFixed(3));
@@ -1134,7 +1691,7 @@ function generateBatch(){
       n1 = Math.floor(Math.random() * 300) + 50; n2 = Math.floor(Math.random() * n1) + 10; expected = n1 - n2;
     }
 
-    let newItem = { id: String(Date.now() + Math.random()), isProblem: false, type: displayOp, n1, n2, expected, work: "", studentAnswer: "", status: "pending", timeSpent: 0, createdAt: new Date().toISOString() };
+    let newItem = { id: String(Date.now() + Math.random()), subject: 'matematica', isProblem: false, type: displayOp, n1, n2, expected, work: "", studentAnswer: "", status: "pending", timeSpent: 0, createdAt: new Date().toISOString() };
     newItem.hint = getAutomaticHint(newItem);
     newItem.searchQuery = getYouTubeSearchQuery(newItem);
     currentBatch.push(newItem);
@@ -1169,22 +1726,19 @@ function sendBatchToStudent(){
   currentBatch.forEach(item => state.items.unshift(item));
   currentBatch = [];
   persist();
-  document.getElementById('batchPreviewContainer').innerHTML = '<p style="color:#2e7d32; font-weight:700;">✨ Lote enviado para o topo da nuvem!</p>';
+  document.getElementById('batchPreviewContainer').innerHTML = '<p style="color:#2e7d32; font-weight:700;">✨ Lote enviado!</p>';
 }
 
 function renderStats(){
   let container = document.getElementById('statsContainer');
   if(!container) return;
-  
   let corrigidas = state.items.filter(x => x.status === 'correct' || x.status === 'incorrect');
   let acertos = corrigidas.filter(x => x.status === 'correct').length;
   let erros = corrigidas.filter(x => x.status === 'incorrect').length;
   let taxaAcerto = corrigidas.length > 0 ? Math.round((acertos / corrigidas.length) * 100) : 0;
-  
   let mainGoalTotal = state.rewards.length > 0 ? state.rewards[0].total : 10000;
   let currentStars = state.stars || 0;
   let goalPercent = Math.min(100, ((currentStars / mainGoalTotal) * 100).toFixed(1));
-
   let diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
   let contagemDias = [0,0,0,0,0,0,0];
   state.items.forEach(x => {
@@ -1195,38 +1749,34 @@ function renderStats(){
   });
 
   container.innerHTML = `
-    <div style="background:var(--card-bg); padding:14px; border-radius:14px; border:1px solid var(--card-border); box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div style="background:var(--card-bg); padding:14px; border-radius:14px; border:1px solid var(--card-border);">
       <div style="font-size:13px; color:var(--text-color); font-weight:bold;">🎯 Progresso da Meta Geral</div>
       <div style="font-size:22px; font-weight:900; color:#e65100; margin:6px 0;">${currentStars} / ${mainGoalTotal} ⭐</div>
       <div style="background:#eee; border-radius:10px; height:12px; width:100%; overflow:hidden; margin-top:6px;">
         <div style="background:linear-gradient(90deg,#ffb300,#ff8f00); height:100%; width:${goalPercent}%;"></div>
       </div>
-      <div style="font-size:12px; font-weight:bold; color:#2e7d32; margin-top:4px;">${goalPercent}% Conquistado rumo ao prêmio</div>
+      <div style="font-size:12px; font-weight:bold; color:#2e7d32; margin-top:4px;">${goalPercent}% Conquistado</div>
     </div>
-
-    <div style="background:var(--card-bg); padding:14px; border-radius:14px; border:1px solid var(--card-border); box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-      <div style="font-size:13px; color:var(--text-color); font-weight:bold;">📈 Taxa de Acerto e Gráfico</div>
+    <div style="background:var(--card-bg); padding:14px; border-radius:14px; border:1px solid var(--card-border);">
+      <div style="font-size:13px; color:var(--text-color); font-weight:bold;">📈 Taxa de Acerto</div>
       <div style="font-size:22px; font-weight:900; color:#2e7d32; margin:6px 0;">${taxaAcerto}% de Acertos</div>
       <div style="display:flex; height:12px; width:100%; border-radius:10px; overflow:hidden; background:#ffebee; margin-top:6px;">
-        <div style="background:#2e7d32; width:${taxaAcerto}%; transition:width 0.5s;"></div>
+        <div style="background:#2e7d32; width:${taxaAcerto}%;"></div>
       </div>
-      <div style="font-size:12px; color:var(--text-color); opacity:0.8; margin-top:4px; display:flex; justify-content:space-between;">
-        <span>✅ Acertos: ${acertos}</span>
-        <span>❌ Erros: ${erros}</span>
+      <div style="font-size:12px; opacity:0.8; margin-top:4px; display:flex; justify-content:space-between;">
+        <span>✅ Acertos: ${acertos}</span><span>❌ Erros: ${erros}</span>
       </div>
     </div>
-
-    <div style="background:var(--card-bg); padding:14px; border-radius:14px; border:1px solid var(--card-border); box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-      <div style="font-size:13px; color:var(--text-color); font-weight:bold;">📅 Calendário de Atividades (Semana)</div>
+    <div style="background:var(--card-bg); padding:14px; border-radius:14px; border:1px solid var(--card-border);">
+      <div style="font-size:13px; color:var(--text-color); font-weight:bold;">📅 Atividades na Semana</div>
       <div style="display:flex; justify-content:space-between; margin-top:10px; text-align:center;">
         ${diasSemana.map((dia, idx) => `
           <div style="background:rgba(0,0,0,0.03); padding:6px 4px; border-radius:8px; flex:1; margin:0 2px;">
-            <div style="font-size:11px; font-weight:bold; color:var(--text-color);">${dia}</div>
+            <div style="font-size:11px; font-weight:bold;">${dia}</div>
             <div style="font-size:14px; font-weight:900; color:#e65100; margin-top:2px;">${contagemDias[idx]}</div>
           </div>
         `).join('')}
       </div>
-      <div style="font-size:11px; color:var(--text-color); opacity:0.7; margin-top:6px; text-align:center;">Tarefas realizadas por dia</div>
     </div>
   `;
 }
@@ -1238,7 +1788,7 @@ function addReward(){
   if(!name || isNaN(total) || total<=0){ alert('Preencha o prêmio e as estrelas!'); return; }
   state.rewards.push({name, total});
   document.getElementById('newRewardName').value=''; document.getElementById('newRewardStars').value='';
-  document.getElementById('rewardMsg').textContent = 'Prêmio adicionado com sucesso!';
+  document.getElementById('rewardMsg').textContent = 'Prêmio adicionado!';
   setTimeout(() => { document.getElementById('rewardMsg').textContent = ''; }, 3000);
   persist();
 }
@@ -1281,97 +1831,97 @@ function renderLists(){
   let s = document.getElementById('studentList');
   
   if(pPending && pOutros){
-      let pendentes = state.items.filter(x => x.status === 'submitted');
-      let outros = state.items.filter(x => x.status !== 'submitted');
+    let pendentes = state.items.filter(x => x.status === 'submitted');
+    let outros = state.items.filter(x => x.status !== 'submitted');
 
-      if(!pendentes.length) {
-          pPending.innerHTML = '<p class="muted" style="color:#795548; font-weight:bold;">Nenhuma tarefa aguardando correção no momento.</p>';
-      } else {
-          pPending.innerHTML = pendentes.map(x => {
-             let desc = x.isProblem ? `📖 ${x.title}` : `${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
-             if(x.prize) desc += ` <span style="color:#d81b60; font-weight:bold;">(🎁 Brinde: ${x.prize})</span>`;
-             let mathAns = `<span style="background:#e8f8f5; color:#16a085; padding:2px 8px; border-radius:6px; font-weight:bold; border:1px solid #a3e4d7;">⚡ Resposta Correta: ${formatBR(x.expected)}</span>`;
-             let timeInfo = x.timeSpent ? `<span style="background:#fff3e0; color:#e65100; padding:2px 8px; border-radius:6px; font-weight:bold; font-size:12px; margin-left:6px;">⏱️ Tempo: ${Math.floor(x.timeSpent/60)}m ${x.timeSpent%60}s</span>` : '';
-             return `<div class="listitem submitted">
-                <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
-                   <div><b>${desc}</b><br><div style="margin-top:6px;">${mathAns} ${timeInfo}</div></div>
-                   <button type="button" class="warn" style="padding:4px 8px; font-size:12px; height:fit-content;" onclick="removeItem('${x.id}')">Excluir</button>
-                </div>
-                <div style="width:100%; display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; border-top:1px dashed #ccc; padding-top:8px;">
-                   <span style="color:#e65100; font-weight:bold; width:100%;">Sofia respondeu: ${formatBR(x.studentAnswer)}</span>
-                   <button type="button" class="soft" onclick="viewWork('${x.id}')">👁️ Corrigir Rascunho</button>
-                   <button type="button" class="success" onclick="markAsCorrect('${x.id}', false)">✅ Acertou (Dar 10⭐)</button>
-                   <button type="button" class="warn" onclick="markAsIncorrect('${x.id}', false)">❌ Errou (Refazer)</button>
-                </div>
-             </div>`;
-          }).join('');
-      }
+    if(!pendentes.length) {
+      pPending.innerHTML = '<p class="muted" style="color:#795548; font-weight:bold;">Nenhuma tarefa aguardando correção no momento.</p>';
+    } else {
+      pPending.innerHTML = pendentes.map(x => {
+        let meta = getSubjectMeta(x.subject);
+        let badge = `<span class="subject-badge" style="background:${meta.bg}; color:${meta.color};">${meta.label}</span><br>`;
+        let desc = x.isProblem ? x.title : `${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
+        if(x.prize) desc += ` <span style="color:#d81b60; font-weight:bold;">(🎁 Brinde: ${x.prize})</span>`;
+        let mathAns = `<span style="background:#e8f8f5; color:#16a085; padding:2px 8px; border-radius:6px; font-weight:bold; border:1px solid #a3e4d7;">⚡ Resposta Correta: ${formatBR(x.expected)}</span>`;
+        let timeInfo = x.timeSpent ? `<span style="background:#fff3e0; color:#e65100; padding:2px 8px; border-radius:6px; font-weight:bold; font-size:12px; margin-left:6px;">⏱️ Tempo: ${Math.floor(x.timeSpent/60)}m ${x.timeSpent%60}s</span>` : '';
+        return `<div class="listitem submitted">
+          <div style="width:100%; display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>${badge}<b>${desc}</b><br><div style="margin-top:6px;">${mathAns} ${timeInfo}</div></div>
+            <button type="button" class="warn" style="padding:4px 8px; font-size:12px; height:fit-content;" onclick="removeItem('${x.id}')">Excluir</button>
+          </div>
+          <div style="width:100%; display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; border-top:1px dashed #ccc; padding-top:8px;">
+            <span style="color:#e65100; font-weight:bold; width:100%;">${activeStudentName} respondeu: ${formatBR(x.studentAnswer)}</span>
+            <button type="button" class="soft" onclick="viewWork('${x.id}')">👁️ Abrir Correção</button>
+            <button type="button" class="success" onclick="markAsCorrect('${x.id}', false)">✅ Acertou (Dar 10⭐)</button>
+            <button type="button" class="warn" onclick="markAsIncorrect('${x.id}', false)">❌ Errou (Refazer)</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
 
-      if(!outros.length) {
-          pOutros.innerHTML = '<p class="muted">Nenhum desafio registrado.</p>';
-      } else {
-          pOutros.innerHTML = outros.map(x => {
-             let desc = x.isProblem ? `📖 ${x.title}` : `${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
-             if(x.prize) desc += ` <span style="color:#d81b60; font-weight:bold;">(🎁 Brinde: ${x.prize})</span>`;
-             let mathAns = `<span style="font-size:12px; color:#555;">(Resultado: <b>${formatBR(x.expected)}</b>)</span>`;
-             let painelStatus = "";
-             if (x.status === 'correct') {
-                 painelStatus = `<div style="width:100%; color:#2e7d32; font-weight:bold; margin-top:4px;">⭐ Corrigido: Acertou</div>`;
-             } else if (x.status === 'incorrect') {
-                 painelStatus = `<div style="width:100%; color:#c62828; font-weight:bold; margin-top:4px;">❌ Corrigido: Marcado para refazer</div>`;
-             } else {
-                 painelStatus = `<div style="width:100%; color:var(--text-color); opacity:0.7; font-weight:bold; margin-top:4px;">Aguardando a Sofia resolver...</div>`;
-             }
-             
-             let viewWorkBtn = x.work ? `<button type="button" class="soft" style="margin-top:6px; padding:6px 12px; font-size:13px;" onclick="viewWork('${x.id}')">👁️ Ver Rascunho da Lousa</button>` : `<span class="muted" style="font-size:12px; display:block; margin-top:4px;">Sem rascunho salvo</span>`;
+    if(!outros.length) {
+      pOutros.innerHTML = '<p class="muted">Nenhum desafio registrado.</p>';
+    } else {
+      pOutros.innerHTML = outros.map(x => {
+        let meta = getSubjectMeta(x.subject);
+        let badge = `<span class="subject-badge" style="background:${meta.bg}; color:${meta.color};">${meta.label}</span> `;
+        let desc = x.isProblem ? x.title : `${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
+        if(x.prize) desc += ` <span style="color:#d81b60; font-weight:bold;">(🎁 Brinde: ${x.prize})</span>`;
+        let mathAns = `<span style="font-size:12px; color:#555;">(Gabarito: <b>${formatBR(x.expected)}</b>)</span>`;
+        let painelStatus = "";
+        if (x.status === 'correct') painelStatus = `<div style="width:100%; color:#2e7d32; font-weight:bold; margin-top:4px;">⭐ Corrigido: Acertou</div>`;
+        else if (x.status === 'incorrect') painelStatus = `<div style="width:100%; color:#c62828; font-weight:bold; margin-top:4px;">❌ Corrigido: Marcado para refazer</div>`;
+        else painelStatus = `<div style="width:100%; color:var(--text-color); opacity:0.7; font-weight:bold; margin-top:4px;">Aguardando resposta...</div>`;
+        
+        let viewWorkBtn = x.work ? `<button type="button" class="soft" style="margin-top:6px; padding:6px 12px; font-size:13px;" onclick="viewWork('${x.id}')">👁️ Ver Lousa</button>` : '';
 
-             return `<div class="listitem">
-                <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
-                   <div><b>${desc}</b> ${mathAns}</div>
-                   <button type="button" class="warn" style="padding:4px 8px; font-size:12px; height:fit-content;" onclick="removeItem('${x.id}')">Excluir</button>
-                </div>
-                ${painelStatus}
-                <div style="width:100%;">${viewWorkBtn}</div>
-             </div>`;
-          }).join('');
-      }
+        return `<div class="listitem">
+          <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
+            <div>${badge}<b>${desc}</b> ${mathAns}</div>
+            <button type="button" class="warn" style="padding:4px 8px; font-size:12px; height:fit-content;" onclick="removeItem('${x.id}')">Excluir</button>
+          </div>
+          ${painelStatus}
+          <div style="width:100%;">${viewWorkBtn}</div>
+        </div>`;
+      }).join('');
+    }
   }
   
   if(s){
-    if(!state.items.length){ s.innerHTML='<p class="muted">Nenhum desafio no momento! 🌸</p>'; }
-    else{
-      s.innerHTML=state.items.map((x,i)=>{
-        if(x.status === 'correct') return ''; 
-        
-        let desc = x.isProblem ? `📖 ${x.title}` : `${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
+    let filterEl = document.getElementById('studentSubjectFilter');
+    let subjFilter = filterEl ? filterEl.value : 'all';
+    let filteredItems = state.items.filter(x => x.status !== 'correct' && (subjFilter === 'all' || (x.subject || 'matematica') === subjFilter));
+
+    if(!filteredItems.length){
+      s.innerHTML='<p class="muted" style="text-align:center; padding:15px;">🎉 Tudo concluído por aqui! Aguarde novas tarefas.</p>';
+    } else {
+      s.innerHTML = filteredItems.map(x => {
+        let meta = getSubjectMeta(x.subject);
+        let badge = `<span class="subject-badge" style="background:${meta.bg}; color:${meta.color};">${meta.label}</span><br>`;
+        let desc = x.isProblem ? x.title : `${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
         let itemClass = "listitem";
         
         if(x.prize) {
-            desc = `🎁 <span style="color:#d81b60; font-weight:900; font-size:16px;">NOVO DESAFIO VALENDO: ${x.prize}!</span><br><span style="font-size:18px; color:#1b4332; font-weight:bold;">Conta: ${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}</span>`;
-            itemClass = "listitem prize-animated-card";
+          desc = `🎁 <span style="color:#d81b60; font-weight:900; font-size:16px;">VALENDO: ${x.prize}!</span><br><span style="font-size:18px; color:#1b4332; font-weight:bold;">${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}</span>`;
+          itemClass = "listitem prize-animated-card";
         }
         
         if(x.status === 'submitted') {
-             return `<div class="listitem" style="background:#f3e5f5; border-color:#ce93d8; color:#333;">
-                <div><b>${desc}</b><div style="color:#8e24aa; font-weight:bold;">⏳ Aguardando correção do Papai...</div></div>
-             </div>`;
+          return `<div class="listitem" style="background:#f3e5f5; border-color:#ce93d8; color:#333;">
+            <div>${badge}<b>${desc}</b><div style="color:#8e24aa; font-weight:bold; margin-top:4px;">⏳ Aguardando correção...</div></div>
+          </div>`;
         } else if (x.status === 'incorrect') {
-             return `<div class="listitem" style="background:#ffebee; border-color:#ef9a9a; color:#333;">
-                <div><b>${desc}</b><div style="color:#c62828; font-weight:bold;">❌ Papai pediu para você refazer! (Sua resposta foi: ${formatBR(x.studentAnswer)})</div></div>
-                <button type="button" class="primary" style="background:#c62828;" onclick="playClickSound(); openChalkboard('${x.id}')">Refazer 📝</button>
-             </div>`;
+          return `<div class="listitem" style="background:#ffebee; border-color:#ef9a9a; color:#333;">
+            <div>${badge}<b>${desc}</b><div style="color:#c62828; font-weight:bold; margin-top:4px;">❌ Refazer! (Você respondeu: ${formatBR(x.studentAnswer)})</div></div>
+            <button type="button" class="primary" style="background:#c62828;" onclick="playClickSound(); openChalkboard('${x.id}')">Refazer 📝</button>
+          </div>`;
         } else {
-             return `<div class="${itemClass}">
-                <div><div>${desc}</div><div class="muted">Novo Desafio Disponível!</div></div>
-                <button type="button" class="primary" onclick="playClickSound(); openChalkboard('${x.id}')">Resolver 🧑‍🏫</button>
-             </div>`;
+          return `<div class="${itemClass}">
+            <div>${badge}<div><b>${desc}</b></div><div class="muted">Novo Desafio Disponível!</div></div>
+            <button type="button" class="primary" onclick="playClickSound(); openChalkboard('${x.id}')">Responder 🧑‍🏫</button>
+          </div>`;
         }
       }).join('');
-      
-      let temPendente = state.items.some(x => x.status === 'pending' || x.status === 'incorrect' || x.status === 'submitted');
-      if(!temPendente && state.items.length > 0){
-          s.innerHTML += '<p style="color:#2e7d32; font-weight:bold; text-align:center; margin-top:20px;">🎉 Você já entregou todos os desafios! Aguarde o papai colocar mais.</p>';
-      }
     }
   }
 }
@@ -1388,17 +1938,32 @@ function openChalkboard(id){
   
   let x = state.items.find(v => String(v.id) === active);
   if(!x) return;
-  
-  document.getElementById('cbProblemLabel').textContent = x.prize ? `🎁 Desafio Valendo Prêmio (${x.prize}):` : (x.isProblem ? "Probleminha:" : "Conta Atual:");
+
+  let meta = getSubjectMeta(x.subject);
+  document.getElementById('cbProblemLabel').textContent = x.prize ? `🎁 Valendo (${x.prize}):` : `${meta.label}:`;
   document.getElementById('cbProblemTitle').textContent = x.isProblem ? x.title : `${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
+  
+  let tabBtn = document.getElementById('btnPocketTabuada');
+  if(tabBtn){
+    if(!x.subject || x.subject === 'matematica') tabBtn.classList.remove('hidden');
+    else tabBtn.classList.add('hidden');
+  }
+
+  let ansInput = document.getElementById('cbDirectAnswer');
+  if(!x.subject || x.subject === 'matematica'){
+    ansInput.setAttribute('inputmode', 'decimal');
+    ansInput.placeholder = "Ex: 12,5";
+  } else {
+    ansInput.setAttribute('inputmode', 'text');
+    ansInput.placeholder = "Escreva sua resposta...";
+  }
   
   if(!x.hint) x.hint = getAutomaticHint(x);
   document.getElementById('hintTextContent').textContent = x.hint;
-  
-  currentSearchTerm = x.searchQuery || "passo a passo como fazer conta de matematica";
+  currentSearchTerm = getYouTubeSearchQuery(x);
 
   document.getElementById('chalkboardOverlay').classList.remove('hidden');
-  document.getElementById('cbDirectAnswer').value = '';
+  ansInput.value = '';
   
   timerSeconds = 0;
   if(timerInterval) clearInterval(timerInterval);
@@ -1429,16 +1994,10 @@ function renderPocketTable(){
   let op = document.getElementById('pocketOp').value;
   let container = document.getElementById('pocketTableContent');
   let html = '';
-  
   if(op === 'x'){
-    for(let i = 1; i <= 10; i++){
-      html += `<div style="padding:4px 0; border-bottom:1px dashed rgba(255,255,255,0.1);">${num} × ${i} = <b style="color:#ffea79;">${num * i}</b></div>`;
-    }
+    for(let i = 1; i <= 10; i++) html += `<div style="padding:4px 0; border-bottom:1px dashed rgba(255,255,255,0.1);">${num} × ${i} = <b style="color:#ffea79;">${num * i}</b></div>`;
   } else {
-    for(let i = 1; i <= 10; i++){
-      let prod = num * i;
-      html += `<div style="padding:4px 0; border-bottom:1px dashed rgba(255,255,255,0.1);">${prod} ÷ ${num} = <b style="color:#ffea79;">${i}</b></div>`;
-    }
+    for(let i = 1; i <= 10; i++) html += `<div style="padding:4px 0; border-bottom:1px dashed rgba(255,255,255,0.1);">${num * i} ÷ ${num} = <b style="color:#ffea79;">${i}</b></div>`;
   }
   container.innerHTML = html;
 }
@@ -1453,11 +2012,7 @@ function generateQuizQuestion(){
   let mode = document.getElementById('trainTableNum').value;
   let num = mode === 'random' ? Math.floor(Math.random() * 9) + 2 : parseInt(mode);
   let val2 = Math.floor(Math.random() * 10) + 1;
-  
-  quizData.num = num;
-  quizData.val2 = val2;
-  quizData.expected = num * val2;
-  
+  quizData.num = num; quizData.val2 = val2; quizData.expected = num * val2;
   document.getElementById('quizQuestion').textContent = `Quanto é ${num} × ${val2}?`;
   document.getElementById('quizAnswer').value = '';
   document.getElementById('quizFeedback').textContent = '';
@@ -1468,13 +2023,7 @@ function checkQuizAnswer(){
   playClickSound();
   let ans = parseInt(document.getElementById('quizAnswer').value);
   let feedback = document.getElementById('quizFeedback');
-  
-  if(isNaN(ans)){
-    feedback.style.color = '#c62828';
-    feedback.textContent = 'Digite um número válido!';
-    return;
-  }
-  
+  if(isNaN(ans)){ feedback.style.color = '#c62828'; feedback.textContent = 'Digite um número!'; return; }
   if(ans === quizData.expected){
     playVictorySound();
     feedback.style.color = '#2e7d32';
@@ -1485,7 +2034,7 @@ function checkQuizAnswer(){
     setTimeout(generateQuizQuestion, 1500);
   } else {
     feedback.style.color = '#c62828';
-    feedback.textContent = `❌ Ops! O correto é ${quizData.expected}. Tente a próxima!`;
+    feedback.textContent = `❌ O correto é ${quizData.expected}. Tente a próxima!`;
     setTimeout(generateQuizQuestion, 2200);
   }
 }
@@ -1497,11 +2046,11 @@ function openYouTubeDirect(){
 
 function closeChalkboard(){
   if(active !== null) {
-      let x = state.items.find(v => String(v.id) === active);
-      if(x && cbCanvas && hasDrawnOnBoard && x.status !== 'submitted'){
-          x.work = cbCanvas.toDataURL('image/png');
-          persist();
-      }
+    let x = state.items.find(v => String(v.id) === active);
+    if(x && cbCanvas && hasDrawnOnBoard && x.status !== 'submitted'){
+      x.work = cbCanvas.toDataURL('image/png');
+      persist();
+    }
   }
   if(timerInterval) clearInterval(timerInterval);
   document.getElementById('chalkboardOverlay').classList.add('hidden');
@@ -1511,53 +2060,42 @@ function closeChalkboard(){
 function setupCbCanvas(itemX){
   cbCanvas = document.getElementById('cbCanvas');
   let container = document.querySelector('.cb-canvas-container');
-  
   cbCanvas.width = container.clientWidth;
   cbCanvas.height = container.clientHeight; 
-  
   cbCtx = cbCanvas.getContext('2d');
   cbCtx.fillStyle = '#1b4332';
   cbCtx.fillRect(0, 0, cbCanvas.width, cbCanvas.height);
-  cbCtx.lineCap = 'round'; 
-  cbCtx.lineJoin = 'round';
-  
+  cbCtx.lineCap = 'round'; cbCtx.lineJoin = 'round';
   cbSnapshots = [];
 
   if(itemX.work && typeof itemX.work === 'string' && itemX.work.startsWith('data:image')){
-      let img = new Image();
-      img.onload = () => { cbCtx.drawImage(img, 0, 0, cbCanvas.width, cbCanvas.height); };
-      img.src = itemX.work;
-      hasDrawnOnBoard = true; 
-  } 
+    let img = new Image();
+    img.onload = () => { cbCtx.drawImage(img, 0, 0, cbCanvas.width, cbCanvas.height); };
+    img.src = itemX.work;
+    hasDrawnOnBoard = true; 
+  } else if (itemX.isTextAnswer) {
+    cbCtx.fillStyle = "rgba(255, 255, 255, 0.25)";
+    cbCtx.font = "16px sans-serif";
+    cbCtx.textAlign = "center";
+    cbCtx.fillText("Digite sua resposta na barra abaixo e clique em Entregar 🚀", cbCanvas.width / 2, cbCanvas.height / 2);
+    cbCtx.fillText("(Você também pode usar esta lousa para fazer anotações se quiser)", cbCanvas.width / 2, (cbCanvas.height / 2) + 26);
+  }
   
   cbCanvas.onpointerdown = e => {
     cbDrawing = true; cbCanvas.setPointerCapture(e.pointerId);
     hasDrawnOnBoard = true; 
-    
     cbSnapshots.push(cbCanvas.toDataURL('image/png'));
     if(cbSnapshots.length > 8) cbSnapshots.shift(); 
-    
     let r = cbCanvas.getBoundingClientRect();
-    let px = e.clientX - r.left, py = e.clientY - r.top;
-    
-    cbCtx.beginPath(); 
-    cbCtx.moveTo(px, py);
+    cbCtx.beginPath(); cbCtx.moveTo(e.clientX - r.left, e.clientY - r.top);
   };
-  
   cbCanvas.onpointermove = e => {
     if(!cbDrawing) return;
     let r = cbCanvas.getBoundingClientRect();
-    let px = e.clientX - r.left, py = e.clientY - r.top;
-    
-    cbCtx.strokeStyle = currentChalkColor; 
-    cbCtx.lineWidth = currentChalkWidth;
-    cbCtx.lineTo(px, py); 
-    cbCtx.stroke();
+    cbCtx.strokeStyle = currentChalkColor; cbCtx.lineWidth = currentChalkWidth;
+    cbCtx.lineTo(e.clientX - r.left, e.clientY - r.top); cbCtx.stroke();
   };
-  
-  cbCanvas.onpointerup = cbCanvas.onpointercancel = () => {
-    cbDrawing = false;
-  };
+  cbCanvas.onpointerup = cbCanvas.onpointercancel = () => { cbDrawing = false; };
 }
 
 function setChalkColor(color, btnId){
@@ -1572,47 +2110,40 @@ function setCbEraser(btnId){
 }
 function cbUndo(){ 
   if(cbSnapshots.length > 0){
-     let last = cbSnapshots.pop();
-     let img = new Image();
-     img.onload = () => {
-         cbCtx.clearRect(0,0,cbCanvas.width,cbCanvas.height);
-         cbCtx.drawImage(img, 0, 0);
-     };
-     img.src = last;
+    let last = cbSnapshots.pop();
+    let img = new Image();
+    img.onload = () => { cbCtx.clearRect(0,0,cbCanvas.width,cbCanvas.height); cbCtx.drawImage(img, 0, 0); };
+    img.src = last;
   }
 }
 function cbClear(){ 
-  if(!confirm('Limpar lousa? Todos os rascunhos serão apagados.')) return; 
+  if(!confirm('Limpar lousa?')) return; 
   cbSnapshots.push(cbCanvas.toDataURL('image/png'));
-  cbCtx.fillStyle = '#1b4332';
-  cbCtx.fillRect(0, 0, cbCanvas.width, cbCanvas.height);
+  cbCtx.fillStyle = '#1b4332'; cbCtx.fillRect(0, 0, cbCanvas.width, cbCanvas.height);
   hasDrawnOnBoard = false; 
 }
 
 function submitToDad(){
   if(active === null) return;
-  
-  if(!hasDrawnOnBoard) {
-      alert("⚠️ Ops! Você precisa armar a conta ou fazer o rascunho na lousa usando o giz antes de enviar. Não vale fazer de calculadora! 📝");
-      return; 
-  }
-
   let x = state.items.find(v => String(v.id) === active);
   if(!x) return;
 
+  if((!x.subject || x.subject === 'matematica') && !hasDrawnOnBoard) {
+    alert("⚠️ Ops! Em Matemática você precisa armar a conta ou fazer o rascunho na lousa usando o giz antes de enviar! 📝");
+    return; 
+  }
+
   let rawVal = document.getElementById('cbDirectAnswer').value.trim();
-  if(!rawVal){ alert('Digite a resposta para o papai!'); return; }
+  if(!rawVal){ alert('Digite a resposta antes de entregar!'); return; }
 
   x.studentAnswer = rawVal;
-  x.work = cbCanvas.toDataURL('image/png'); 
+  x.work = hasDrawnOnBoard ? cbCanvas.toDataURL('image/png') : ""; 
   x.status = 'submitted'; 
-  
   if(timerInterval) clearInterval(timerInterval);
   x.timeSpent = timerSeconds; 
   
   document.getElementById('chalkboardOverlay').classList.add('hidden');
   document.getElementById('waitingDadOverlay').classList.remove('hidden'); 
-  
   persist();
   active = null;
 }
@@ -1628,20 +2159,19 @@ function viewWork(id){
 
   let pendentesCount = state.items.filter(item => item.status === 'submitted').length;
   let queueLabel = document.getElementById('pendingQueueCount');
-  if(queueLabel){
-      queueLabel.textContent = x.status === 'submitted' ? `📋 Pendentes na fila: ${pendentesCount}` : '';
-  }
+  if(queueLabel) queueLabel.textContent = x.status === 'submitted' ? `📋 Pendentes na fila: ${pendentesCount}` : '';
   
-  document.getElementById('modalTitle').textContent = `Rascunho / Histórico da Lousa`;
+  let meta = getSubjectMeta(x.subject);
+  document.getElementById('modalTitle').textContent = `Correção — ${meta.label}`;
   let titleHeader = x.isProblem ? x.title : `${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
   if(x.prize) titleHeader += ` (🎁 Brinde: ${x.prize})`;
   document.getElementById('parentProblemHeader').textContent = titleHeader;
 
   let ansHeader = document.getElementById('parentStudentAnswerHeader');
   if(ansHeader){
-      ansHeader.innerHTML = x.status === 'submitted' 
-        ? `Sofia respondeu: <span style="background:#fff3e0; padding:2px 8px; border-radius:6px; border:1px solid #ffb74d;">${formatBR(x.studentAnswer)}</span> &nbsp;|&nbsp; Correto: <span style="color:#16a085;">${formatBR(x.expected)}</span>` 
-        : '';
+    ansHeader.innerHTML = x.status === 'submitted' 
+      ? `${activeStudentName} respondeu: <span style="background:#fff3e0; padding:4px 10px; border-radius:6px; border:1px solid #ffb74d; font-size:17px;">${formatBR(x.studentAnswer)}</span> &nbsp;|&nbsp; Gabarito: <span style="color:#16a085; font-size:17px;">${formatBR(x.expected)}</span>` 
+      : '';
   }
 
   document.getElementById('parentPanel').classList.add('hidden');
@@ -1651,30 +2181,26 @@ function viewWork(id){
   document.getElementById('btnQuickRight').onclick = function() { markAsCorrect(id, true); };
   document.getElementById('btnQuickWrong').onclick = function() { markAsIncorrect(id, true); };
   
-  if(x.status !== 'submitted') {
-      document.getElementById('quickCorrectBar').style.display = 'none';
+  document.getElementById('quickCorrectBar').style.display = (x.status !== 'submitted') ? 'none' : 'flex';
+
+  let canvasWrapper = document.getElementById('parentCanvasWrapper');
+  if(x.work && typeof x.work === 'string' && x.work.startsWith('data:image')){
+    canvasWrapper.style.display = 'block';
+    setTimeout(()=>{
+      let parentCanvas = document.getElementById('parentPaper'); 
+      let container = parentCanvas.parentElement;
+      parentCanvas.width = container.clientWidth;
+      parentCanvas.height = container.clientHeight;
+      let parentCtx = parentCanvas.getContext('2d');
+      parentCtx.fillStyle = '#1b4332'; 
+      parentCtx.fillRect(0, 0, parentCanvas.width, parentCanvas.height);
+      let img = new Image();
+      img.onload = () => { parentCtx.drawImage(img, 0, 0, parentCanvas.width, parentCanvas.height); };
+      img.src = x.work;
+    }, 100);
   } else {
-      document.getElementById('quickCorrectBar').style.display = 'flex';
+    canvasWrapper.style.display = 'none';
   }
-  
-  setTimeout(()=>{
-    let parentCanvas = document.getElementById('parentPaper'); 
-    let container = parentCanvas.parentElement;
-    parentCanvas.width = container.clientWidth;
-    parentCanvas.height = container.clientHeight;
-    let parentCtx = parentCanvas.getContext('2d');
-    
-    parentCtx.fillStyle = '#1b4332'; 
-    parentCtx.fillRect(0, 0, parentCanvas.width, parentCanvas.height);
-    
-    if(x.work && typeof x.work === 'string' && x.work.startsWith('data:image')){
-        let img = new Image();
-        img.onload = () => { 
-            parentCtx.drawImage(img, 0, 0, parentCanvas.width, parentCanvas.height); 
-        };
-        img.src = x.work;
-    } 
-  }, 100);
 }
 
 function closeViewWork(){
