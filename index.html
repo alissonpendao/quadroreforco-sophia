@@ -59,7 +59,9 @@ body.theme-noite .muted{color:#aaa}
 label{display:block;color:var(--text-color);font-size:13px;font-weight:700;margin:10px 0 5px}
 input,select,textarea{width:100%;padding:12px;border:2px solid var(--card-border);border-radius:12px;font:inherit;background:var(--card-bg);color:var(--text-color)}
 input:focus,select:focus,textarea:focus{border-color:var(--accent-color);outline:none}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 button.primary,button.soft,button.warn,button.success{border:0;border-radius:12px;padding:12px 16px;font-weight:750;font-size:14px;cursor:pointer;transition:transform 0.1s}
 button.primary:active,button.soft:active,button.warn:active,button.success:active{transform:scale(0.97)}
 .primary{background:var(--header-grad);color:white;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
@@ -69,6 +71,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
 .tab-btn{flex:1;min-width:110px;border:2px solid transparent;border-radius:12px;padding:10px 12px;font-weight:800;font-size:13px;cursor:pointer;background:#f4f6f8;color:#444;transition:all 0.2s;text-align:center}
 .tab-btn.active{background:var(--header-grad);color:white;box-shadow:0 3px 10px rgba(0,0,0,0.18)}
 .subject-badge{display:inline-block;padding:3px 9px;border-radius:8px;font-size:11px;font-weight:800;margin-bottom:4px;text-transform:uppercase}
+.grade-pill{display:inline-block;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:800;background:#fff3e0;color:#e65100;border:1px solid #ffcc80;margin-left:5px}
 
 .listitem{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:12px 15px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;margin:10px 0}
 .listitem.submitted{background:#fffde7;border-color:#fff59d;color:#333}
@@ -131,11 +134,11 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   .card { border: 1px solid #000 !important; box-shadow: none !important; background: white !important; }
 }
 
-@media(max-width:520px){.row{grid-template-columns:1fr}.cb-answer-bar input{width:145px;}}
+@media(max-width:600px){.row,.row3{grid-template-columns:1fr}.cb-answer-bar input{width:145px;}}
 </style>
 </head>
 <body class="theme-rosa">
-<header><h1 id="mainHeaderTitle">🌸 Caderno da Sophia 🌸</h1><p id="mainHeaderSub">Plataforma de Estudos & Reforço Escolar (5º Ano)</p></header>
+<header><h1 id="mainHeaderTitle">🌸 Caderno Digital 🌸</h1><p id="mainHeaderSub">Plataforma de Estudos & Reforço Escolar (1º ao 9º Ano)</p></header>
 <main>
 
 <!-- TELA DE LOGIN -->
@@ -155,7 +158,10 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
 <div id="theoryModal" class="hidden">
   <div class="theory-card">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-      <span id="theorySubjectBadge" class="subject-badge" style="background:#e3f2fd; color:#0277bd;">Matéria</span>
+      <div>
+        <span id="theorySubjectBadge" class="subject-badge" style="background:#e3f2fd; color:#0277bd;">Matéria</span>
+        <span id="theoryGradeBadge" class="grade-pill">5º Ano</span>
+      </div>
       <button type="button" onclick="playClickSound(); closeTheoryModal()" style="background:#e53935; color:white; border:none; border-radius:8px; padding:6px 12px; font-weight:bold; cursor:pointer;">Sair ❌</button>
     </div>
     <h3 id="theoryQuestionTitle" style="font-size:18px; font-weight:800; margin-bottom:15px; line-height:1.4;"></h3>
@@ -167,7 +173,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   </div>
 </div>
 
-<!-- LOUSA DE ESCOLA TELA CHEIA (PARA TODAS AS TAREFAS DE MATEMÁTICA: CONTAS E PROBLEMINHAS) -->
+<!-- LOUSA DE ESCOLA TELA CHEIA (MATEMÁTICA: CONTAS E PROBLEMINHAS) -->
 <div id="chalkboardOverlay" class="hidden">
   <div class="cb-topbar">
     <div style="max-width:65%;">
@@ -213,6 +219,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
       <div>
         <label style="color:#ffea79;">Número:</label>
         <select id="pocketNum" onchange="renderPocketTable()" style="background:#2d6a4f; color:white; border-color:#ffea79;">
+          <option value="1">Tabuada do 1</option>
           <option value="2">Tabuada do 2</option>
           <option value="3">Tabuada do 3</option>
           <option value="4">Tabuada do 4</option>
@@ -261,7 +268,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
 <div id="notificationOverlay" class="full-overlay hidden">
   <div class="celebration-card" style="background:linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
     <div class="celebration-emojis">🎉 🌟 🏆 🚀</div>
-    <h2 style="color:white; font-size:30px; margin-bottom:10px; text-shadow:0 2px 4px rgba(0,0,0,0.2);">PARABÉNS, SOPHIA!</h2>
+    <h2 id="notifCongratsTitle" style="color:white; font-size:30px; margin-bottom:10px; text-shadow:0 2px 4px rgba(0,0,0,0.2);">PARABÉNS!</h2>
     <p id="notifText" style="font-size:18px; font-weight:700; line-height:1.5; margin-bottom:20px;"></p>
     <button type="button" class="primary" style="background:#fff; color:#0277bd; font-size:18px; width:100%; padding:14px; box-shadow:0 4px 15px rgba(0,0,0,0.2);" onclick="playClickSound(); closeNotification()">Eba! Continuar 💖</button>
   </div>
@@ -269,10 +276,10 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
 
 <!-- PAINEL DO PAI / PROFESSOR -->
 <section id="parentPanel" class="hidden">
-  <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+  <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
     <div>
-      <h2 id="parentPanelTitle">👨‍🏫 Sala do Professor</h2>
-      <p class="muted" id="parentPanelSub" style="margin:0;">Gerencie tarefas por matéria, correções e prêmios.</p>
+      <h2 id="parentPanelTitle" style="margin-bottom:4px;">👨‍🏫 Sala do Professor</h2>
+      <p class="muted" style="margin:0;">Cada clique sorteia 10 perguntas inéditas de um banco com centenas de variações.</p>
     </div>
     <button type="button" class="warn" onclick="logout()">Sair</button>
   </div>
@@ -303,13 +310,23 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   <div id="tabContent_geral" class="parent-tab-section">
     <div class="card" style="background:#fffde7; border:3px solid #fbc02d; box-shadow: 0 4px 15px rgba(251, 192, 45, 0.3);">
       <h2 style="color:#f57f17; font-size:22px;">⚠️ Aguardando Sua Correção</h2>
-      <p class="muted" style="margin-top:0;">Tudo o que for entregue em qualquer matéria cai direto aqui:</p>
+      <p class="muted" style="margin-top:0;">Tudo o que for entregue em qualquer matéria ou série cai direto aqui:</p>
       <div id="parentListPending" style="margin-top:10px;"></div>
     </div>
 
     <div class="card" style="background:linear-gradient(135deg,#f8f9fa,#e9ecef); border-color:#ced4da;">
       <h2>📊 Gráficos, Desempenho e Calendário de Estudos</h2>
       <div id="statsContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top:10px;"></div>
+    </div>
+
+    <div class="card" id="screenRewardConfigCard" style="background:#e8f5e9; border-color:#81c784;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div style="flex:1; min-width:220px;">
+          <h2 style="color:#2e7d32; margin:0;" id="screenRewardConfigTitle">📱 Premiação de 1h de Tela (Family Link)</h2>
+          <p class="muted" id="screenRewardConfigDesc" style="margin:5px 0 0; font-weight:600;">Ativado: a cada 10 acertos o aluno ganha 1 hora de tela e dispara o alerta no seu painel.</p>
+        </div>
+        <button type="button" id="btnToggleScreenReward" class="success" style="font-size:14px; padding:12px 18px; border:2px solid #2e7d32;" onclick="toggleScreenTimeReward()">✅ Ativado (Clique para Desativar)</button>
+      </div>
     </div>
 
     <div class="card" style="background:#fff3e0; border-color:#ffb74d;">
@@ -366,28 +383,73 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
     </div>
 
     <div class="card" style="background:#fffaf0; border-color:#ffe0b2;">
-      <h2>🤖 Gerador de Contas Armadas (Divisão Exata por Nível)</h2>
-      <div class="row" style="margin-bottom:10px;">
+      <h2>🤖 Gerador de Contas & Desafios Numéricos</h2>
+      <p class="muted">Sorteia 10 contas inéditas de acordo com a operação, dificuldade e série escolhidas:</p>
+      <div class="row3" style="margin-bottom:10px;">
         <div>
           <label>Tipo de Operação</label>
           <select id="calcType">
-            <option value="all" selected>Misturado (Todas)</option>
+            <option value="all" selected>Misturado (Da Série)</option>
             <option value="+">Somente Adição (+)</option>
             <option value="-">Somente Subtração (-)</option>
             <option value="x">Somente Multiplicação (x)</option>
             <option value="÷">Somente Divisão Exata (÷)</option>
+            <option value="extra">Desafios Extras (Potência / % / Equação)</option>
           </select>
         </div>
-        <div><label>Dificuldade</label><select id="calcDifficulty"><option value="easy">Fácil (Ex: 24 ÷ 4)</option><option value="medium" selected>Médio (Ex: 144 ÷ 12)</option><option value="hard">Avançado (Ex: 856 ÷ 4)</option></select></div>
+        <div>
+          <label>Dificuldade</label>
+          <select id="calcDifficulty">
+            <option value="easy">Fácil</option>
+            <option value="medium" selected>Médio</option>
+            <option value="hard">Avançado</option>
+          </select>
+        </div>
+        <div>
+          <label>🎓 Série das Atividades</label>
+          <select id="calcGrade" class="grade-select-item">
+            <option value="1">1º Ano</option>
+            <option value="2">2º Ano</option>
+            <option value="3">3º Ano</option>
+            <option value="4">4º Ano</option>
+            <option value="5" selected>5º Ano</option>
+            <option value="6">6º Ano</option>
+            <option value="7">7º Ano</option>
+            <option value="8">8º Ano</option>
+            <option value="9">9º Ano</option>
+          </select>
+        </div>
       </div>
       <div class="actions"><button type="button" class="primary" style="background:linear-gradient(135deg,#ffb300,#ff8f00);" onclick="generateBatch()">Gerar 10 Contas ✨</button></div>
       <div id="batchPreviewContainer" style="margin-top:15px;"></div>
     </div>
 
     <div class="card" style="background:#e8f4fd; border-color:#b9e2fc;">
-      <h2>📖 Gerador de Probleminhas de Matemática (5º Ano)</h2>
+      <h2>📖 Gerador de Probleminhas de Matemática</h2>
+      <p class="muted">Sorteia 10 situações-problema variadas para a série e dificuldade escolhidas:</p>
       <div class="row" style="margin-bottom:10px;">
-        <div><label>Dificuldade</label><select id="probDifficulty"><option value="easy">Fácil</option><option value="medium" selected>Médio (Padrão 5º ano)</option><option value="hard">Desafio</option></select></div>
+        <div>
+          <label>Dificuldade</label>
+          <select id="probDifficulty">
+            <option value="easy">Fácil</option>
+            <option value="medium" selected>Médio</option>
+            <option value="hard">Avançado</option>
+          </select>
+        </div>
+        <div>
+          <label>🎓 Série das Atividades</label>
+          <select id="probGrade" class="grade-select-item">
+            <option value="1">1º Ano</option>
+            <option value="2">2º Ano</option>
+            <option value="3">3º Ano</option>
+            <option value="4">4º Ano</option>
+            <option value="5" selected>5º Ano</option>
+            <option value="6">6º Ano</option>
+            <option value="7">7º Ano</option>
+            <option value="8">8º Ano</option>
+            <option value="9">9º Ano</option>
+          </select>
+        </div>
       </div>
       <div class="actions"><button type="button" class="primary" style="background:#0277bd;" onclick="generateProblemBatch()">🎲 Gerar 10 Probleminhas 📚</button></div>
       <div id="problemBatchPreview" style="margin-top:15px;"></div>
@@ -397,23 +459,38 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   <!-- ABA 3: PORTUGUÊS -->
   <div id="tabContent_portugues" class="parent-tab-section hidden">
     <div class="card" style="background:#f3e5f5; border-color:#ce93d8;">
-      <h2 style="color:#7b1fa2;">📚 Gerador de Português (5º Ano)</h2>
-      <p class="muted">Gera 10 perguntas de múltipla escolha inéditas (com trava anti-repetição) e gabarito pronto.</p>
+      <h2 style="color:#7b1fa2;">📚 Gerador de Português</h2>
+      <p class="muted">Sorteia 10 questões inéditas entre centenas de combinações de sílabas, ortografia, gramática, sinônimos e sintaxe:</p>
       <div class="row">
         <div>
           <label>Conteúdo / Tema:</label>
           <select id="topic_portugues">
-            <option value="all">Misturado (Todo o 5º Ano)</option>
-            <option value="ortografia">Ortografia (S/Z, X/CH, G/J, SS/Ç)</option>
-            <option value="acentuacao">Acentuação e Separação Silábica</option>
-            <option value="gramatica">Classes Gramaticais (Substantivo, Adjetivo, Verbo)</option>
+            <option value="all">Misturado (Todas as variações da Série)</option>
+            <option value="alfabetizacao">Alfabetização, Sílabas, Vogais e Rimas (1º–3º Ano)</option>
+            <option value="ortografia">Ortografia (S/Z, X/CH, G/J, SS/Ç, M/N)</option>
+            <option value="acentuacao">Acentuação e Sílaba Tônica</option>
+            <option value="gramatica">Classes Gramaticais (Substantivo, Adjetivo, Verbo, Advérbio)</option>
             <option value="sinonimos">Sinônimos, Antônimos, Coletivos e Pontuação</option>
+            <option value="avancado">Dígrafos, Sintaxe, Figuras de Linguagem e Crase (6º–9º Ano)</option>
           </select>
         </div>
         <div>
-          <label>&nbsp;</label>
-          <button type="button" class="primary" style="background:#8e24aa; width:100%;" onclick="generateSubjectBatch('portugues')">🎲 Gerar 10 de Português</button>
+          <label>🎓 Série das Atividades:</label>
+          <select id="grade_portugues" class="grade-select-item">
+            <option value="1">1º Ano</option>
+            <option value="2">2º Ano</option>
+            <option value="3">3º Ano</option>
+            <option value="4">4º Ano</option>
+            <option value="5" selected>5º Ano</option>
+            <option value="6">6º Ano</option>
+            <option value="7">7º Ano</option>
+            <option value="8">8º Ano</option>
+            <option value="9">9º Ano</option>
+          </select>
         </div>
+      </div>
+      <div class="actions">
+        <button type="button" class="primary" style="background:#8e24aa; width:100%;" onclick="generateSubjectBatch('portugues')">🎲 Gerar 10 de Português</button>
       </div>
       <div id="preview_portugues" style="margin-top:15px;"></div>
     </div>
@@ -422,22 +499,37 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   <!-- ABA 4: GEOGRAFIA -->
   <div id="tabContent_geografia" class="parent-tab-section hidden">
     <div class="card" style="background:#e8f5e9; border-color:#a5d6a7;">
-      <h2 style="color:#2e7d32;">🌍 Gerador de Geografia (5º Ano)</h2>
-      <p class="muted">Inclui gerador dinâmico de todos os 26 estados + DF, regiões, relevo e clima em múltipla escolha.</p>
+      <h2 style="color:#2e7d32;">🌍 Gerador de Geografia</h2>
+      <p class="muted">Sorteia 10 questões inéditas entre centenas de combinações (estados, capitais, siglas, regiões, biomas, países e cartografia):</p>
       <div class="row">
         <div>
           <label>Conteúdo / Tema:</label>
           <select id="topic_geografia">
-            <option value="all">Misturado (Todo o 5º Ano)</option>
-            <option value="regioes">Regiões, Estados e Capitais do Brasil</option>
+            <option value="all">Misturado (Todas as variações da Série)</option>
+            <option value="espaco">Orientação, Bairro, Campo e Cidade (1º–3º Ano)</option>
+            <option value="regioes">Regiões, Estados, Siglas e Capitais do Brasil</option>
             <option value="natureza">Relevo, Clima, Biomas e Hidrografia</option>
-            <option value="populacao">Zona Urbana, Rural, Economia e População</option>
+            <option value="populacao">População, Economia e Urbanização</option>
+            <option value="mundo">Cartografia, Fusos, Continentes e Países (6º–9º Ano)</option>
           </select>
         </div>
         <div>
-          <label>&nbsp;</label>
-          <button type="button" class="primary" style="background:#2e7d32; width:100%;" onclick="generateSubjectBatch('geografia')">🎲 Gerar 10 de Geografia</button>
+          <label>🎓 Série das Atividades:</label>
+          <select id="grade_geografia" class="grade-select-item">
+            <option value="1">1º Ano</option>
+            <option value="2">2º Ano</option>
+            <option value="3">3º Ano</option>
+            <option value="4">4º Ano</option>
+            <option value="5" selected>5º Ano</option>
+            <option value="6">6º Ano</option>
+            <option value="7">7º Ano</option>
+            <option value="8">8º Ano</option>
+            <option value="9">9º Ano</option>
+          </select>
         </div>
+      </div>
+      <div class="actions">
+        <button type="button" class="primary" style="background:#2e7d32; width:100%;" onclick="generateSubjectBatch('geografia')">🎲 Gerar 10 de Geografia</button>
       </div>
       <div id="preview_geografia" style="margin-top:15px;"></div>
     </div>
@@ -446,46 +538,76 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   <!-- ABA 5: HISTÓRIA -->
   <div id="tabContent_historia" class="parent-tab-section hidden">
     <div class="card" style="background:#fff3e0; border-color:#ffcc80;">
-      <h2 style="color:#e65100;">🏛️ Gerador de História (5º Ano)</h2>
-      <p class="muted">Formação do Brasil, povos indígenas, independência, república e cidadania.</p>
+      <h2 style="color:#e65100;">🏛️ Gerador de História</h2>
+      <p class="muted">Sorteia 10 questões inéditas entre centenas de variações sobre datas, personagens, Brasil e História Geral:</p>
       <div class="row">
         <div>
           <label>Conteúdo / Tema:</label>
           <select id="topic_historia">
-            <option value="all">Misturado (Todo o 5º Ano)</option>
+            <option value="all">Misturado (Todas as variações da Série)</option>
+            <option value="cotidiano">Família, Escola, Tempo e Cidadania (1º–3º Ano)</option>
             <option value="colonia">Chegada dos Portugueses e Brasil Colônia</option>
             <option value="independencia">Independência, Império e República</option>
-            <option value="cultura">Povos Indígenas, Cultura Afro e Cidadania</option>
+            <option value="cultura">Povos Indígenas, Cultura Afro e Direitos</option>
+            <option value="geral">Pré-História, Antiguidade, Idade Média e Guerras (6º–9º Ano)</option>
           </select>
         </div>
         <div>
-          <label>&nbsp;</label>
-          <button type="button" class="primary" style="background:#ef6c00; width:100%;" onclick="generateSubjectBatch('historia')">🎲 Gerar 10 de História</button>
+          <label>🎓 Série das Atividades:</label>
+          <select id="grade_historia" class="grade-select-item">
+            <option value="1">1º Ano</option>
+            <option value="2">2º Ano</option>
+            <option value="3">3º Ano</option>
+            <option value="4">4º Ano</option>
+            <option value="5" selected>5º Ano</option>
+            <option value="6">6º Ano</option>
+            <option value="7">7º Ano</option>
+            <option value="8">8º Ano</option>
+            <option value="9">9º Ano</option>
+          </select>
         </div>
+      </div>
+      <div class="actions">
+        <button type="button" class="primary" style="background:#ef6c00; width:100%;" onclick="generateSubjectBatch('historia')">🎲 Gerar 10 de História</button>
       </div>
       <div id="preview_historia" style="margin-top:15px;"></div>
     </div>
   </div>
 
-  <!-- ABA 6: CIÊNCIAS -->
+  <!-- ABA 6: CIÊNCIAS (INCLUI BIOLOGIA, QUÍMICA E FÍSICA DO 6º AO 9º ANO) -->
   <div id="tabContent_ciencias" class="parent-tab-section hidden">
     <div class="card" style="background:#e0f7fa; border-color:#80deea;">
-      <h2 style="color:#00838f;">🔬 Gerador de Ciências (5º Ano)</h2>
-      <p class="muted">Corpo humano, sistema solar, água, energia, materiais e ecologia.</p>
+      <h2 style="color:#00838f;">🔬 Gerador de Ciências (Biologia, Química e Física)</h2>
+      <p class="muted">Sorteia 10 questões inéditas entre centenas de combinações (corpo humano, animais, elementos químicos, fórmulas e cálculos de física):</p>
       <div class="row">
         <div>
           <label>Conteúdo / Tema:</label>
           <select id="topic_ciencias">
-            <option value="all">Misturado (Todo o 5º Ano)</option>
-            <option value="corpo">Corpo Humano e Sistemas</option>
-            <option value="universo">Sistema Solar, Terra, Lua e Estações</option>
-            <option value="materia">Água, Energia, Reciclagem e Cadeia Alimentar</option>
+            <option value="all">Misturado (Todas as variações da Série)</option>
+            <option value="natureza_inicial">Sentidos, Higiene, Animais e Plantas (1º–3º Ano)</option>
+            <option value="corpo">Biologia: Corpo Humano, Órgãos e Sistemas</option>
+            <option value="universo">Astronomia: Sistema Solar, Terra, Lua e Estações</option>
+            <option value="materia">Ecologia, Água, Cadeia Alimentar e Reciclagem</option>
+            <option value="quimica_fisica">6º–9º Ano: Biologia Celular, Química (Elementos/Fórmulas) e Física</option>
           </select>
         </div>
         <div>
-          <label>&nbsp;</label>
-          <button type="button" class="primary" style="background:#00838f; width:100%;" onclick="generateSubjectBatch('ciencias')">🎲 Gerar 10 de Ciências</button>
+          <label>🎓 Série das Atividades:</label>
+          <select id="grade_ciencias" class="grade-select-item">
+            <option value="1">1º Ano</option>
+            <option value="2">2º Ano</option>
+            <option value="3">3º Ano</option>
+            <option value="4">4º Ano</option>
+            <option value="5" selected>5º Ano</option>
+            <option value="6">6º Ano</option>
+            <option value="7">7º Ano</option>
+            <option value="8">8º Ano</option>
+            <option value="9">9º Ano</option>
+          </select>
         </div>
+      </div>
+      <div class="actions">
+        <button type="button" class="primary" style="background:#00838f; width:100%;" onclick="generateSubjectBatch('ciencias')">🎲 Gerar 10 de Ciências</button>
       </div>
       <div id="preview_ciencias" style="margin-top:15px;"></div>
     </div>
@@ -494,22 +616,36 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   <!-- ABA 7: INGLÊS -->
   <div id="tabContent_ingles" class="parent-tab-section hidden">
     <div class="card" style="background:#e8eaf6; border-color:#9fa8da;">
-      <h2 style="color:#283593;">🇺🇸 Gerador de Inglês (5º Ano)</h2>
-      <p class="muted">Gerador combinatório com dezenas de palavras, números, animais, cores e frases.</p>
+      <h2 style="color:#283593;">🇺🇸 Gerador de Inglês</h2>
+      <p class="muted">Sorteia 10 questões inéditas entre centenas de palavras (PT ↔ EN), verbos e frases:</p>
       <div class="row">
         <div>
           <label>Conteúdo / Tema:</label>
           <select id="topic_ingles">
-            <option value="all">Misturado (Todo o 5º Ano)</option>
-            <option value="vocabulario">Cores, Números, Animais e Objetos</option>
+            <option value="all">Misturado (Todas as variações da Série)</option>
+            <option value="vocabulario">Vocabulário Geral (Cores, Animais, Objetos, Comidas, Profissões)</option>
             <option value="saudacoes">Saudações, Família, Meses e Dias da Semana</option>
-            <option value="frases">Verbo To Be e Tradução de Frases Simples</option>
+            <option value="frases">Verbo To Be, Presente e Tradução de Frases</option>
+            <option value="avancado">Simple Past (Verbos Irregulares), Futuro e Preposições (6º–9º Ano)</option>
           </select>
         </div>
         <div>
-          <label>&nbsp;</label>
-          <button type="button" class="primary" style="background:#283593; width:100%;" onclick="generateSubjectBatch('ingles')">🎲 Gerar 10 de Inglês</button>
+          <label>🎓 Série das Atividades:</label>
+          <select id="grade_ingles" class="grade-select-item">
+            <option value="1">1º Ano</option>
+            <option value="2">2º Ano</option>
+            <option value="3">3º Ano</option>
+            <option value="4">4º Ano</option>
+            <option value="5" selected>5º Ano</option>
+            <option value="6">6º Ano</option>
+            <option value="7">7º Ano</option>
+            <option value="8">8º Ano</option>
+            <option value="9">9º Ano</option>
+          </select>
         </div>
+      </div>
+      <div class="actions">
+        <button type="button" class="primary" style="background:#283593; width:100%;" onclick="generateSubjectBatch('ingles')">🎲 Gerar 10 de Inglês</button>
       </div>
       <div id="preview_ingles" style="margin-top:15px;"></div>
     </div>
@@ -519,14 +655,36 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
   <div id="tabContent_familias" class="parent-tab-section hidden">
     <div class="card" style="background:#fff0f5; border:2px solid #d81b60;">
       <h2>👥 Criar Novo Acesso para Colega / Família</h2>
-      <p class="muted">Cada família criada tem seu próprio banco de dados na nuvem, sem interferir nos dados da Sophia.</p>
+      <p class="muted">Cada família criada tem seu próprio banco de dados na nuvem. Os geradores continuam livres para escolher qualquer série (1º ao 9º Ano) a qualquer momento.</p>
       <div class="row">
-        <div><label>Nome do Aluno(a) / Família</label><input id="newFamStudent" type="text" placeholder="Ex: Pedro (Filho do Marcos)"></div>
-        <div><label>Senha do Professor (Pai)</label><input id="newFamParentPass" type="text" placeholder="Ex: 3344"></div>
+        <div><label>Nome do Aluno(a) / Família</label><input id="newFamStudent" type="text" placeholder="Ex: Ana Laura / Pedro"></div>
+        <div>
+          <label>Série Sugerida Inicial (Não trava)</label>
+          <select id="newFamGrade">
+            <option value="1">1º Ano</option>
+            <option value="2">2º Ano</option>
+            <option value="3">3º Ano</option>
+            <option value="4">4º Ano</option>
+            <option value="5" selected>5º Ano</option>
+            <option value="6">6º Ano</option>
+            <option value="7">7º Ano</option>
+            <option value="8">8º Ano</option>
+            <option value="9">9º Ano</option>
+          </select>
+        </div>
       </div>
       <div class="row">
+        <div><label>Senha do Professor (Pai)</label><input id="newFamParentPass" type="text" placeholder="Ex: 3344"></div>
         <div><label>Senha do Aluno(a)</label><input id="newFamStudentPass" type="text" placeholder="Ex: 5566"></div>
-        <div><label>&nbsp;</label><button type="button" class="primary" style="width:100%;" onclick="createNewFamily()">➕ Criar Acesso Isolado</button></div>
+      </div>
+      <div style="margin-top:12px; background:#ffffff; padding:10px 12px; border-radius:12px; border:1px solid #ffd1dc;">
+        <label style="display:flex; align-items:center; gap:10px; margin:0; cursor:pointer; font-weight:700; color:#333;">
+          <input id="newFamScreenReward" type="checkbox" checked style="width:18px; height:18px; accent-color:#d81b60;">
+          <span>📱 Ativar Meta de 1h de Tela / Family Link para esta família (pode ser alterado depois)</span>
+        </label>
+      </div>
+      <div class="actions">
+        <button type="button" class="primary" style="width:100%;" onclick="createNewFamily()">➕ Criar Acesso Isolado</button>
       </div>
       <p id="famMsg" style="font-weight:bold; color:#2e7d32; margin-top:8px;"></p>
     </div>
@@ -587,7 +745,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
     </div>
   </div>
 
-  <div class="card" style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9); border:2px solid #4caf50; text-align:center;">
+  <div id="studentScreenTimeCard" class="card" style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9); border:2px solid #4caf50; text-align:center;">
     <div style="font-size:18px; font-weight:800; color:#2e7d32; margin-bottom:6px;">📱 Meta de 1 Hora de Tela</div>
     <div class="muted" style="font-weight:700; color:#1b5e20; margin-bottom:8px;">Acertos para a próxima hora: <span id="screenProgressCount" style="color:#d81b60; font-size:20px;">0</span> / 10</div>
     <div class="progress-container" style="border-color:#4caf50;">
@@ -599,7 +757,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
 
   <div class="card" style="background:linear-gradient(135deg,#fff3e0,#ffe0b2); border:2px solid #ffb300; text-align:center;">
     <div style="font-size:16px; font-weight:800; color:#e65100;">⭐ Sua Patente Atual:</div>
-    <div id="sofiaPatentBadge" style="font-size:22px; font-weight:900; color:#d81b60; margin:6px 0;">Recruta dos Estudos 🎯</div>
+    <div id="sophiaPatentBadge" style="font-size:22px; font-weight:900; color:#d81b60; margin:6px 0;">Recruta dos Estudos 🎯</div>
     <div class="muted" style="font-size:12px; color:#5d4037;">Continue acertando desafios para subir de patente!</div>
   </div>
 
@@ -609,9 +767,10 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
     <div id="studentRewardsContainer"></div>
   </div>
 
-  <div class="card">
+  <!-- SEÇÃO 1: DESAFIOS PENDENTES -->
+  <div class="card" style="border:3px solid #ffb300; background:#fffdf7;">
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-      <h2 style="margin:0;">Escolha seu desafio 🌟</h2>
+      <h2 style="margin:0; color:#e65100;">🎯 Desafios Pendentes (Para Resolver)</h2>
       <select id="studentSubjectFilter" onchange="renderLists()" style="width:auto; padding:8px 12px; font-weight:bold; font-size:13px;">
         <option value="all">Todas as Matérias</option>
         <option value="matematica">🔢 Matemática</option>
@@ -622,7 +781,13 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
         <option value="ingles">🇺🇸 Inglês</option>
       </select>
     </div>
-    <div id="studentList"></div>
+    <div id="studentListPending"></div>
+  </div>
+
+  <!-- SEÇÃO 2: HISTÓRICO / JÁ CONCLUÍDOS -->
+  <div class="card" style="border:2px solid #a5d6a7; background:#f4fbf7;">
+    <h2 style="margin:0 0 12px 0; color:#2e7d32;">✨ Histórico de Concluídos (Já Feitos)</h2>
+    <div id="studentListCompleted"></div>
   </div>
 
   <div class="card" style="background:linear-gradient(135deg,#fff8e1,#e0f2f1); border:2px solid #26a69a;">
@@ -632,6 +797,7 @@ button.primary:active,button.soft:active,button.warn:active,button.success:activ
       <div>
         <label>Escolha a Tabuada:</label>
         <select id="trainTableNum" style="background:white; font-weight:bold;">
+          <option value="1">Tabuada do 1</option>
           <option value="2">Tabuada do 2</option>
           <option value="3">Tabuada do 3</option>
           <option value="4">Tabuada do 4</option>
@@ -682,7 +848,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 const MASTER_PAI_PASS = "2191";
-const MASTER_SOFIA_PASS = "25022016";
+const MASTER_SOPHIA_PASS = "25022016";
 
 let registeredFamilies = [];
 let activeDocId = "dados_oficiais";
@@ -701,7 +867,8 @@ let state = {
   lastActiveDate: "",
   screenTimeProgress: 0,
   screenHoursEarned: 0,
-  parentAlert: { active: false, message: "" }
+  parentAlert: { active: false, message: "" },
+  enableScreenTimeReward: true
 };
 
 let active=null; 
@@ -717,7 +884,7 @@ let currentProblemBatch = [];
 let currentBatch = [];
 let subjectBatches = { portugues: [], geografia: [], historia: [], ciencias: [], ingles: [] };
 let loggedRole = null;
-let currentSearchTerm = "aula 5 ano ensino fundamental";
+let currentSearchTerm = "aula ensino fundamental";
 let quizData = { num: 7, val1: 0, val2: 0, expected: 0, streak: 0 };
 let activeTheoryItem = null;
 
@@ -793,6 +960,18 @@ function formatBR(val){
   return String(val).replace('.', ',');
 }
 
+function getGradeLabel(g){
+  let num = parseInt(g || "5", 10) || 5;
+  return `${num}º Ano`;
+}
+
+function setDefaultGradeSelects(defaultGrade){
+  let g = String(defaultGrade || "5");
+  document.querySelectorAll('.grade-select-item').forEach(sel => {
+    sel.value = g;
+  });
+}
+
 function getSubjectMeta(subj){
   const map = {
     matematica: { label: "🔢 Matemática", bg: "#e3f2fd", color: "#0277bd" },
@@ -829,16 +1008,20 @@ function connectToFamilyDoc(docId){
       state.screenTimeProgress = cloudData.screenTimeProgress !== undefined ? cloudData.screenTimeProgress : 0;
       state.screenHoursEarned = cloudData.screenHoursEarned !== undefined ? cloudData.screenHoursEarned : 0;
       state.parentAlert = cloudData.parentAlert || { active: false, message: "" };
+      state.enableScreenTimeReward = cloudData.enableScreenTimeReward !== undefined ? cloudData.enableScreenTimeReward : true;
       
       applyTheme(state.theme);
       refreshCurrentView();
     } else {
+      let famConfig = registeredFamilies.find(f => f.id === docId);
+      let initialScreenReward = famConfig && famConfig.enableScreenTime !== undefined ? famConfig.enableScreenTime : true;
       state = {
         items: [], stars: 0, rewards: [{name:"1 Hora Livre / Passeio", total:500}],
         notifications: {correct: 0, incorrect: 0, show: false}, badges: [],
         theme: "theme-rosa", streak: 0, lastActiveDate: "",
         screenTimeProgress: 0, screenHoursEarned: 0,
-        parentAlert: { active: false, message: "" }
+        parentAlert: { active: false, message: "" },
+        enableScreenTimeReward: initialScreenReward
       };
       persist();
     }
@@ -851,28 +1034,76 @@ function persist(){
     .catch((error) => { console.error("Erro ao salvar: ", error); });
 }
 
+function toggleScreenTimeReward(){
+  playClickSound();
+  let current = state.enableScreenTimeReward !== false;
+  state.enableScreenTimeReward = !current;
+  if(!state.enableScreenTimeReward && state.parentAlert){
+    state.parentAlert.active = false;
+  }
+  persist();
+}
+
+function updateScreenToggleUI(){
+  let isEnabled = state.enableScreenTimeReward !== false;
+  let card = document.getElementById('screenRewardConfigCard');
+  let title = document.getElementById('screenRewardConfigTitle');
+  let desc = document.getElementById('screenRewardConfigDesc');
+  let btn = document.getElementById('btnToggleScreenReward');
+  if(!card || !btn) return;
+
+  if(isEnabled){
+    card.style.background = '#e8f5e9';
+    card.style.borderColor = '#81c784';
+    if(title) title.style.color = '#2e7d32';
+    if(desc) desc.textContent = 'Ativado: a cada 10 acertos o aluno ganha 1 hora de tela e dispara o alerta no seu painel.';
+    btn.className = 'success';
+    btn.style.border = '2px solid #2e7d32';
+    btn.textContent = '✅ Ativado (Clique para Desativar)';
+  } else {
+    card.style.background = '#f5f5f5';
+    card.style.borderColor = '#bdbdbd';
+    if(title) title.style.color = '#616161';
+    if(desc) desc.textContent = 'Desativado: o aluno acumula apenas estrelas e prêmios personalizados (sem barra ou alerta de hora de tela).';
+    btn.className = 'warn';
+    btn.style.border = '2px solid #c62828';
+    btn.textContent = '🚫 Desativado (Clique para Ativar)';
+  }
+}
+
 function createNewFamily(){
   playClickSound();
   let student = document.getElementById('newFamStudent').value.trim();
+  let gradeVal = document.getElementById('newFamGrade').value;
   let pPass = document.getElementById('newFamParentPass').value.trim();
   let sPass = document.getElementById('newFamStudentPass').value.trim();
+  let screenRewardEl = document.getElementById('newFamScreenReward');
+  let enableScreenTime = screenRewardEl ? screenRewardEl.checked : true;
   let msg = document.getElementById('famMsg');
 
   if(!student || !pPass || !sPass){ alert("Preencha o nome do aluno e as duas senhas!"); return; }
   if(pPass === sPass){ alert("A senha do Pai e a senha do Aluno devem ser diferentes!"); return; }
-  let allPasswords = [MASTER_PAI_PASS, MASTER_SOFIA_PASS];
+  let allPasswords = [MASTER_PAI_PASS, MASTER_SOPHIA_PASS];
   registeredFamilies.forEach(f => { allPasswords.push(f.parentPass, f.studentPass); });
   if(allPasswords.includes(pPass) || allPasswords.includes(sPass)){ alert("⚠️ Uma dessas senhas já está em uso!"); return; }
 
   let slug = "familia_" + student.toLowerCase().replace(/[^a-z0-9]/g, '_') + "_" + Math.floor(Math.random()*900 + 100);
-  registeredFamilies.push({ id: slug, studentName: student, parentPass: pPass, studentPass: sPass });
+  registeredFamilies.push({
+    id: slug,
+    studentName: student,
+    gradeLevel: gradeVal,
+    parentPass: pPass,
+    studentPass: sPass,
+    enableScreenTime: enableScreenTime
+  });
 
   db.collection("caderno").doc("config_familias").set({ list: registeredFamilies }).then(() => {
     document.getElementById('newFamStudent').value = '';
     document.getElementById('newFamParentPass').value = '';
     document.getElementById('newFamStudentPass').value = '';
+    if(screenRewardEl) screenRewardEl.checked = true;
     msg.textContent = `✅ Acesso criado para ${student}! Pai: ${pPass} | Aluno: ${sPass}`;
-    setTimeout(() => { msg.textContent = ''; }, 5000);
+    setTimeout(() => { msg.textContent = ''; }, 6000);
     renderFamiliesList();
   });
 }
@@ -890,21 +1121,27 @@ function renderFamiliesList(){
   let html = `
     <div class="listitem" style="background:#fff0f5; border-color:#d81b60;">
       <div>
-        <b>🌸 Sophia (Conta Principal Master)</b><br>
+        <b>🌸 Sophia (Conta Principal Master)</b> <span class="grade-pill">Livre (1º ao 9º Ano)</span><br>
         <span class="muted">Senha Pai: <b>2191</b> | Senha Aluna: <b>25022016</b></span>
       </div>
       <span style="color:#d81b60; font-weight:800; font-size:12px;">PROTEGIDA</span>
     </div>
   `;
-  html += registeredFamilies.map((f, idx) => `
+  html += registeredFamilies.map((f, idx) => {
+    let screenTag = f.enableScreenTime === false
+      ? `<span style="background:#eeeeee; color:#616161; padding:2px 6px; border-radius:6px; font-size:11px; font-weight:bold;">🚫 Sem 1h de Tela</span>`
+      : `<span style="background:#e8f5e9; color:#2e7d32; padding:2px 6px; border-radius:6px; font-size:11px; font-weight:bold;">📱 Com 1h de Tela</span>`;
+    let gTag = `<span class="grade-pill">Padrão: ${f.gradeLevel || '5'}º Ano</span>`;
+    return `
     <div class="listitem">
       <div>
-        <b>👤 ${f.studentName}</b><br>
+        <b>👤 ${f.studentName}</b> ${gTag} ${screenTag}<br>
         <span class="muted">Senha Pai: <b>${f.parentPass}</b> | Senha Aluno: <b>${f.studentPass}</b></span>
       </div>
       <button type="button" class="warn" style="padding:6px 10px; font-size:12px;" onclick="removeFamily(${idx})">Excluir Acesso</button>
     </div>
-  `).join('');
+  `;
+  }).join('');
   container.innerHTML = html;
 }
 
@@ -924,24 +1161,26 @@ function tryLogin(){
   let msg = document.getElementById('loginMsg');
   isMasterAdmin = false;
 
-  if(val === MASTER_PAI_PASS){ isMasterAdmin = true; activeStudentName = "Sophia"; setupSession('pai', 'dados_oficiais'); return; }
-  if(val === MASTER_SOFIA_PASS){ activeStudentName = "Sophia"; setupSession('sofia', 'dados_oficiais'); return; }
+  if(val === MASTER_PAI_PASS){ isMasterAdmin = true; activeStudentName = "Sophia"; setupSession('pai', 'dados_oficiais', '5'); return; }
+  if(val === MASTER_SOPHIA_PASS){ activeStudentName = "Sophia"; setupSession('sophia', 'dados_oficiais', '5'); return; }
 
   let foundFamParent = registeredFamilies.find(f => f.parentPass === val);
-  if(foundFamParent){ activeStudentName = foundFamParent.studentName; setupSession('pai', foundFamParent.id); return; }
+  if(foundFamParent){ activeStudentName = foundFamParent.studentName; setupSession('pai', foundFamParent.id, foundFamParent.gradeLevel || '5'); return; }
 
   let foundFamStudent = registeredFamilies.find(f => f.studentPass === val);
-  if(foundFamStudent){ activeStudentName = foundFamStudent.studentName; setupSession('sofia', foundFamStudent.id); return; }
+  if(foundFamStudent){ activeStudentName = foundFamStudent.studentName; setupSession('sophia', foundFamStudent.id, foundFamStudent.gradeLevel || '5'); return; }
 
   msg.style.color = '#d92d20';
   msg.textContent = '❌ Senha incorreta! Tente novamente.';
 }
 
-function setupSession(role, docId){
+function setupSession(role, docId, suggestedGrade){
   loggedRole = role;
   document.getElementById('accessPass').value = '';
   document.getElementById('loginMsg').textContent = '';
   document.getElementById('loginScreen').classList.add('hidden');
+
+  setDefaultGradeSelects(suggestedGrade);
 
   document.getElementById('mainHeaderTitle').textContent = activeStudentName === "Sophia" ? "🌸 Caderno da Sophia 🌸" : `📚 Caderno de ${activeStudentName}`;
   document.getElementById('parentPanelTitle').textContent = `👨‍🏫 Sala do Professor (${activeStudentName})`;
@@ -964,7 +1203,7 @@ function setupSession(role, docId){
   }
 
   connectToFamilyDoc(docId);
-  if(role === 'sofia') setTimeout(checkStreakOnLogin, 800);
+  if(role === 'sophia') setTimeout(checkStreakOnLogin, 800);
 }
 
 function logout(){
@@ -1014,18 +1253,19 @@ function changeTheme(themeName){
 
 function refreshCurrentView(){
   if(loggedRole === 'pai'){
+    updateScreenToggleUI();
     renderRewardsParent();
     renderStats();
     renderLists();
     checkAndTriggerParentNotification();
-  } else if(loggedRole === 'sofia'){
+  } else if(loggedRole === 'sophia'){
     updateProgressUI();
     renderBadgesUI();
-    updateSofiaPatentAndScreenUI();
+    updateSophiaPatentAndScreenUI();
     let streakEl = document.getElementById('streakCount');
     if(streakEl) streakEl.textContent = state.streak || 1;
     renderLists();
-    checkNotificationsForSofia();
+    checkNotificationsForSophia();
   }
 }
 
@@ -1036,7 +1276,7 @@ function dismissParentAlert(){
 }
 
 function checkAndTriggerParentNotification(){
-  if(state.parentAlert && state.parentAlert.active){
+  if(state.enableScreenTimeReward !== false && state.parentAlert && state.parentAlert.active){
     playVictorySound();
     if(navigator.vibrate) try { navigator.vibrate([300, 100, 300, 100, 500]); } catch(e){}
     let alertCard = document.getElementById('parentScreenAlertCard');
@@ -1051,31 +1291,43 @@ function checkAndTriggerParentNotification(){
   }
 }
 
-function updateSofiaPatentAndScreenUI(){
-  let progress = state.screenTimeProgress || 0;
-  let hours = state.screenHoursEarned || 0;
-  let progCountEl = document.getElementById('screenProgressCount');
-  let progBarEl = document.getElementById('screenProgressBar');
-  let progTextEl = document.getElementById('screenProgressText');
-  let hoursTotalEl = document.getElementById('screenHoursTotal');
-  if(progCountEl) progCountEl.textContent = progress;
-  if(progBarEl) progBarEl.style.width = (progress * 10) + '%';
-  if(progTextEl) progTextEl.textContent = (progress * 10) + '% rumo à 1h de tela';
-  if(hoursTotalEl) hoursTotalEl.textContent = hours;
+function updateSophiaPatentAndScreenUI(){
+  let screenCard = document.getElementById('studentScreenTimeCard');
+  let screenEnabled = state.enableScreenTimeReward !== false;
+
+  if(screenCard){
+    if(screenEnabled){
+      screenCard.classList.remove('hidden');
+      let progress = state.screenTimeProgress || 0;
+      let hours = state.screenHoursEarned || 0;
+      let progCountEl = document.getElementById('screenProgressCount');
+      let progBarEl = document.getElementById('screenProgressBar');
+      let progTextEl = document.getElementById('screenProgressText');
+      let hoursTotalEl = document.getElementById('screenHoursTotal');
+      if(progCountEl) progCountEl.textContent = progress;
+      if(progBarEl) progBarEl.style.width = (progress * 10) + '%';
+      if(progTextEl) progTextEl.textContent = (progress * 10) + '% rumo à 1h de tela';
+      if(hoursTotalEl) hoursTotalEl.textContent = hours;
+    } else {
+      screenCard.classList.add('hidden');
+    }
+  }
   
   let totalCorrect = state.items.filter(x => x.status === 'correct').length;
   let patentName = "Recruta dos Estudos 🎯";
   if(totalCorrect >= 50) patentName = "Lenda do Foguete Escolar 🚀";
   else if(totalCorrect >= 30) patentName = "Mestre das Matérias 🏆";
-  else if(totalCorrect >= 15) patentName = "Estrela do 5º Ano 👑";
+  else if(totalCorrect >= 15) patentName = "Estrela dos Estudos 👑";
   else if(totalCorrect >= 5) patentName = "Detetive do Saber 🔍";
-  let patentEl = document.getElementById('sofiaPatentBadge');
+  let patentEl = document.getElementById('sophiaPatentBadge');
   if(patentEl) patentEl.textContent = patentName;
 }
 
-function checkNotificationsForSofia() {
-  if(loggedRole === 'sofia' && state.notifications && state.notifications.show) {
+function checkNotificationsForSophia() {
+  if(loggedRole === 'sophia' && state.notifications && state.notifications.show) {
     playVictorySound();
+    let titleEl = document.getElementById('notifCongratsTitle');
+    if(titleEl) titleEl.textContent = `PARABÉNS, ${activeStudentName.toUpperCase()}!`;
     let ac = state.notifications.correct || 0;
     let er = state.notifications.incorrect || 0;
     let pts = ac * 10;
@@ -1100,7 +1352,7 @@ function checkAndUnlockBadges(){
   let possibleBadges = [
     { id: 'first_step', name: 'Primeiro Passo 🎯', desc: 'Acertou 5 desafios!', cond: totalCorrect >= 5 },
     { id: 'math_star', name: 'Estrela do Saber 🌟', desc: 'Acertou 25 desafios!', cond: totalCorrect >= 25 },
-    { id: 'tabuada_pro', name: 'Gênio do 5º Ano 🧠', desc: 'Acertou 50 desafios!', cond: totalCorrect >= 50 },
+    { id: 'tabuada_pro', name: 'Gênio dos Estudos 🧠', desc: 'Acertou 50 desafios!', cond: totalCorrect >= 50 },
     { id: 'master_100', name: 'Mestre Total 🏆', desc: 'Acertou 100 desafios!', cond: totalCorrect >= 100 },
     { id: 'expert_stars', name: 'Lenda das Estrelas ⭐', desc: 'Acumulou 500 estrelas!', cond: currentStars >= 500 }
   ];
@@ -1145,16 +1397,21 @@ function markAsCorrect(id, fromModal = false) {
   let x = state.items.find(v => String(v.id) === String(id));
   if(!x) return;
   x.status = 'correct';
+  x.work = "";
   state.stars = (state.stars || 0) + 10; 
-  state.screenTimeProgress = (state.screenTimeProgress || 0) + 1;
-  if(state.screenTimeProgress >= 10){
-    state.screenTimeProgress = 0;
-    state.screenHoursEarned = (state.screenHoursEarned || 0) + 1;
-    state.parentAlert = {
-      active: true,
-      message: `${activeStudentName} completou 10 acertos e conquistou 1 hora de tela (Total: ${state.screenHoursEarned}h)!`
-    };
+
+  if(state.enableScreenTimeReward !== false){
+    state.screenTimeProgress = (state.screenTimeProgress || 0) + 1;
+    if(state.screenTimeProgress >= 10){
+      state.screenTimeProgress = 0;
+      state.screenHoursEarned = (state.screenHoursEarned || 0) + 1;
+      state.parentAlert = {
+        active: true,
+        message: `${activeStudentName} completou 10 acertos e conquistou 1 hora de tela (Total: ${state.screenHoursEarned}h)!`
+      };
+    }
   }
+
   if(!state.notifications) state.notifications = { correct:0, incorrect:0, show:false };
   state.notifications.correct = (state.notifications.correct || 0) + 1;
   state.notifications.show = true;
@@ -1187,169 +1444,749 @@ function markAsIncorrect(id, fromModal = false) {
   }
 }
 
-// ==========================================
-// BANCO EXPANDIDO COMPLETO DE TEORIA (5º ANO)
-// ==========================================
+// =========================================================================
+// MOTOR DE DIVERSIFICAÇÃO MASSIVA (CENTENAS DE VARIAÇÕES POR MATÉRIA)
+// =========================================================================
+function buildMCQuestion(q, correct, distractorPool, hint){
+  let uniqueWrongs = [...new Set(distractorPool.filter(d => String(d).trim().toLowerCase() !== String(correct).trim().toLowerCase()))];
+  for (let i = uniqueWrongs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [uniqueWrongs[i], uniqueWrongs[j]] = [uniqueWrongs[j], uniqueWrongs[i]];
+  }
+  let options = [correct, ...uniqueWrongs.slice(0, 3)];
+  while(options.length < 4){
+    options.push("Nenhuma das anteriores");
+  }
+  for (let i = options.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [options[i], options[j]] = [options[j], options[i]];
+  }
+  return { q, a: correct, options, h: hint };
+}
+
 const QUESTION_BANK = {
   portugues: {
+    alfabetizacao: [
+      { g:[1,2], q: "Qual é a primeira letra do alfabeto?", a: "A", options: ["A", "B", "E", "Z"], h: "É uma vogal que começa a palavra 'Abelha'." },
+      { g:[1,2], q: "Quais são as cinco vogais do alfabeto?", a: "A, E, I, O, U", options: ["A, E, I, O, U", "B, C, D, F, G", "A, B, C, D, E", "M, N, P, Q, R"], h: "São os sons abertos que formam todas as sílabas." },
+      { g:[1,2,3], q: "Antes de P e B usamos qual letra para som nasal?", a: "M", options: ["M", "N", "R", "S"], h: "Como em 'tampa', 'campo' e 'bomba'." }
+    ],
     ortografia: [
-      { q: "Complete com S ou Z: A palavra 'be___ouro' se escreve com qual letra?", a: "S", options: ["S", "Z", "SS", "Ç"], h: "Tem som de Z entre vogais, mas escreve-se com S." },
-      { q: "Complete com X ou CH: A palavra 'en___urrada' escreve-se com X ou CH?", a: "X", options: ["X", "CH", "J", "SS"], h: "Depois da sílaba 'en-', geralmente usa-se X." },
-      { q: "Complete com G ou J: A palavra 'berin___ela' escreve-se com G ou J?", a: "J", options: ["G", "J", "X", "CH"], h: "Berinjela usa J." },
-      { q: "Qual é o plural correto de 'cidadão'?", a: "Cidadãos", options: ["Cidadãos", "Cidadões", "Cidadãos", "Cidadães"], h: "Basta acrescentar o S no final." },
-      { q: "Complete com SS ou Ç: A palavra 'a___úcar' escreve-se com SS ou Ç?", a: "Ç", options: ["Ç", "SS", "S", "Z"], h: "Usa-se cedilha antes de U." },
-      { q: "Complete com S ou Z: A palavra 'anali___ar' escreve-se com S ou Z?", a: "S", options: ["S", "Z", "SS", "X"], h: "Vem de 'análise', que já tem S." },
-      { q: "Complete com X ou CH: A palavra 'me___er' escreve-se com X ou CH?", a: "X", options: ["X", "CH", "G", "J"], h: "Depois da sílaba 'me-', geralmente usa-se X." },
-      { q: "Qual é o feminino de 'bode'?", a: "Cabra", options: ["Cabra", "Boda", "Ovelha", "Vaca"], h: "Animal que dá leite e vive na fazenda." },
-      { q: "Complete com S ou Z: A palavra 'atravé___' termina com S ou Z?", a: "S", options: ["S", "Z", "X", "N"], h: "Termina com S acentuado." },
-      { q: "Complete com X ou CH: A palavra 'en___er' escreve-se com X ou CH?", a: "CH", options: ["CH", "X", "J", "G"], h: "Vem de 'cheio', por isso mantém o CH." },
-      { q: "Complete com G ou J: A palavra 'via___em' (substantivo) usa G ou J?", a: "G", options: ["G", "J", "X", "CH"], h: "Substantivos terminados em -agem usam G." },
-      { q: "Complete com S ou Z: A palavra 'princesa' escreve-se com S ou Z?", a: "S", options: ["S", "Z", "SS", "Ç"], h: "Títulos de nobreza como princesa e duquesa usam S." }
+      { g:[3,4,5,6], q: "Qual é o plural correto de 'cidadão'?", a: "Cidadãos", options: ["Cidadãos", "Cidadões", "Cidadães", "Cidadão"], h: "Basta acrescentar o S no final." },
+      { g:[3,4,5], q: "Qual é o feminino de 'bode'?", a: "Cabra", options: ["Cabra", "Boda", "Ovelha", "Vaca"], h: "Animal que dá leite e vive na fazenda." },
+      { g:[5,6,7,8,9], q: "Qual opção completa corretamente: 'Não sei o ___ disso'?", a: "porquê", options: ["porquê", "porque", "por que", "por quê"], h: "Quando vem acompanhado de artigo ('o'), é substantivo e leva acento junto." },
+      { g:[5,6,7,8,9], q: "Qual opção completa corretamente: '___ você não foi à aula hoje?'", a: "Por que", options: ["Por que", "Porque", "Porquê", "Por quê"], h: "Início de pergunta direta usa-se separado e sem acento." },
+      { g:[5,6,7,8,9], q: "Qual opção completa corretamente: 'Faltei ___ estava com febre.'", a: "porque", options: ["porque", "por que", "porquê", "por quê"], h: "Usado para dar uma explicação ou resposta." },
+      { g:[6,7,8,9], q: "Qual alternativa está escrita corretamente?", a: "Exceção", options: ["Exceção", "Excessão", "Eceção", "Exessão"], h: "Usa-se XC e Ç." }
     ],
     acentuacao: [
-      { q: "A palavra 'lâmpada' é oxítona, paroxítona ou proparoxítona?", a: "Proparoxítona", options: ["Proparoxítona", "Paroxítona", "Oxítona", "Monossílaba"], h: "A sílaba mais forte é a antepenúltima (lâm-pa-da)." },
-      { q: "A palavra 'café' é oxítona, paroxítona ou proparoxítona?", a: "Oxítona", options: ["Oxítona", "Paroxítona", "Proparoxítona", "Monossílaba"], h: "A sílaba mais forte é a última (ca-fé)." },
-      { q: "A palavra 'árvore' é oxítona, paroxítona ou proparoxítona?", a: "Proparoxítona", options: ["Proparoxítona", "Paroxítona", "Oxítona", "Dissílaba"], h: "A sílaba forte é a antepenúltima (ár-vo-re)." },
-      { q: "A palavra 'açúcar' é oxítona, paroxítona ou proparoxítona?", a: "Paroxítona", options: ["Paroxítona", "Oxítona", "Proparoxítona", "Trissílaba"], h: "A sílaba forte é a penúltima (a-çú-car)." },
-      { q: "Qual palavra precisa de acento agudo?", a: "Jacaré", options: ["Jacaré", "Janela", "Caderno", "Lapis"], h: "Oxítona terminada em E leva acento." },
-      { q: "Quantas sílabas tem a palavra 'borboleta'?", a: "4", options: ["4", "3", "5", "2"], h: "Separe: bor-bo-le-ta." }
+      { g:[5,6,7,8,9], q: "Segundo a regra gramatical, quais palavras são TODAS acentuadas?", a: "Proparoxítonas", options: ["Proparoxítonas", "Paroxítonas", "Oxítonas", "Dissílabas"], h: "Toda palavra cuja antepenúltima sílaba é tônica recebe acento." }
     ],
     gramatica: [
-      { q: "Na frase 'O cachorro rápido correu', qual palavra é o adjetivo?", a: "Rápido", options: ["Rápido", "Cachorro", "Correu", "O"], h: "Adjetivo é a palavra que dá uma característica." },
-      { q: "Na frase 'A menina estudou muito', qual palavra é o verbo?", a: "Estudou", options: ["Estudou", "Menina", "Muito", "A"], h: "Verbo indica uma ação." },
-      { q: "Na frase 'O livro azul caiu', qual palavra é o substantivo?", a: "Livro", options: ["Livro", "Azul", "Caiu", "O"], h: "Substantivo dá nome aos seres e objetos." },
-      { q: "Na frase 'Nós viajaremos amanhã', em que tempo está o verbo?", a: "Futuro", options: ["Futuro", "Passado", "Presente", "Nenhum"], h: "Ainda vai acontecer." },
-      { q: "Qual é o aumentativo de 'casa'?", a: "Casarão", options: ["Casarão", "Casinha", "Casinhola", "Casebre"], h: "Uma casa muito grande é um..." }
+      { g:[2,3,4], q: "Qual é o aumentativo de 'casa'?", a: "Casarão", options: ["Casarão", "Casinha", "Casinhola", "Casebre"], h: "Uma casa muito grande é um..." },
+      { g:[5,6,7,8], q: "Na frase 'Ela comprou flores', a palavra 'Ela' pertence a qual classe gramatical?", a: "Pronome pessoal", options: ["Pronome pessoal", "Adjetivo", "Advérbio", "Conjunção"], h: "Substitui o nome de uma pessoa." }
     ],
     sinonimos: [
-      { q: "Qual é o antônimo (contrário) de 'corajoso'?", a: "Medroso", options: ["Medroso", "Valente", "Forte", "Alegre"], h: "Quem não tem coragem é..." },
-      { q: "Qual é o sinônimo (mesmo sentido) de 'alegre'?", a: "Feliz", options: ["Feliz", "Triste", "Bravo", "Cansado"], h: "Outra palavra para dizer que está contente." },
-      { q: "Qual sinal de pontuação usamos no final de uma pergunta?", a: "Ponto de interrogação (?)", options: ["Ponto de interrogação (?)", "Ponto final (.)", "Exclamação (!)", "Vírgula (,)"], h: "É aquele sinal curvo com um pontinho embaixo." }
+      { g:[2,3,4,5], q: "Qual sinal de pontuação usamos no final de uma pergunta?", a: "Ponto de interrogação (?)", options: ["Ponto de interrogação (?)", "Ponto final (.)", "Exclamação (!)", "Vírgula (,)"], h: "É aquele sinal curvo com um pontinho embaixo." },
+      { g:[2,3,4,5], q: "Qual sinal de pontuação usamos para indicar admiração, susto ou alegria?", a: "Ponto de exclamação (!)", options: ["Ponto de exclamação (!)", "Ponto de interrogação (?)", "Vírgula (,)", "Ponto e vírgula (;)"], h: "Um traço vertical com um pontinho embaixo." }
+    ],
+    avancado: [
+      { g:[6,7,8], q: "Na palavra 'CHAVE', as letras CH representam um único som. Como chamamos esse encontro de letras?", a: "Dígrafo", options: ["Dígrafo", "Hiato", "Tritongo", "Ditongo"], h: "Duas letras que representam apenas um fonema (som)." },
+      { g:[6,7,8], q: "Qual das palavras abaixo possui um ENCONTRO CONSONANTAL (duas consoantes pronunciadas juntas)?", a: "Prato", options: ["Prato", "Chuva", "Ninho", "Carro"], h: "Em 'prato', ouvimos tanto o som do P quanto do R." },
+      { g:[6,7,8,9], q: "Qual figura de linguagem ocorre em 'Estou morrendo de fome'?", a: "Hipérbole", options: ["Hipérbole", "Metáfora", "Antítese", "Personificação"], h: "Consiste no exagero intencional para dar ênfase." },
+      { g:[6,7,8,9], q: "Qual figura de linguagem atribui ações humanas a seres inanimados (ex: 'O vento beijava as árvores')?", a: "Personificação (Prosopopeia)", options: ["Personificação (Prosopopeia)", "Ironia", "Metonímia", "Onomatopeia"], h: "Dá vida ou sentimentos humanos à natureza." },
+      { g:[6,7,8,9], q: "Na oração 'Os alunos estudaram para a prova', qual é o sujeito?", a: "Os alunos", options: ["Os alunos", "estudaram", "para a prova", "a prova"], h: "É quem pratica a ação do verbo." },
+      { g:[7,8,9], q: "Na frase 'Choveu muito ontem à noite', como classificamos o sujeito?", a: "Oração sem sujeito (sujeito inexistente)", options: ["Oração sem sujeito (sujeito inexistente)", "Sujeito simples", "Sujeito composto", "Sujeito oculto"], h: "Verbos que indicam fenômenos da natureza não têm sujeito." },
+      { g:[8,9], q: "Em qual alternativa o uso da crase (à) está CORRETO?", a: "Fui à escola ontem.", options: ["Fui à escola ontem.", "Fui à pé para casa.", "Entreguei o livro à ele.", "Começou à chover."], h: "Usa-se crase antes de palavras femininas que admitem o artigo 'a'." },
+      { g:[8,9], q: "Qual alternativa apresenta concordância verbal CORRETA?", a: "Faz dois anos que não o vejo.", options: ["Faz dois anos que não o vejo.", "Fazem dois anos que não o vejo.", "Houveram muitos problemas.", "Existe muitas pessoas aqui."], h: "O verbo 'fazer' indicando tempo decorrido fica sempre no singular." }
     ]
   },
   geografia: {
+    espaco: [
+      { g:[1,2,3], q: "Onde o Sol nasce todas as manhãs?", a: "No Leste (Nascente)", options: ["No Leste (Nascente)", "No Oeste (Poente)", "No Norte", "No Sul"], h: "Aponte o braço direito para onde o Sol aparece." },
+      { g:[1,2,3], q: "Como se chama a área onde há muitos prédios, lojas, ruas asfaltadas e trânsito intenso?", a: "Zona Urbana (Cidade)", options: ["Zona Urbana (Cidade)", "Zona Rural (Campo)", "Floresta", "Deserto"], h: "É onde ficam os centros comerciais e avenidas." },
+      { g:[1,2,3], q: "Como se chama a área das fazendas, sítios, plantações e criação de animais?", a: "Zona Rural (Campo)", options: ["Zona Rural (Campo)", "Zona Urbana (Cidade)", "Metrópole", "Indústria"], h: "É o lugar da roça e da natureza." },
+      { g:[1,2], q: "Qual cor do semáforo indica que os carros devem PARAR?", a: "Vermelho", options: ["Vermelho", "Verde", "Amarelo", "Azul"], h: "Fica na parte de cima do semáforo." }
+    ],
     regioes: [
-      { q: "Em quantas regiões o Brasil é dividido oficialmente pelo IBGE?", a: "5", options: ["5", "3", "4", "6"], h: "Norte, Nordeste, Centro-Oeste, Sudeste e Sul." },
-      { q: "Qual é a capital do Brasil?", a: "Brasília", options: ["Brasília", "São Paulo", "Rio de Janeiro", "Salvador"], h: "Fica no Distrito Federal." },
-      { q: "Em qual região do Brasil fica o estado de Minas Gerais?", a: "Sudeste", options: ["Sudeste", "Sul", "Nordeste", "Norte"], h: "Junto com São Paulo, Rio de Janeiro e Espírito Santo." },
-      { q: "Qual é o maior estado do Brasil em extensão territorial?", a: "Amazonas", options: ["Amazonas", "Minas Gerais", "Bahia", "São Paulo"], h: "Fica na região Norte, onde está a maior floresta." },
-      { q: "Quantos estados o Brasil possui (sem contar o Distrito Federal)?", a: "26", options: ["26", "27", "25", "30"], h: "26 estados + 1 Distrito Federal = 27 unidades federativas." }
+      { g:[3,4,5,6], q: "Em quantas regiões o Brasil é dividido oficialmente pelo IBGE?", a: "5", options: ["5", "3", "4", "6"], h: "Norte, Nordeste, Centro-Oeste, Sudeste e Sul." },
+      { g:[2,3,4,5], q: "Qual é a capital do Brasil?", a: "Brasília", options: ["Brasília", "São Paulo", "Rio de Janeiro", "Salvador"], h: "Fica no Distrito Federal." },
+      { g:[4,5,6,7], q: "Qual é o maior estado do Brasil em extensão territorial?", a: "Amazonas", options: ["Amazonas", "Minas Gerais", "Bahia", "São Paulo"], h: "Fica na região Norte, onde está a maior floresta." },
+      { g:[4,5,6,7], q: "Quantos estados o Brasil possui (sem contar o Distrito Federal)?", a: "26", options: ["26", "27", "25", "30"], h: "26 estados + 1 Distrito Federal = 27 unidades federativas." }
     ],
     natureza: [
-      { q: "Qual é o maior rio do Brasil em volume de água?", a: "Rio Amazonas", options: ["Rio Amazonas", "Rio São Francisco", "Rio Paraná", "Rio Tietê"], h: "Corta a região Norte." },
-      { q: "Qual bioma brasileiro é famoso por suas árvores retorcidas e savana no centro do país?", a: "Cerrado", options: ["Cerrado", "Caatinga", "Pampa", "Mata Atlântica"], h: "É o bioma predominante em Minas Gerais e Goiás." },
-      { q: "Qual oceano banha o litoral do Brasil?", a: "Oceano Atlântico", options: ["Oceano Atlântico", "Oceano Pacífico", "Oceano Índico", "Oceano Ártico"], h: "Fica a leste do território brasileiro." },
-      { q: "Qual é a maior floresta tropical do mundo, localizada no norte do Brasil?", a: "Floresta Amazônica", options: ["Floresta Amazônica", "Mata de Araucárias", "Pantanal", "Sertão"], h: "Fica na região Norte." }
+      { g:[3,4,5,6], q: "Qual é o maior rio do Brasil em volume de água?", a: "Rio Amazonas", options: ["Rio Amazonas", "Rio São Francisco", "Rio Paraná", "Rio Tietê"], h: "Corta a região Norte." },
+      { g:[4,5,6,7], q: "Qual bioma brasileiro é famoso por suas árvores retorcidas e savana no centro do país?", a: "Cerrado", options: ["Cerrado", "Caatinga", "Pampa", "Mata Atlântica"], h: "É o bioma predominante em Minas Gerais e Goiás." },
+      { g:[3,4,5,6], q: "Qual oceano banha o litoral do Brasil?", a: "Oceano Atlântico", options: ["Oceano Atlântico", "Oceano Pacífico", "Oceano Índico", "Oceano Ártico"], h: "Fica a leste do território brasileiro." },
+      { g:[4,5,6,7], q: "Qual bioma brasileiro é exclusivo do Brasil e fica no semiárido nordestino?", a: "Caatinga", options: ["Caatinga", "Pantanal", "Pampa", "Amazônia"], h: "Tem cactos como o mandacaru e clima seco." },
+      { g:[4,5,6,7], q: "Qual bioma brasileiro é a maior planície alagável do planeta, localizada no Mato Grosso e Mato Grosso do Sul?", a: "Pantanal", options: ["Pantanal", "Pampa", "Cerrado", "Caatinga"], h: "Muito rico em aves, jacarés e onças-pintadas." }
     ],
     populacao: [
-      { q: "Como se chama a saída de pessoas do campo para morar na cidade?", a: "Êxodo rural", options: ["Êxodo rural", "Migração urbana", "Nomadismo", "Imigração"], h: "Êxodo significa saída." },
-      { q: "Qual atividade econômica envolve o cultivo da terra e a criação de animais?", a: "Agropecuária", options: ["Agropecuária", "Indústria", "Comércio", "Extrativismo"], h: "Junção de agricultura + pecuária." },
-      { q: "Qual é o órgão brasileiro responsável por contar a população (Censo)?", a: "IBGE", options: ["IBGE", "SUS", "DETRAN", "INSS"], h: "Instituto Brasileiro de Geografia e Estatística." }
+      { g:[4,5,6,7], q: "Como se chama a saída de pessoas do campo para morar na cidade?", a: "Êxodo rural", options: ["Êxodo rural", "Migração urbana", "Nomadismo", "Imigração"], h: "Êxodo significa saída." },
+      { g:[3,4,5,6], q: "Qual atividade econômica envolve o cultivo da terra e a criação de animais?", a: "Agropecuária", options: ["Agropecuária", "Indústria", "Comércio", "Extrativismo"], h: "Junção de agricultura + pecuária." },
+      { g:[4,5,6,7], q: "Qual é o órgão brasileiro responsável por contar a população (Censo)?", a: "IBGE", options: ["IBGE", "SUS", "DETRAN", "INSS"], h: "Instituto Brasileiro de Geografia e Estatística." }
+    ],
+    mundo: [
+      { g:[6,7,8,9], q: "Qual linha imaginária divide a Terra nos hemisférios Norte e Sul?", a: "Linha do Equador", options: ["Linha do Equador", "Meridiano de Greenwich", "Trópico de Capricórnio", "Trópico de Câncer"], h: "Fica na latitude 0°." },
+      { g:[6,7,8,9], q: "Qual meridiano divide a Terra nos hemisférios Ocidental (Oeste) e Oriental (Leste)?", a: "Meridiano de Greenwich", options: ["Meridiano de Greenwich", "Linha do Equador", "Círculo Polar Ártico", "Trópico de Câncer"], h: "Passa por Londres e define os fusos horários." },
+      { g:[6,7,8], q: "Na cartografia, como chamamos a relação entre o tamanho real de um lugar e sua redução no mapa?", a: "Escala cartográfica", options: ["Escala cartográfica", "Legenda", "Rosa dos ventos", "Latitude"], h: "Indica quantas vezes o espaço real foi reduzido." },
+      { g:[6,7,8,9], q: "Quantos continentes existem na Terra (divisão geográfica tradicional)?", a: "6", options: ["6", "4", "5", "7"], h: "América, Europa, Ásia, África, Oceania e Antártida." },
+      { g:[7,8,9], q: "Qual é o maior continente do mundo em área e população?", a: "Ásia", options: ["Ásia", "América", "África", "Europa"], h: "Onde ficam China, Índia e Japão." },
+      { g:[8,9], q: "Qual bloco econômico reúne Brasil, Argentina, Paraguai e Uruguai?", a: "Mercosul", options: ["Mercosul", "União Europeia", "NAFTA", "OTAN"], h: "Mercado Comum do Sul." },
+      { g:[8,9], q: "Qual fenômeno climático é agravado pela queima excessiva de combustíveis fósseis?", a: "Aquecimento Global", options: ["Aquecimento Global", "Glaciação", "Tsunami", "Terremoto"], h: "Aumento da temperatura média do planeta." }
     ]
   },
   historia: {
+    cotidiano: [
+      { g:[1,2,3], q: "Qual documento registra o nosso nome, data de nascimento e o nome dos nossos pais?", a: "Certidão de Nascimento", options: ["Certidão de Nascimento", "Carteira de Motorista", "Título de Eleitor", "Passaporte"], h: "É o primeiro documento que tiramos quando nascemos." },
+      { g:[1,2], q: "Quantos dias tem uma semana?", a: "7 dias", options: ["7 dias", "5 dias", "10 dias", "12 dias"], h: "Começa no domingo e termina no sábado." },
+      { g:[1,2,3], q: "Quem foram os primeiros habitantes do Brasil antes da chegada dos portugueses?", a: "Os povos indígenas", options: ["Os povos indígenas", "Os espanhóis", "Os ingleses", "Os italianos"], h: "Viviam em aldeias e cuidavam das florestas." }
+    ],
     colonia: [
-      { q: "Em que ano os portugueses chegaram ao Brasil?", a: "1500", options: ["1500", "1822", "1580", "1900"], h: "No dia 22 de abril de..." },
-      { q: "Quem comandava a esquadra portuguesa que chegou ao Brasil em 1500?", a: "Pedro Álvares Cabral", options: ["Pedro Álvares Cabral", "Cristóvão Colombo", "Vasco da Gama", "Dom Pedro I"], h: "O sobrenome é Cabral." },
-      { q: "Qual foi a primeira riqueza explorada pelos portugueses no litoral brasileiro?", a: "Pau-brasil", options: ["Pau-brasil", "Ouro", "Café", "Cana-de-açúcar"], h: "Árvore de madeira avermelhada que deu nome ao país." },
-      { q: "Qual foi o principal produto agrícola cultivado nos engenhos do Brasil Colônia?", a: "Cana-de-açúcar", options: ["Cana-de-açúcar", "Algodão", "Milho", "Soja"], h: "Dele se fazia o açúcar." }
+      { g:[4,5,6,7], q: "Qual foi a primeira riqueza explorada pelos portugueses no litoral brasileiro?", a: "Pau-brasil", options: ["Pau-brasil", "Ouro", "Café", "Cana-de-açúcar"], h: "Árvore de madeira avermelhada que deu nome ao país." },
+      { g:[4,5,6,7], q: "Qual foi o principal produto agrícola cultivado nos engenhos do Brasil Colônia?", a: "Cana-de-açúcar", options: ["Cana-de-açúcar", "Algodão", "Milho", "Soja"], h: "Dele se fazia o açúcar." },
+      { g:[5,6,7], q: "Qual movimento em Minas Gerais lutou contra os altos impostos cobrados por Portugal no ciclo do ouro?", a: "Inconfidência Mineira", options: ["Inconfidência Mineira", "Guerra dos Farrapos", "Cabanagem", "Canudos"], h: "Teve Tiradentes como seu mártir mais famoso." },
+      { g:[4,5,6,7], q: "Como se chamavam as expedições que entravam pelo interior do Brasil procurando ouro e pedras preciosas?", a: "Bandeiras", options: ["Bandeiras", "Caravelas", "Quilombos", "Capitanias"], h: "Eram lideradas pelos bandeirantes." }
     ],
     independencia: [
-      { q: "Em que data é comemorada a Independência do Brasil?", a: "7 de setembro de 1822", options: ["7 de setembro de 1822", "22 de abril de 1500", "15 de novembro de 1889", "1 de maio de 1900"], h: "O famoso Grito do Ipiranga." },
-      { q: "Quem proclamou a Independência do Brasil às margens do rio Ipiranga?", a: "Dom Pedro I", options: ["Dom Pedro I", "Dom Pedro II", "Tiradentes", "Deodoro da Fonseca"], h: "Filho do rei de Portugal." },
-      { q: "Em que ano foi proclamada a República no Brasil?", a: "1889", options: ["1889", "1822", "1930", "1964"], h: "Um ano depois da abolição da escravidão (15 de novembro)." }
+      { g:[3,4,5,6], q: "Em que data é comemorada a Independência do Brasil?", a: "7 de setembro de 1822", options: ["7 de setembro de 1822", "22 de abril de 1500", "15 de novembro de 1889", "1 de maio de 1900"], h: "O famoso Grito do Ipiranga." },
+      { g:[5,6,7,8], q: "Qual lei assinada pela Princesa Isabel em 13 de maio de 1888 aboliu a escravidão no Brasil?", a: "Lei Áurea", options: ["Lei Áurea", "Lei do Ventre Livre", "Lei Eusébio de Queirós", "Constituição"], h: "Áurea significa dourada." }
     ],
     cultura: [
-      { q: "Como se chamavam as comunidades formadas por escravizados que fugiam em busca de liberdade?", a: "Quilombos", options: ["Quilombos", "Aldeias", "Missões", "Engenhos"], h: "O mais famoso foi o de Palmares." },
-      { q: "Quem foi o principal líder do Quilombo dos Palmares?", a: "Zumbi dos Palmares", options: ["Zumbi dos Palmares", "Tiradentes", "Dom Pedro I", "Barão de Mauá"], h: "Homenageado no Dia da Consciência Negra." },
-      { q: "Qual documento garante os direitos e deveres de todos os cidadãos brasileiros?", a: "Constituição Federal", options: ["Constituição Federal", "Código Civil", "ECA", "Lei Áurea"], h: "A lei máxima do país (de 1988)." }
+      { g:[4,5,6,7], q: "Como se chamavam as comunidades formadas por escravizados que fugiam em busca de liberdade?", a: "Quilombos", options: ["Quilombos", "Aldeias", "Missões", "Engenhos"], h: "O mais famoso foi o de Palmares." },
+      { g:[5,6,7,8], q: "Qual documento garante os direitos e deveres de todos os cidadãos brasileiros?", a: "Constituição Federal", options: ["Constituição Federal", "Código Civil", "ECA", "Lei Áurea"], h: "A lei máxima do país (de 1988)." }
+    ],
+    geral: [
+      { g:[6,7], q: "Como se chamava o período da Pré-História em que os seres humanos eram nômades e usavam pedra lascada?", a: "Paleolítico", options: ["Paleolítico", "Neolítico", "Idade dos Metais", "Idade Média"], h: "Também conhecido como Idade da Pedra Lascada." },
+      { g:[6,7], q: "Como se chamava o período da Pré-História marcado pelo surgimento da agricultura e da sedentarização?", a: "Neolítico", options: ["Neolítico", "Paleolítico", "Idade Moderna", "Antiguidade"], h: "Também chamado de Idade da Pedra Polida." },
+      { g:[6,7], q: "Qual civilização antiga construiu grandes pirâmides às margens do Rio Nilo?", a: "Egito Antigo", options: ["Egito Antigo", "Grécia Antiga", "Império Romano", "Astecas"], h: "Fica no nordeste da África." },
+      { g:[6,7], q: "Em qual cidade da Grécia Antiga nasceu a ideia de Democracia?", a: "Atenas", options: ["Atenas", "Esparta", "Roma", "Troia"], h: "É a atual capital da Grécia." },
+      { g:[6,7], q: "Qual sistema econômico e social predominou na Europa durante a Idade Média, baseado em terras e castelos?", a: "Feudalismo", options: ["Feudalismo", "Capitalismo", "Socialismo", "Mercantilismo"], h: "Os senhores feudais controlavam os feudos." },
+      { g:[7,8], q: "Qual movimento intelectual do século XVIII defendia o uso da razão e criticava o absolutismo?", a: "Iluminismo", options: ["Iluminismo", "Renascimento", "Barroco", "Feudalismo"], h: "Conhecido como o 'Século das Luzes'." },
+      { g:[8,9], q: "Em qual país começou a Primeira Revolução Industrial no século XVIII?", a: "Inglaterra", options: ["Inglaterra", "França", "Brasil", "Alemanha"], h: "Com a invenção das máquinas a vapor e teares mecânicos." },
+      { g:[8,9], q: "Qual evento histórico ocorreu em 1789 na França com o lema 'Liberdade, Igualdade e Fraternidade'?", a: "Revolução Francesa", options: ["Revolução Francesa", "Revolução Russa", "Guerra Fria", "Guerra dos Cem Anos"], h: "Marcou o fim do absolutismo francês." }
     ]
   },
   ciencias: {
+    natureza_inicial: [
+      { g:[1,2,3], q: "Qual parte da planta fica embaixo da terra e absorve água e nutrientes?", a: "Raiz", options: ["Raiz", "Folha", "Flor", "Fruto"], h: "Prende a planta no solo." },
+      { g:[1,2], q: "O que devemos fazer sempre antes das refeições para evitar doenças?", a: "Lavar bem as mãos", options: ["Lavar bem as mãos", "Correr bastante", "Assistir TV", "Dormir"], h: "Higiene básica com água e sabão." }
+    ],
     corpo: [
-      { q: "Qual órgão do corpo humano é responsável por bombear o sangue?", a: "Coração", options: ["Coração", "Pulmão", "Estômago", "Rim"], h: "Fica no peito e bate sem parar." },
-      { q: "Qual sistema do corpo humano é responsável pela respiração?", a: "Sistema respiratório", options: ["Sistema respiratório", "Sistema digestório", "Sistema circulatório", "Sistema nervoso"], h: "Inclui nariz, traqueia e pulmões." },
-      { q: "Qual é o maior órgão do corpo humano?", a: "Pele", options: ["Pele", "Cérebro", "Fígado", "Coração"], h: "Cobre todo o nosso corpo por fora." }
+      { g:[4,5,6,7], q: "Qual é o maior órgão do corpo humano?", a: "Pele", options: ["Pele", "Cérebro", "Fígado", "Coração"], h: "Cobre todo o nosso corpo por fora." }
     ],
     universo: [
-      { q: "Quantos planetas existem no Sistema Solar?", a: "8", options: ["8", "9", "7", "10"], h: "Mercúrio, Vênus, Terra, Marte, Júpiter, Saturno, Urano e Netuno." },
-      { q: "Qual é o planeta mais próximo do Sol?", a: "Mercúrio", options: ["Mercúrio", "Terra", "Marte", "Vênus"], h: "É o primeiro planeta da ordem." },
-      { q: "Como se chama o movimento que a Terra faz em torno de si mesma?", a: "Rotação", options: ["Rotação", "Translação", "Órbita", "Eclipses"], h: "Dura 24 horas e causa o dia e a noite." }
+      { g:[3,4,5,6], q: "Quantos planetas existem no Sistema Solar?", a: "8", options: ["8", "9", "7", "10"], h: "Mercúrio, Vênus, Terra, Marte, Júpiter, Saturno, Urano e Netuno." },
+      { g:[4,5,6,7], q: "Como se chama o movimento que a Terra faz em torno de si mesma?", a: "Rotação", options: ["Rotação", "Translação", "Órbita", "Eclipses"], h: "Dura 24 horas e causa o dia e a noite." },
+      { g:[4,5,6,7], q: "Como se chama o movimento que a Terra faz ao redor do Sol, que dura 365 dias?", a: "Translação", options: ["Translação", "Rotação", "Gravidade", "Maré"], h: "É responsável pelas estações do ano." }
     ],
     materia: [
-      { q: "Quais são os três estados físicos da água na natureza?", a: "Sólido, líquido e gasoso", options: ["Sólido, líquido e gasoso", "Quente, frio e morno", "Doce, salgado e azedo", "Pesado, leve e gasoso"], h: "Gelo, água líquida e vapor." },
-      { q: "Como se chama o processo pelo qual as plantas produzem seu próprio alimento?", a: "Fotossíntese", options: ["Fotossíntese", "Respiração", "Digestão", "Germinação"], h: "Foto significa luz." }
+      { g:[3,4,5,6], q: "Quais são os três estados físicos da água na natureza?", a: "Sólido, líquido e gasoso", options: ["Sólido, líquido e gasoso", "Quente, frio e morno", "Doce, salgado e azedo", "Pesado, leve e gasoso"], h: "Gelo, água líquida e vapor." },
+      { g:[3,4,5,6], q: "Como se chama o processo pelo qual as plantas produzem seu próprio alimento?", a: "Fotossíntese", options: ["Fotossíntese", "Respiração", "Digestão", "Germinação"], h: "Foto significa luz." },
+      { g:[3,4,5,6], q: "Qual cor de lixeira reciclável é usada para PAPEL?", a: "Azul", options: ["Azul", "Vermelho", "Verde", "Amarelo"], h: "Azul = papel, Vermelho = plástico, Verde = vidro, Amarelo = metal." },
+      { g:[3,4,5,6], q: "Qual cor de lixeira reciclável é usada para PLÁSTICO?", a: "Vermelho", options: ["Vermelho", "Azul", "Verde", "Amarelo"], h: "Lembre-se: Azul = papel, Vermelho = plástico." }
+    ],
+    quimica_fisica: [
+      { g:[6,7], q: "Qual é a unidade básica estrutural e funcional de todos os seres vivos?", a: "Célula", options: ["Célula", "Átomo", "Molécula", "Rocha"], h: "Todo ser vivo é formado por uma ou mais delas." },
+      { g:[6,7], q: "Quais são as três camadas internas principais da Terra?", a: "Crosta, manto e núcleo", options: ["Crosta, manto e núcleo", "Atmosfera, hidrosfera e biosfera", "Solo, subsolo e rocha", "Magma, lava e cinza"], h: "De fora para dentro: crosta terrestre, manto e núcleo." },
+      { g:[6,7,8], q: "Qual organela celular é responsável pela respiração celular e produção de energia (ATP)?", a: "Mitocôndria", options: ["Mitocôndria", "Cloroplasto", "Ribossomo", "Parede celular"], h: "É a 'usina de energia' da célula." },
+      { g:[6,7,8], q: "Qual estrutura está presente nas células vegetais (e ausente nas animais) e realiza a fotossíntese?", a: "Cloroplasto", options: ["Cloroplasto", "Mitocôndria", "Núcleo", "Membrana plasmática"], h: "Contém clorofila, que dá a cor verde às plantas." },
+      { g:[7,8,9], q: "Qual partícula do átomo possui carga elétrica NEGATIVA?", a: "Elétron", options: ["Elétron", "Próton", "Nêutron", "Núcleo"], h: "Fica girando na eletrosfera ao redor do núcleo." },
+      { g:[7,8,9], q: "Qual partícula do átomo possui carga elétrica POSITIVA?", a: "Próton", options: ["Próton", "Elétron", "Nêutron", "Fóton"], h: "Fica no núcleo atômico." },
+      { g:[8,9], q: "Qual Lei de Newton afirma que todo corpo tende a permanecer em repouso ou em movimento retilíneo uniforme a menos que uma força aja sobre ele?", a: "1ª Lei de Newton (Inércia)", options: ["1ª Lei de Newton (Inércia)", "2ª Lei de Newton (F = m·a)", "3ª Lei de Newton (Ação e Reação)", "Lei da Gravitação"], h: "É o princípio da Inércia." },
+      { g:[8,9], q: "Qual Lei de Newton afirma que 'a toda ação corresponde uma reação de mesma intensidade e sentido oposto'?", a: "3ª Lei de Newton (Ação e Reação)", options: ["3ª Lei de Newton (Ação e Reação)", "1ª Lei de Newton (Inércia)", "2ª Lei de Newton", "Lei de Ohm"], h: "Explica como um foguete sobe empurrando gases para baixo." }
     ]
   },
   ingles: {
     vocabulario: [
-      { q: "Qual número é 'Seven' em português?", a: "7", options: ["7", "6", "5", "8"], h: "Vem depois do six (6)." },
-      { q: "Como se escreve 'Maçã' em inglês?", a: "Apple", options: ["Apple", "Banana", "Book", "Water"], h: "Começa com A." },
-      { q: "Como se escreve 'Livro' em inglês?", a: "Book", options: ["Book", "School", "Pen", "Apple"], h: "Começa com B e tem dois Os." }
+      { g:[1,2,3,4], q: "Qual número é 'Seven' em português?", a: "7", options: ["7", "6", "5", "8"], h: "Vem depois do six (6)." }
     ],
     saudacoes: [
-      { q: "O que significa 'Good morning' em português?", a: "Bom dia", options: ["Bom dia", "Boa tarde", "Boa noite", "Até logo"], h: "Usamos pela manhã." },
-      { q: "Como se diz 'Obrigado' em inglês?", a: "Thank you", options: ["Thank you", "Please", "Hello", "Sorry"], h: "Ou 'Thanks'." }
+      { g:[1,2,3,4,5], q: "O que significa 'Good morning' em português?", a: "Bom dia", options: ["Bom dia", "Boa tarde", "Boa noite", "Até logo"], h: "Usamos pela manhã." },
+      { g:[1,2,3,4,5], q: "O que significa 'Good afternoon' em português?", a: "Boa tarde", options: ["Boa tarde", "Bom dia", "Boa noite", "Por favor"], h: "Usamos no período da tarde." },
+      { g:[1,2,3,4,5], q: "Como se diz 'Obrigado' em inglês?", a: "Thank you", options: ["Thank you", "Please", "Hello", "Sorry"], h: "Ou 'Thanks'." },
+      { g:[2,3,4,5,6], q: "O que significa 'Good night' em português?", a: "Boa noite (ao despedir-se ou ir dormir)", options: ["Boa noite (ao despedir-se ou ir dormir)", "Bom dia", "Boa tarde", "Bem-vindo"], h: "Usamos na hora de dormir." }
     ],
     frases: [
-      { q: "Traduza para o português: 'I love my family'", a: "Eu amo minha família", options: ["Eu amo minha família", "Minha família é grande", "Eu gosto de viajar", "Minha mãe é legal"], h: "Love = amar, Family = família." },
-      { q: "Complete com 'am', 'is' ou 'are': She ___ a student.", a: "is", options: ["is", "am", "are", "be"], h: "Para He, She, It usamos 'is'." }
+      { g:[3,4,5,6,7], q: "Traduza para o português: 'I love my family'", a: "Eu amo minha família", options: ["Eu amo minha família", "Minha família é grande", "Eu gosto de viajar", "Minha mãe é legal"], h: "Love = amar, Family = família." },
+      { g:[3,4,5,6,7], q: "Traduza para o português: 'How old are you?'", a: "Quantos anos você tem?", options: ["Quantos anos você tem?", "Como você está?", "Onde você mora?", "Qual é o seu nome?"], h: "Pergunta sobre a idade." }
+    ],
+    avancado: [
+      { g:[6,7,8,9], q: "Qual preposição usamos para dizer que o livro está EM CIMA da mesa: 'The book is ___ the table'?", a: "on", options: ["on", "in", "under", "between"], h: "Sobre / em cima de uma superfície = on." },
+      { g:[6,7,8,9], q: "Qual preposição usamos para dizer que o gato está EMBAIXO da cadeira: 'The cat is ___ the chair'?", a: "under", options: ["under", "on", "in", "above"], h: "Debaixo / embaixo = under." },
+      { g:[7,8,9], q: "Complete com o comparativo correto: 'A car is ___ than a bicycle.'", a: "faster", options: ["faster", "fastest", "more fast", "fast"], h: "Adjetivos curtos ganham '-er' no comparativo." },
+      { g:[7,8,9], q: "Qual palavra auxiliar usamos para formar frases no futuro simples em inglês?", a: "Will", options: ["Will", "Did", "Does", "Was"], h: "Ex: 'I will travel tomorrow'." },
+      { g:[8,9], q: "O que significa a expressão 'How much does it cost?'", a: "Quanto isso custa?", options: ["Quanto isso custa?", "Que horas são?", "Onde você mora?", "Quantos anos você tem?"], h: "Cost = custar." }
     ]
   }
 };
 
-function generateDynamicGeoQuestions(){
-  const estados = [
-    ["Acre", "Rio Branco"], ["Alagoas", "Maceió"], ["Amapá", "Macapá"], ["Amazonas", "Manaus"],
-    ["Bahia", "Salvador"], ["Ceará", "Fortaleza"], ["Espírito Santo", "Vitória"], ["Goiás", "Goiânia"],
-    ["Maranhão", "São Luís"], ["Mato Grosso", "Cuiabá"], ["Mato Grosso do Sul", "Campo Grande"],
-    ["Minas Gerais", "Belo Horizonte"], ["Pará", "Belém"], ["Paraíba", "João Pessoa"],
-    ["Paraná", "Curitiba"], ["Pernambuco", "Recife"], ["Piauí", "Teresina"],
-    ["Rio de Janeiro", "Rio de Janeiro"], ["Rio Grande do Norte", "Natal"], ["Rio Grande do Sul", "Porto Alegre"],
-    ["Rondônia", "Porto Velho"], ["Roraima", "Boa Vista"], ["Santa Catarina", "Florianópolis"],
-    ["São Paulo", "São Paulo"], ["Sergipe", "Aracaju"], ["Tocantins", "Palmas"]
-  ];
-  return estados.map(([est, cap]) => {
-    let erradas = estados.filter(e => e[1] !== cap).sort(() => 0.5 - Math.random()).slice(0, 3).map(e => e[1]);
-    let options = [cap, ...erradas].sort(() => 0.5 - Math.random());
-    return { q: `Qual é a capital do estado de ${est}?`, a: cap, options: options, h: `Capital brasileira do estado: ${est}.` };
-  });
+// ---------------- GERADORES COMBINATÓRIOS POR MATÉRIA ----------------
+
+function generateDynamicPortuguesQuestions(grade, topic){
+  let list = [];
+
+  // 1. Sílabas (50 palavras)
+  if(topic === 'all' || topic === 'alfabetizacao' || topic === 'acentuacao'){
+    const palavrasSil = [
+      ["CASA", 2], ["SAPATO", 3], ["BORBOLETA", 4], ["PATO", 2], ["ELEFANTE", 4],
+      ["JACARÉ", 3], ["CAVALO", 3], ["MESA", 2], ["JANELA", 3], ["TELEFONE", 4],
+      ["ABACAXI", 4], ["PIRULITO", 4], ["SOL", 1], ["PÉ", 1], ["FLOR", 1],
+      ["CADERNO", 3], ["ESCOLA", 3], ["COMPUTADOR", 4], ["BICICLETA", 4], ["TARTARUGA", 4],
+      ["MELANCIA", 4], ["MORANGO", 3], ["BANANA", 3], ["GIRAFA", 3], ["HIPOPÓTAMO", 5],
+      ["PASSARINHO", 4], ["FORMIGA", 3], ["ABELHA", 3], ["CACHORRO", 3], ["GATO", 2],
+      ["LIVRO", 2], ["LÁPIS", 2], ["BORRACHA", 3], ["MOCHILA", 3], ["ESTRELINHA", 4],
+      ["CHOCOLATE", 4], ["SORVETE", 3], ["PIPOCA", 3], ["BRIGADEIRO", 4], ["PARALELEPÍPEDO", 7]
+    ];
+    if(grade <= 4){
+      palavrasSil.forEach(([pal, sil]) => {
+        list.push(buildMCQuestion(`Quantas sílabas tem a palavra '${pal}'?`, String(sil), ["1", "2", "3", "4", "5", "6", "7"], "Fale a palavra devagar batendo palmas para cada pedacinho."));
+      });
+    }
+  }
+
+  // 2. Classificação Tônica (45 palavras)
+  if((topic === 'all' || topic === 'acentuacao') && grade >= 3){
+    const tonicas = [
+      ["CAFÉ", "Oxítona"], ["SOFÁ", "Oxítona"], ["JACARÉ", "Oxítona"], ["ABACAXI", "Oxítona"], ["TAMBOR", "Oxítona"],
+      ["JARDIM", "Oxítona"], ["PARABÉNS", "Oxítona"], ["URUBU", "Oxítona"], ["CHAPÉU", "Oxítona"], ["ANEL", "Oxítona"],
+      ["CADERNO", "Paroxítona"], ["JANELA", "Paroxítona"], ["MENINO", "Paroxítona"], ["AÇÚCAR", "Paroxítona"], ["LÁPIS", "Paroxítona"],
+      ["FÁCIL", "Paroxítona"], ["ÁLBUM", "Paroxítona"], ["TÁXI", "Paroxítona"], ["CAVALO", "Paroxítona"], ["ESCOLA", "Paroxítona"],
+      ["LÂMPADA", "Proparoxítona"], ["ÁRVORE", "Proparoxítona"], ["MÉDICO", "Proparoxítona"], ["MÚSICA", "Proparoxítona"], ["PÁSSARO", "Proparoxítona"],
+      ["MATEMÁTICA", "Proparoxítona"], ["RELÂMPAGO", "Proparoxítona"], ["ESTÔMAGO", "Proparoxítona"], ["ÓCULOS", "Proparoxítona"], ["FÓSFORO", "Proparoxítona"]
+    ];
+    tonicas.forEach(([pal, cls]) => {
+      list.push(buildMCQuestion(`Quanto à posição da sílaba tônica (mais forte), a palavra '${pal}' é:`, cls, ["Oxítona", "Paroxítona", "Proparoxítona", "Monossílaba"], "Conte as sílabas de trás para frente: última (oxítona), penúltima (paroxítona), antepenúltima (proparoxítona)."));
+    });
+  }
+
+  // 3. Antônimos e Sinônimos (40 pares -> 80 questões)
+  if(topic === 'all' || topic === 'sinonimos' || topic === 'alfabetizacao'){
+    const antonimos = [
+      ["Alto", "Baixo"], ["Quente", "Frio"], ["Claro", "Escuro"], ["Rápido", "Lento"],
+      ["Cheio", "Vazio"], ["Forte", "Fraco"], ["Perto", "Longe"], ["Grosso", "Fino"],
+      ["Doce", "Amargo"], ["Aberto", "Fechado"], ["Largo", "Estreito"], ["Duro", "Mole"],
+      ["Corajoso", "Medroso"], ["Alegre", "Triste"], ["Antigo", "Moderno"], ["Limpo", "Sujo"],
+      ["Pesado", "Leve"], ["Rico", "Pobre"], ["Verdade", "Mentira"], ["Paz", "Guerra"],
+      ["Dia", "Noite"], ["Subir", "Descer"], ["Entrar", "Sair"], ["Começar", "Terminar"],
+      ["Ganhar", "Perder"], ["Amor", "Ódio"], ["Silêncio", "Barulho"], ["Amigo", "Inimigo"]
+    ];
+    let allWords = antonimos.flat();
+    antonimos.forEach(([p1, p2]) => {
+      list.push(buildMCQuestion(`Qual é o antônimo (contrário) da palavra '${p1}'?`, p2, allWords, `Pense no oposto exato de '${p1}'.`));
+      if(grade >= 3){
+        list.push(buildMCQuestion(`Qual é o antônimo (contrário) da palavra '${p2}'?`, p1, allWords, `Pense no oposto exato de '${p2}'.`));
+      }
+    });
+  }
+
+  // 4. Coletivos (25 coletivos)
+  if((topic === 'all' || topic === 'sinonimos' || topic === 'gramatica') && grade >= 3){
+    const coletivos = [
+      ["abelhas", "Enxame"], ["peixes", "Cardume"], ["lobos", "Alcateia"], ["cães", "Matilha"],
+      ["aves ou pássaros", "Bando"], ["bois ou vacas", "Boia / Rebanho"], ["estrelas", "Constelação"],
+      ["ilhas", "Arquipélago"], ["livros", "Biblioteca"], ["flores", "Ramalhete / Buquê"],
+      ["uvas", "Cacho"], ["alunos", "Turma / Classe"], ["músicos", "Orquestra / Banda"],
+      ["navios", "Esquadra / Frota"], ["aviões", "Esquadrilha"], ["elefantes", "Manada"],
+      ["porcos", "Vara"], ["ovelhas", "Rebanho"], ["soldados", "Batalhão / Exército"], ["mapas", "Atlas"]
+    ];
+    let allCol = coletivos.map(c => c[1]);
+    coletivos.forEach(([ser, col]) => {
+      list.push(buildMCQuestion(`Qual é o substantivo coletivo de '${ser}'?`, col, allCol, `Nome dado a um conjunto de ${ser}.`));
+    });
+  }
+
+  // 5. Ortografia Dinâmica (60 palavras)
+  if((topic === 'all' || topic === 'ortografia') && grade >= 2){
+    const orto = [
+      ["be___ouro", "S", ["S", "Z", "SS", "Ç"], "Entre vogais com som de Z, escreve-se com S."],
+      ["en___urrada", "X", ["X", "CH", "J", "SS"], "Depois de 'en-', geralmente usa-se X."],
+      ["berin___ela", "J", ["J", "G", "X", "CH"], "Berinjela se escreve com J."],
+      ["a___úcar", "Ç", ["Ç", "SS", "S", "Z"], "Usa-se cedilha antes de U."],
+      ["anali___ar", "S", ["S", "Z", "SS", "X"], "Vem de 'análise', que já tem S."],
+      ["me___er", "X", ["X", "CH", "G", "J"], "Depois de 'me-', geralmente usa-se X."],
+      ["en___er", "CH", ["CH", "X", "J", "G"], "Vem de 'cheio', por isso mantém o CH."],
+      ["via___em (substantivo)", "G", ["G", "J", "X", "CH"], "Substantivos terminados em -agem usam G."],
+      ["prince___a", "S", ["S", "Z", "SS", "Ç"], "Títulos de nobreza como princesa e duquesa usam S."],
+      ["ca___a (moradia)", "S", ["S", "Z", "SS", "Ç"], "Escreve-se com S entre vogais."],
+      ["co___inha", "Z", ["Z", "S", "SS", "Ç"], "Cozinha escreve-se com Z."],
+      ["pa___arinho", "SS", ["SS", "S", "Ç", "Z"], "Para manter o som de S forte entre vogais, usa-se SS."],
+      ["cora___ão", "Ç", ["Ç", "SS", "S", "Z"], "Terminação -ção usa cedilha."],
+      ["___ícara", "X", ["X", "CH", "S", "Z"], "Xícara começa com X."],
+      ["___uva", "CH", ["CH", "X", "S", "J"], "Chuva começa com CH."],
+      ["___elo", "G", ["G", "J", "X", "Z"], "Gelo escreve-se com G."],
+      ["___ipe", "J", ["J", "G", "X", "CH"], "Jipe escreve-se com J."],
+      ["ta___pa", "M", ["M", "N", "R", "S"], "Antes de P e B escreve-se sempre M."],
+      ["bo___ba", "M", ["M", "N", "L", "R"], "Antes de P e B escreve-se sempre M."],
+      ["ca___po", "M", ["M", "N", "S", "R"], "Antes de P e B escreve-se sempre M."],
+      ["de___te", "N", ["N", "M", "R", "S"], "Antes de T (não é P nem B), usa-se N."],
+      ["mu___do", "N", ["N", "M", "L", "R"], "Antes de D usa-se N."],
+      ["pesqui___ar", "S", ["S", "Z", "SS", "X"], "Vem de 'pesquisa', mantém o S."],
+      ["va___io", "Z", ["Z", "S", "SS", "Ç"], "Vazio escreve-se com Z."]
+    ];
+    orto.forEach(([palavra, correta, opts, dica]) => {
+      list.push({ q: `Complete com a letra correta: '${palavra}'`, a: correta, options: opts, h: dica });
+    });
+  }
+
+  // 6. Frases Combinatórias para Classes Gramaticais (Centenas de combinações!)
+  if((topic === 'all' || topic === 'gramatica') && grade >= 3){
+    const sujeitos = ["O cachorro", "A menina", "O atleta", "O professor", "A borboleta", "O cavalo", "O artista", "A cantora"];
+    const verbos = ["correu", "estudou", "saltou", "cantou", "pintou", "viajou", "brincou", "escreveu"];
+    const adjetivos = ["rápido", "dedicada", "alegre", "inteligente", "colorida", "veloz", "criativo", "talentosa"];
+    for(let s=0; s<sujeitos.length; s++){
+      for(let v=0; v<4; v++){
+        let idxV = (s + v) % verbos.length;
+        let subj = sujeitos[s];
+        let adj = adjetivos[s];
+        let verb = verbos[idxV];
+        let frase = `${subj} ${adj} ${verb} ontem.`;
+        list.push({
+          q: `Na frase "${frase}", qual palavra é o ADJETIVO (característica)?`,
+          a: adj,
+          options: [adj, verb, subj.split(' ')[1], "ontem"],
+          h: "Adjetivo é a palavra que dá uma qualidade ou característica ao substantivo."
+        });
+        list.push({
+          q: `Na frase "${frase}", qual palavra é o VERBO (ação)?`,
+          a: verb,
+          options: [verb, adj, subj.split(' ')[1], "ontem"],
+          h: "Verbo indica uma ação praticada na frase."
+        });
+      }
+    }
+  }
+
+  return list;
 }
 
-function generateDynamicEnglishQuestions(){
-  const vocab = [
+function generateDynamicGeoQuestions(grade, topic){
+  let qs = [];
+  const estados = [
+    ["Acre", "Rio Branco", "AC", "Norte"], ["Alagoas", "Maceió", "AL", "Nordeste"], ["Amapá", "Macapá", "AP", "Norte"],
+    ["Amazonas", "Manaus", "AM", "Norte"], ["Bahia", "Salvador", "BA", "Nordeste"], ["Ceará", "Fortaleza", "CE", "Nordeste"],
+    ["Espírito Santo", "Vitória", "ES", "Sudeste"], ["Goiás", "Goiânia", "GO", "Centro-Oeste"], ["Maranhão", "São Luís", "MA", "Nordeste"],
+    ["Mato Grosso", "Cuiabá", "MT", "Centro-Oeste"], ["Mato Grosso do Sul", "Campo Grande", "MS", "Centro-Oeste"],
+    ["Minas Gerais", "Belo Horizonte", "MG", "Sudeste"], ["Pará", "Belém", "PA", "Norte"], ["Paraíba", "João Pessoa", "PB", "Nordeste"],
+    ["Paraná", "Curitiba", "PR", "Sul"], ["Pernambuco", "Recife", "PE", "Nordeste"], ["Piauí", "Teresina", "PI", "Nordeste"],
+    ["Rio de Janeiro", "Rio de Janeiro", "RJ", "Sudeste"], ["Rio Grande do Norte", "Natal", "RN", "Nordeste"],
+    ["Rio Grande do Sul", "Porto Alegre", "RS", "Sul"], ["Rondônia", "Porto Velho", "RO", "Norte"], ["Roraima", "Boa Vista", "RR", "Norte"],
+    ["Santa Catarina", "Florianópolis", "SC", "Sul"], ["São Paulo", "São Paulo", "SP", "Sudeste"],
+    ["Sergipe", "Aracaju", "SE", "Nordeste"], ["Tocantins", "Palmas", "TO", "Norte"]
+  ];
+
+  let allCaps = estados.map(e => e[1]);
+  let allEsts = estados.map(e => e[0]);
+  let allUFs = estados.map(e => e[2]);
+  let allRegs = ["Norte", "Nordeste", "Centro-Oeste", "Sudeste", "Sul"];
+
+  if(topic === 'all' || topic === 'regioes'){
+    estados.forEach(([est, cap, uf, reg]) => {
+      if(grade >= 3){
+        qs.push(buildMCQuestion(`Qual é a capital do estado de ${est}?`, cap, allCaps, `Capital brasileira do estado: ${est} (${uf}).`));
+        qs.push(buildMCQuestion(`Qual é a sigla oficial (UF) do estado de ${est}?`, uf, allUFs, `Duas letras que representam ${est}.`));
+      }
+      if(grade >= 4){
+        qs.push(buildMCQuestion(`${cap} é a capital de qual estado brasileiro?`, est, allEsts, `Fica na região ${reg} do Brasil.`));
+        qs.push(buildMCQuestion(`Em qual região do Brasil fica o estado de ${est} (${uf})?`, reg, allRegs, `Pense nas 5 grandes regiões do IBGE.`));
+      }
+    });
+  }
+
+  if((topic === 'all' || topic === 'mundo') && grade >= 5){
+    const paises = [
+      ["Argentina", "Buenos Aires", "América do Sul"], ["Japão", "Tóquio", "Ásia"], ["França", "Paris", "Europa"],
+      ["Alemanha", "Berlim", "Europa"], ["Itália", "Roma", "Europa"], ["Portugal", "Lisboa", "Europa"],
+      ["Espanha", "Madri", "Europa"], ["Canadá", "Ottawa", "América do Norte"], ["Estados Unidos", "Washington, D.C.", "América do Norte"],
+      ["Austrália", "Camberra", "Oceania"], ["Egito", "Cairo", "África"], ["África do Sul", "Pretória", "África"],
+      ["China", "Pequim", "Ásia"], ["Índia", "Nova Délhi", "Ásia"], ["Chile", "Santiago", "América do Sul"],
+      ["Uruguai", "Montevidéu", "América do Sul"], ["Inglaterra (Reino Unido)", "Londres", "Europa"],
+      ["México", "Cidade do México", "América do Norte"], ["Peru", "Lima", "América do Sul"],
+      ["Colômbia", "Bogotá", "América do Sul"], ["Paraguai", "Assunção", "América do Sul"],
+      ["Bolívia", "La Paz / Sucre", "América do Sul"], ["Rússia", "Moscou", "Europa / Ásia"],
+      ["Coreia do Sul", "Seul", "Ásia"], ["Grécia", "Atenas", "Europa"], ["Suíça", "Berna", "Europa"]
+    ];
+    let allWorldCaps = paises.map(p => p[1]);
+    let allContinents = ["América do Sul", "América do Norte", "Europa", "Ásia", "África", "Oceania"];
+    paises.forEach(([pais, cap, cont]) => {
+      qs.push(buildMCQuestion(`Qual é a capital do país ${pais}?`, cap, allWorldCaps, `País localizado no continente: ${cont}.`));
+      qs.push(buildMCQuestion(`Em qual continente fica localizado o país ${pais}?`, cont, allContinents, `Sua capital é ${cap}.`));
+    });
+  }
+
+  return qs;
+}
+
+function generateDynamicHistoriaQuestions(grade, topic){
+  let qs = [];
+
+  // 1. Eventos e Datas (Brasil e Geral)
+  const eventosBrasil = [
+    ["Chegada dos portugueses ao Brasil (Pedro Álvares Cabral)", "1500", "22 de abril de 1500"],
+    ["Independência do Brasil (Grito do Ipiranga)", "1822", "7 de setembro de 1822"],
+    ["Abolição da Escravidão (Assinatura da Lei Áurea)", "1888", "13 de maio de 1888"],
+    ["Proclamação da República no Brasil", "1889", "15 de novembro de 1889"],
+    ["Inconfidência Mineira (Conjuração Mineira)", "1789", "Movimento liderado por Tiradentes em Vila Rica (Ouro Preto)"],
+    ["Promulgação da atual Constituição Cidadã do Brasil", "1988", "Constituição após a redemocratização"],
+    ["Inauguração de Brasília como nova capital federal", "1960", "Construída no governo de Juscelino Kubitschek"]
+  ];
+  let allYearsBR = ["1500", "1530", "1789", "1808", "1822", "1888", "1889", "1930", "1960", "1964", "1988"];
+
+  if(topic === 'all' || topic === 'colonia' || topic === 'independencia'){
+    eventosBrasil.forEach(([ev, ano, dica]) => {
+      if(grade >= 3){
+        qs.push(buildMCQuestion(`Em que ano ocorreu: ${ev}?`, ano, allYearsBR, dica));
+      }
+    });
+  }
+
+  // 2. Personagens Históricos (Brasil)
+  if(topic === 'all' || topic === 'colonia' || topic === 'independencia' || topic === 'cultura'){
+    const personagensBR = [
+      ["Pedro Álvares Cabral", "Comandou a esquadra portuguesa que chegou ao Brasil em 1500"],
+      ["Dom Pedro I", "Proclamou a Independência do Brasil em 1822 e foi o primeiro imperador"],
+      ["Dom Pedro II", "Governou o Brasil por quase 50 anos durante o Segundo Reinado"],
+      ["Princesa Isabel", "Assinou a Lei Áurea em 1888, abolindo oficialmente a escravidão"],
+      ["Tiradentes (Joaquim José da Silva Xavier)", "Foi o mártir e principal símbolo da Inconfidência Mineira"],
+      ["Zumbi dos Palmares", "Foi o maior líder de resistência do Quilombo dos Palmares"],
+      ["Marechal Deodoro da Fonseca", "Proclamou a República do Brasil em 15 de novembro de 1889 e foi o 1º presidente"],
+      ["Getúlio Vargas", "Criou as leis trabalhistas (CLT) no Brasil durante a década de 1930/1940"],
+      ["Juscelino Kubitschek", "Presidente brasileiro que construiu e inaugurou Brasília em 1960"],
+      ["Santos Dumont", "Inventor brasileiro pioneiro da aviação com o avião 14-Bis"]
+    ];
+    let allNamesBR = personagensBR.map(p => p[0]);
+    personagensBR.forEach(([nome, feito]) => {
+      if(grade >= 3){
+        qs.push(buildMCQuestion(`Quem foi a figura histórica que: ${feito}?`, nome, allNamesBR, "Personagem marcante da História do Brasil."));
+      }
+    });
+  }
+
+  // 3. História Geral (6º ao 9º ano)
+  if((topic === 'all' || topic === 'geral') && grade >= 6){
+    const geralEvents = [
+      ["Início da Primeira Guerra Mundial", "1914", ["1914", "1939", "1789", "1945"], "Durou de 1914 a 1918."],
+      ["Fim da Segunda Guerra Mundial", "1945", ["1945", "1918", "1939", "1969"], "Durou de 1939 a 1945."],
+      ["Queda do Muro de Berlim (símbolo do fim da Guerra Fria)", "1989", ["1989", "1945", "1917", "2001"], "Dividia a Alemanha Ocidental e Oriental."],
+      ["Chegada do primeiro ser humano à Lua (Missão Apollo 11)", "1969", ["1969", "1957", "1989", "1945"], "Durante a corrida espacial da Guerra Fria."],
+      ["Queda do Império Romano do Ocidente (início da Idade Média)", "476 d.C.", ["476 d.C.", "1453 d.C.", "1500 d.C.", "1789 d.C."], "Marca a transição da Antiguidade para a Idade Média."],
+      ["Qual civilização antiga inventou o alfabeto fonético e destacou-se no comércio marítimo?", "Fenícios", ["Fenícios", "Egípcios", "Astecas", "Vikings"], "Viviam no atual Líbano."],
+      ["Qual civilização pré-colombiana construiu a cidade de Machu Picchu na Cordilheira dos Andes?", "Incas", ["Incas", "Maias", "Astecas", "Egípcios"], "Viviam na região do atual Peru."],
+      ["Qual civilização pré-colombiana habitava o atual México e tinha Tenochtitlán como capital?", "Astecas", ["Astecas", "Incas", "Fenícios", "Gregos"], "Foram conquistados pelos espanhóis liderados por Hernán Cortés."],
+      ["Como se chamava o sistema de troca direta de mercadorias sem uso de moedas?", "Escambo", ["Escambo", "Feudalismo", "Capitalismo", "Mercantilismo"], "Muito usado nas primeiras relações comerciais."],
+      ["Qual movimento cultural e artístico europeu dos séculos XV e XVI valorizou a ciência e a cultura greco-romana?", "Renascimento", ["Renascimento", "Feudalismo", "Iluminismo", "Barroco"], "Teve nomes como Leonardo da Vinci e Michelangelo."],
+      ["Qual navegador português comandou a primeira expedição a dar a volta completa ao mundo (circunavegação)?", "Fernão de Magalhães", ["Fernão de Magalhães", "Pedro Álvares Cabral", "Cristóvão Colombo", "Vasco da Gama"], "Iniciada em 1519."],
+      ["Qual navegador chegou à América em 1492 a serviço da Espanha?", "Cristóvão Colombo", ["Cristóvão Colombo", "Pedro Álvares Cabral", "Vasco da Gama", "Américo Vespúcio"], "Acreditava ter chegado às Índias."]
+    ];
+    geralEvents.forEach(([q, a, opts, h]) => {
+      qs.push({ q, a, options: opts, h });
+    });
+  }
+
+  return qs;
+}
+
+function generateDynamicCienciasQuestions(grade, topic){
+  let qs = [];
+
+  // 1. Corpo Humano (Biologia)
+  if(topic === 'all' || topic === 'corpo' || topic === 'natureza_inicial'){
+    const orgaos = [
+      ["Coração", "Bombear o sangue para todo o corpo", "Sistema Cardiovascular / Circulatório"],
+      ["Pulmões", "Realizar as trocas gasosas (absorver oxigênio e eliminar gás carbônico)", "Sistema Respiratório"],
+      ["Estômago", "Digerir os alimentos com auxílio do suco gástrico", "Sistema Digestório"],
+      ["Rins", "Filtrar o sangue e produzir a urina", "Sistema Urinário / Excretor"],
+      ["Cérebro", "Comandar os pensamentos, movimentos, memória e sentidos", "Sistema Nervoso"],
+      ["Fígado", "Produzir a bile e ajudar a metabolizar substâncias", "Sistema Digestório"],
+      ["Intestino Delgado", "Absorver a maior parte dos nutrientes dos alimentos", "Sistema Digestório"],
+      ["Esqueleto (Ossos)", "Sustentar o corpo e proteger órgãos vitais", "Sistema Esquelético"]
+    ];
+    let allFuncs = orgaos.map(o => o[1]);
+    let allSist = [...new Set(orgaos.map(o => o[2]))];
+    orgaos.forEach(([org, func, sist]) => {
+      qs.push(buildMCQuestion(`Qual é a principal função do(s) ${org} no corpo humano?`, func, allFuncs, `Faz parte do ${sist}.`));
+      if(grade >= 4){
+        qs.push(buildMCQuestion(`A qual sistema do corpo humano pertence o órgão: ${org}?`, sist, allSist, `Sua função é: ${func.toLowerCase()}.`));
+      }
+    });
+  }
+
+  // 2. Classificação dos Animais (Biologia)
+  if(topic === 'all' || topic === 'natureza_inicial' || topic === 'corpo'){
+    const animais = [
+      ["Baleia", "Mamífero", "Respira por pulmões e amamenta os filhotes, mesmo vivendo no mar."],
+      ["Morcego", "Mamífero", "É o único mamífero capaz de voar."],
+      ["Sapo", "Anfíbio", "Vive parte da vida na água (girino) e parte na terra, com pele úmida."],
+      ["Jacaré", "Réptil", "Tem o corpo coberto por placas duras e coloca ovos com casca."],
+      ["Cobra", "Réptil", "Tem escamas e rasteja."],
+      ["Pinguim", "Ave", "Tem penas e bico, embora não voe."],
+      ["Tubarão", "Peixe", "Respira por brânquias e tem esqueleto cartilaginoso."],
+      ["Aranha", "Aracnídeo (Artrópode)", "Tem 8 pernas e não possui antenas."],
+      ["Formiga", "Inseto (Artrópode)", "Tem 6 pernas e corpo dividido em cabeça, tórax e abdômen."]
+    ];
+    let allClasses = ["Mamífero", "Réptil", "Anfíbio", "Ave", "Peixe", "Inseto (Artrópode)", "Aracnídeo (Artrópode)"];
+    animais.forEach(([ani, cls, dica]) => {
+      qs.push(buildMCQuestion(`A qual grupo animal pertence: ${ani}?`, cls, allClasses, dica));
+    });
+  }
+
+  // 3. Sistema Solar (Astronomia)
+  if(topic === 'all' || topic === 'universo'){
+    const planetas = [
+      ["Mercúrio", "1º planeta (mais próximo do Sol)"],
+      ["Vênus", "2º planeta (o mais quente do Sistema Solar)"],
+      ["Terra", "3º planeta (único conhecido com vida e água líquida na superfície)"],
+      ["Marte", "4º planeta (conhecido como Planeta Vermelho)"],
+      ["Júpiter", "5º planeta (o maior planeta do Sistema Solar)"],
+      ["Saturno", "6º planeta (famoso pelos seus grandes anéis brilhantes)"],
+      ["Urano", "7º planeta (gigante de gelo com eixo bem inclinado)"],
+      ["Netuno", "8º planeta (mais distante do Sol, com ventos fortíssimos)"]
+    ];
+    let allPlanNames = planetas.map(p => p[0]);
+    let allPlanDesc = planetas.map(p => p[1]);
+    planetas.forEach(([plan, desc]) => {
+      qs.push(buildMCQuestion(`Qual planeta do Sistema Solar corresponde a: ${desc}?`, plan, allPlanNames, "Ordem: Mercúrio, Vênus, Terra, Marte, Júpiter, Saturno, Urano, Netuno."));
+      if(grade >= 4){
+        qs.push(buildMCQuestion(`Qual é uma característica marcante do planeta ${plan}?`, desc, allPlanDesc, "Pense na posição dele em relação ao Sol."));
+      }
+    });
+  }
+
+  // 4. Química (6º ao 9º ano): Elementos, Fórmulas, Misturas e Estados Físicos
+  if((topic === 'all' || topic === 'quimica_fisica' || topic === 'materia') && grade >= 5){
+    const mudancasEstado = [
+      ["Passagem do estado SÓLIDO para o LÍQUIDO (ex: gelo derretendo)", "Fusão"],
+      ["Passagem do estado LÍQUIDO para o GASOSO (ex: água fervendo ou secando)", "Vaporização"],
+      ["Passagem do estado GASOSO para o LÍQUIDO (ex: gotículas no espelho do banheiro)", "Condensação (Liquefação)"],
+      ["Passagem do estado LÍQUIDO para o SÓLIDO (ex: água virando gelo no freezer)", "Solidificação"],
+      ["Passagem direta do SÓLIDO para o GASOSO sem passar pelo líquido (ex: gelo seco / naftalina)", "Sublimação"]
+    ];
+    let allMud = mudancasEstado.map(m => m[1]);
+    mudancasEstado.forEach(([desc, nome]) => {
+      qs.push(buildMCQuestion(`Na Química/Física, como se chama a: ${desc}?`, nome, allMud, "Observe os estados inicial e final da matéria."));
+    });
+  }
+
+  if((topic === 'all' || topic === 'quimica_fisica') && grade >= 6){
+    const elementos = [
+      ["Hidrogênio", "H"], ["Oxigênio", "O"], ["Carbono", "C"], ["Nitrogênio", "N"],
+      ["Ferro", "Fe"], ["Ouro", "Au"], ["Prata", "Ag"], ["Cobre", "Cu"],
+      ["Sódio", "Na"], ["Cloro", "Cl"], ["Cálcio", "Ca"], ["Potássio", "K"],
+      ["Magnésio", "Mg"], ["Alumínio", "Al"], ["Chumbo", "Pb"], ["Mercúrio", "Hg"],
+      ["Zinco", "Zn"], ["Hélio", "He"], ["Fósforo", "P"], ["Enxofre", "S"]
+    ];
+    let allSyms = elementos.map(e => e[1]);
+    let allElemNames = elementos.map(e => e[0]);
+    elementos.forEach(([el, sym]) => {
+      qs.push(buildMCQuestion(`Na Tabela Periódica (Química), qual é o símbolo do elemento ${el}?`, sym, allSyms, `Símbolo químico oficial de ${el}.`));
+      qs.push(buildMCQuestion(`Na Tabela Periódica (Química), o símbolo '${sym}' representa qual elemento?`, el, allElemNames, `Começa com '${el[0]}'.`));
+    });
+
+    const formulas = [
+      ["Água", "H₂O"], ["Gás Carbônico (Dióxido de carbono)", "CO₂"], ["Gás Oxigênio", "O₂"],
+      ["Sal de cozinha (Cloreto de sódio)", "NaCl"], ["Gás Metano", "CH₄"], ["Ácido Sulfúrico", "H₂SO₄"],
+      ["Bicarbonato de sódio", "NaHCO₃"], ["Glicose", "C₆H₁₂O₆"], ["Amônia", "NH₃"], ["Ozônio", "O₃"]
+    ];
+    let allForms = formulas.map(f => f[1]);
+    formulas.forEach(([subst, form]) => {
+      qs.push(buildMCQuestion(`Qual é a fórmula química da substância: ${subst}?`, form, allForms, `Representação química de ${subst}.`));
+    });
+
+    const misturas = [
+      ["Água + Óleo de cozinha", "Mistura heterogênea", "Não se misturam e formam duas fases visíveis."],
+      ["Água + Areia", "Mistura heterogênea", "A areia se deposita no fundo (duas fases)."],
+      ["Água + Uma pitada de sal totalmente dissolvida", "Mistura homogênea", "Apresenta aspecto uniforme (apenas uma fase)."],
+      ["Água + Açúcar totalmente dissolvido", "Mistura homogênea", "Solução uniforme com uma única fase."],
+      ["Ar atmosférico filtrado (mistura de gases)", "Mistura homogênea", "Os gases formam uma única fase visual."],
+      ["Granito (rocha com quartzo, feldspato e mica)", "Mistura heterogênea", "É possível enxergar os diferentes minerais (3 fases)."],
+      ["Leite (visto ao microscópio com gotículas de gordura)", "Mistura heterogênea", "É um coloide com mais de uma fase."],
+      ["Vinagre (água + ácido acético)", "Mistura homogênea", "Apresenta aspecto totalmente uniforme."]
+    ];
+    misturas.forEach(([m, tipo, dica]) => {
+      qs.push({
+        q: `Na Química, como classificamos a mistura: ${m}?`,
+        a: tipo,
+        options: ["Mistura homogênea", "Mistura heterogênea", "Substância simples", "Elemento químico"],
+        h: dica
+      });
+    });
+
+    // 5. Física (6º ao 9º ano): Cálculos dinâmicos variados!
+    for(let i=0; i<15; i++){
+      let vel = (Math.floor(Math.random() * 8) + 3) * 10; // 30 a 100 km/h
+      let tempo = Math.floor(Math.random() * 5) + 2; // 2 a 6 h
+      let dist = vel * tempo;
+      qs.push(buildMCQuestion(
+        `[Física] Um automóvel percorre ${dist} km em ${tempo} horas com velocidade constante. Qual é a sua velocidade média?`,
+        `${vel} km/h`,
+        [`${vel + 10} km/h`, `${Math.max(10, vel - 15)} km/h`, `${dist} km/h`, `${vel * 2} km/h`],
+        "Use a fórmula da velocidade média: Vm = Distância ÷ Tempo."
+      ));
+
+      let dist2 = vel * tempo;
+      qs.push(buildMCQuestion(
+        `[Física] Um trem viaja a uma velocidade média de ${vel} km/h durante ${tempo} horas. Qual distância total ele percorre?`,
+        `${dist2} km`,
+        [`${dist2 + 50} km`, `${Math.max(20, dist2 - 40)} km`, `${vel} km`, `${vel + tempo} km`],
+        "Multiplique a velocidade pelo tempo: Distância = Velocidade × Tempo."
+      ));
+    }
+
+    const convFisica = [
+      ["36 km/h", "10 m/s"], ["72 km/h", "20 m/s"], ["108 km/h", "30 m/s"], ["18 km/h", "5 m/s"], ["90 km/h", "25 m/s"]
+    ];
+    convFisica.forEach(([kmh, ms]) => {
+      qs.push(buildMCQuestion(
+        `[Física] Converta a velocidade de ${kmh} para metros por segundo (m/s):`,
+        ms,
+        ["5 m/s", "10 m/s", "15 m/s", "20 m/s", "25 m/s", "30 m/s", "36 m/s"],
+        "Para converter km/h em m/s, basta dividir o valor por 3,6."
+      ));
+    });
+
+    if(grade >= 8){
+      for(let i=0; i<10; i++){
+        let r = (Math.floor(Math.random() * 6) + 2) * 5; // 10 a 35 ohms
+        let corr = Math.floor(Math.random() * 5) + 2; // 2 a 6 A
+        let u = r * corr;
+        qs.push(buildMCQuestion(
+          `[Física - Eletricidade] Pela 1ª Lei de Ohm (U = R · i), qual é a tensão elétrica (U) em um resistor de ${r} Ω atravessado por uma corrente de ${corr} A?`,
+          `${u} V`,
+          [`${u + 10} V`, `${r + corr} V`, `${Math.max(5, u - 15)} V`, `${u * 2} V`],
+          "Multiplique a resistência (R) pela corrente elétrica (i)."
+        ));
+      }
+    }
+  }
+
+  return qs;
+}
+
+function generateDynamicEnglishQuestions(grade, topic){
+  const vocabBasic = [
     ["Azul", "Blue", "Cor do céu"], ["Vermelho", "Red", "Cor do morango"], ["Amarelo", "Yellow", "Cor do sol"],
     ["Verde", "Green", "Cor das folhas"], ["Preto", "Black", "Cor escura"], ["Branco", "White", "Cor da neve"],
+    ["Rosa", "Pink", "Cor das flores"], ["Roxo", "Purple", "Cor da uva"], ["Laranja", "Orange", "Cor e fruta"],
+    ["Cinza", "Gray", "Mistura de preto e branco"], ["Marrom", "Brown", "Cor de chocolate"],
     ["Cachorro", "Dog", "Melhor amigo do homem"], ["Gato", "Cat", "Faz miau"], ["Pássaro", "Bird", "Voa no céu"],
-    ["Peixe", "Fish", "Nada na água"], ["Casa", "House", "Onde moramos"], ["Carro", "Car", "Meio de transporte"]
+    ["Peixe", "Fish", "Nada na água"], ["Cavalo", "Horse", "Animal de montaria"], ["Vaca", "Cow", "Dá leite"],
+    ["Porco", "Pig", "Animal da fazenda"], ["Galinha", "Chicken", "Bota ovos"], ["Leão", "Lion", "Rei da selva"],
+    ["Macaco", "Monkey", "Gosta de banana"], ["Coelho", "Rabbit", "Tem orelhas grandes"], ["Tartaruga", "Turtle", "Anda devagar"],
+    ["Casa", "House", "Onde moramos"], ["Carro", "Car", "Meio de transporte"], ["Escola", "School", "Onde estudamos"],
+    ["Livro", "Book", "Usamos para ler"], ["Caneta", "Pen", "Usamos para escrever"], ["Lápis", "Pencil", "Usamos para desenhar"],
+    ["Mesa", "Table", "Móvel com pernas"], ["Cadeira", "Chair", "Onde sentamos"], ["Janela", "Window", "Por onde entra luz"],
+    ["Porta", "Door", "Abrimos para entrar"], ["Água", "Water", "Bebemos todos os dias"], ["Leite", "Milk", "Bebida branca"],
+    ["Maçã", "Apple", "Fruta vermelha ou verde"], ["Pão", "Bread", "Comemos no café da manhã"],
+    ["Sol", "Sun", "Brilha de dia"], ["Lua", "Moon", "Brilha à noite"], ["Estrela", "Star", "Brilha no céu"],
+    ["Árvore", "Tree", "Tem folhas e tronco"], ["Flor", "Flower", "Tem pétalas perfumadas"], ["Chuva", "Rain", "Cai das nuvens"]
   ];
-  return vocab.map(([pt, en, dica]) => {
-    let erradas = vocab.filter(v => v[1] !== en).sort(() => 0.5 - Math.random()).slice(0, 3).map(v => v[1]);
-    let options = [en, ...erradas].sort(() => 0.5 - Math.random());
-    return { q: `Como se escreve '${pt}' em inglês?`, a: en, options: options, h: `${dica}. Começa com a letra '${en[0]}'.` };
-  });
+
+  const vocabInter = [
+    ["Segunda-feira", "Monday", "Primeiro dia útil da semana"], ["Terça-feira", "Tuesday", "Depois de segunda"],
+    ["Quarta-feira", "Wednesday", "Meio da semana"], ["Quinta-feira", "Thursday", "Antes de sexta"],
+    ["Sexta-feira", "Friday", "Antes do sábado"], ["Sábado", "Saturday", "Fim de semana"],
+    ["Domingo", "Sunday", "Dia do sol / descanso"], ["Janeiro", "January", "Primeiro mês do ano"],
+    ["Fevereiro", "February", "Segundo mês do ano"], ["Julho", "July", "Mês de férias escolares"],
+    ["Outubro", "October", "Mês das crianças"], ["Dezembro", "December", "Mês do Natal"],
+    ["Mãe", "Mother", "Membro da família"], ["Pai", "Father", "Membro da família"],
+    ["Irmã", "Sister", "Membro da família"], ["Irmão", "Brother", "Membro da família"],
+    ["Avó", "Grandmother", "Mãe da mãe ou do pai"], ["Avô", "Grandfather", "Pai da mãe ou do pai"],
+    ["Professor", "Teacher", "Ensina na escola"], ["Médico", "Doctor", "Trabalha no hospital"],
+    ["Engenheiro", "Engineer", "Projeta obras e máquinas"], ["Bombeiro", "Firefighter", "Apaga incêndios"],
+    ["Cozinha", "Kitchen", "Onde preparamos comida"], ["Quarto", "Bedroom", "Onde dormimos"],
+    ["Banheiro", "Bathroom", "Onde tomamos banho"], ["Sala de estar", "Living room", "Onde fica o sofá"],
+    ["Grande", "Big", "Oposto de small"], ["Pequeno", "Small", "Oposto de big"],
+    ["Feliz", "Happy", "Oposto de sad"], ["Triste", "Sad", "Oposto de happy"],
+    ["Rápido", "Fast", "Oposto de slow"], ["Devagar / Lento", "Slow", "Oposto de fast"],
+    ["Quente", "Hot", "Oposto de cold"], ["Frio", "Cold", "Oposto de hot"],
+    ["Novo", "New", "Oposto de old"], ["Velho / Antigo", "Old", "Oposto de new"],
+    ["Cabeça", "Head", "Parte superior do corpo"], ["Mão", "Hand", "Tem cinco dedos"],
+    ["Pé", "Foot", "Usamos para andar"], ["Olhos", "Eyes", "Usamos para enxergar"]
+  ];
+
+  let qs = [];
+  let pool = grade <= 3 ? vocabBasic : vocabBasic.concat(vocabInter);
+  let allEN = pool.map(v => v[1]);
+  let allPT = pool.map(v => v[0]);
+
+  if(topic === 'all' || topic === 'vocabulario' || topic === 'saudacoes'){
+    pool.forEach(([pt, en, dica]) => {
+      qs.push(buildMCQuestion(`Como se escreve '${pt}' em inglês?`, en, allEN, `${dica}. Começa com '${en[0]}'.`));
+      if(grade >= 3){
+        qs.push(buildMCQuestion(`O que significa a palavra em inglês '${en}'?`, pt, allPT, `${dica}.`));
+      }
+    });
+  }
+
+  if((topic === 'all' || topic === 'frases') && grade >= 4){
+    const toBe = [
+      ["I ___ a good student.", "am", "Com 'I' (Eu), usamos sempre 'am'."],
+      ["She ___ my sister.", "is", "Para He, She, It usamos 'is'."],
+      ["He ___ a doctor.", "is", "Para He, She, It usamos 'is'."],
+      ["It ___ a sunny day.", "is", "Para objetos, animais ou clima (It), usamos 'is'."],
+      ["We ___ happy today.", "are", "Para plural (We, You, They) usamos 'are'."],
+      ["They ___ at school now.", "are", "Para plural (We, You, They) usamos 'are'."],
+      ["You ___ my best friend.", "are", "Com 'You' usamos sempre 'are'."]
+    ];
+    toBe.forEach(([frase, resp, dica]) => {
+      qs.push({ q: `Complete com o Verb To Be correto: "${frase}"`, a: resp, options: ["am", "is", "are", "be"], h: dica });
+    });
+  }
+
+  if((topic === 'all' || topic === 'avancado') && grade >= 6){
+    const irregVerbs = [
+      ["GO (ir)", "Went"], ["EAT (comer)", "Ate"], ["SEE (ver)", "Saw"], ["COME (vir)", "Came"],
+      ["DRINK (beber)", "Drank"], ["WRITE (escrever)", "Wrote"], ["READ (ler)", "Read"], ["BUY (comprar)", "Bought"],
+      ["MAKE (fazer)", "Made"], ["TAKE (pegar/levar)", "Took"], ["HAVE (ter)", "Had"], ["DO (fazer)", "Did"],
+      ["SLEEP (dormir)", "Slept"], ["SPEAK (falar)", "Spoke"], ["RUN (correr)", "Ran"], ["SWIM (nadar)", "Swam"]
+    ];
+    let allPast = irregVerbs.map(v => v[1]);
+    irregVerbs.forEach(([inf, past]) => {
+      qs.push(buildMCQuestion(`Qual é o passado simples (Simple Past) do verbo irregular ${inf}?`, past, allPast, `Passado em inglês de ${inf}.`));
+    });
+  }
+
+  return qs;
 }
 
 function generateSubjectBatch(subj){
   playClickSound();
+  let grade = parseInt(document.getElementById('grade_' + subj).value, 10) || 5;
   let topic = document.getElementById('topic_' + subj).value;
   let bank = QUESTION_BANK[subj];
   let pool = [];
 
   if(topic === 'all'){
-    Object.values(bank).forEach(arr => { pool = pool.concat(arr); });
-    if(subj === 'geografia') pool = pool.concat(generateDynamicGeoQuestions());
-    if(subj === 'ingles') pool = pool.concat(generateDynamicEnglishQuestions());
+    Object.values(bank).forEach(arr => {
+      let gradeMatched = arr.filter(item => !item.g || item.g.includes(grade));
+      pool = pool.concat(gradeMatched.length > 0 ? gradeMatched : arr);
+    });
   } else {
-    pool = [...(bank[topic] || [])];
-    if(subj === 'geografia' && topic === 'regioes') pool = pool.concat(generateDynamicGeoQuestions());
-    if(subj === 'ingles' && topic === 'vocabulario') pool = pool.concat(generateDynamicEnglishQuestions());
+    let rawTopic = bank[topic] || [];
+    let gradeMatched = rawTopic.filter(item => !item.g || item.g.includes(grade));
+    pool = [...(gradeMatched.length > 0 ? gradeMatched : rawTopic)];
   }
 
-  let usedTitles = new Set(state.items.map(i => (i.title || '').trim().toLowerCase()));
-  let freshPool = pool.filter(item => !usedTitles.has(item.q.trim().toLowerCase()));
-  let finalPool = freshPool.length >= 10 ? freshPool : pool;
+  if(subj === 'portugues') pool = pool.concat(generateDynamicPortuguesQuestions(grade, topic));
+  if(subj === 'geografia') pool = pool.concat(generateDynamicGeoQuestions(grade, topic));
+  if(subj === 'historia') pool = pool.concat(generateDynamicHistoriaQuestions(grade, topic));
+  if(subj === 'ciencias') pool = pool.concat(generateDynamicCienciasQuestions(grade, topic));
+  if(subj === 'ingles') pool = pool.concat(generateDynamicEnglishQuestions(grade, topic));
 
+  // Remove duplicatas internas pelo enunciado
+  let uniqueMap = new Map();
+  pool.forEach(item => {
+    let key = (item.q || '').trim().toLowerCase();
+    if(key && !uniqueMap.has(key)) uniqueMap.set(key, item);
+  });
+  let uniquePool = Array.from(uniqueMap.values());
+
+  // Filtra perguntas que já foram enviadas anteriormente para o aluno
+  let usedTitles = new Set(state.items.map(i => (i.title || '').trim().toLowerCase()));
+  let freshPool = uniquePool.filter(item => !usedTitles.has(item.q.trim().toLowerCase()));
+  let finalPool = freshPool.length >= 10 ? freshPool : uniquePool;
+
+  // Embaralha todo o pool antes de sortear 10
   for (let i = finalPool.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [finalPool[i], finalPool[j]] = [finalPool[j], finalPool[i]];
@@ -1360,37 +2197,43 @@ function generateSubjectBatch(subj){
   subjectBatches[subj] = selected.map(item => ({
     id: String(Date.now() + Math.random()),
     subject: subj,
+    gradeLevel: String(grade),
+    poolSize: uniquePool.length,
     isProblem: false,
     isTheory: true,
     title: item.q,
     expected: item.a,
     options: item.options || [item.a, "Outra opção", "Nenhuma", "Todas"],
     hint: "💡 Dica: " + item.h,
-    searchQuery: `${subj} 5 ano ensino fundamental ${item.q}`,
+    searchQuery: `${subj} ${grade} ano ensino fundamental ${item.q}`,
     studentAnswer: "",
     status: "pending",
     timeSpent: 0,
     createdAt: new Date().toISOString()
   }));
 
-  renderSubjectPreview(subj);
+  renderSubjectPreview(subj, grade, uniquePool.length);
 }
 
 function removeSubjectBatchItem(subj, idx){
   playClickSound();
+  let grade = subjectBatches[subj][idx] ? subjectBatches[subj][idx].gradeLevel : document.getElementById('grade_' + subj).value;
+  let poolSize = subjectBatches[subj][idx] ? subjectBatches[subj][idx].poolSize : 0;
   subjectBatches[subj].splice(idx, 1);
-  renderSubjectPreview(subj);
+  renderSubjectPreview(subj, grade, poolSize);
 }
 
-function renderSubjectPreview(subj){
+function renderSubjectPreview(subj, grade, poolSize){
   let container = document.getElementById('preview_' + subj);
   let list = subjectBatches[subj];
   if(!list || !list.length){
     container.innerHTML = '<p class="muted">Nenhuma pergunta na pré-visualização.</p>';
     return;
   }
+  let gLabel = getGradeLabel(grade || list[0].gradeLevel);
+  let poolNote = poolSize ? ` <span style="font-size:12px; font-weight:normal; color:#555;">(sorteadas de ${poolSize} variações)</span>` : '';
   container.innerHTML = `
-    <h3 style="font-size:15px; margin-bottom:8px;">Revise as ${list.length} Perguntas de Múltipla Escolha:</h3>
+    <h3 style="font-size:15px; margin-bottom:8px;">Revise as ${list.length} Perguntas (${gLabel})${poolNote}:</h3>
     <div style="max-height:280px; overflow-y:auto; border:1px solid #ccc; border-radius:12px; padding:10px; background:var(--card-bg);">
       ${list.map((item, idx) => `
         <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid rgba(0,0,0,0.06); gap:10px;">
@@ -1403,7 +2246,7 @@ function renderSubjectPreview(subj){
       `).join('')}
     </div>
     <div class="actions" style="margin-top:12px;">
-      <button type="button" class="primary" style="width:100%;" onclick="sendSubjectBatch('${subj}')">🚀 Enviar Perguntas para o Aluno (${list.length})</button>
+      <button type="button" class="primary" style="width:100%;" onclick="sendSubjectBatch('${subj}')">🚀 Enviar Perguntas do ${gLabel} (${list.length})</button>
     </div>
   `;
 }
@@ -1412,38 +2255,42 @@ function sendSubjectBatch(subj){
   playClickSound();
   let list = subjectBatches[subj];
   if(!list || !list.length) return;
-  list.forEach(item => state.items.unshift(item));
+  list.forEach(item => {
+    delete item.poolSize;
+    state.items.unshift(item);
+  });
   subjectBatches[subj] = [];
   persist();
   document.getElementById('preview_' + subj).innerHTML = '<p style="color:#2e7d32; font-weight:700;">✨ Perguntas enviadas para o caderno do aluno!</p>';
 }
 
 function getYouTubeSearchQuery(item){
-  if(item.subject && item.subject !== 'matematica') return item.searchQuery || "aula 5 ano ensino fundamental";
-  if(item.isProblem) return "passo a passo como resolver probleminhas de matematica";
+  let g = item.gradeLevel || "5";
+  if(item.subject && item.subject !== 'matematica') return item.searchQuery || `aula ${g} ano ensino fundamental`;
+  if(item.isProblem) return `passo a passo como resolver probleminhas de matematica ${g} ano`;
   if(item.type === '+') return "passo a passo como fazer conta de mais adicao";
   if(item.type === '-') return "passo a passo como fazer conta de menos subtracao com emprestimo";
   if(item.type === 'x') return "passo a passo como fazer conta de vezes multiplicacao";
   if(item.type === '÷') return "passo a passo como fazer conta de dividir divisao exata";
-  return "passo a passo como fazer conta de matematica";
+  return `aula matematica ${g} ano ensino fundamental`;
 }
 
 function getAutomaticHint(item){
   if(item.hint) return item.hint;
   if(item.isProblem){
-    let t = item.title.toLowerCase();
+    let t = (item.title || '').toLowerCase();
     if(t.includes('ganhou') || t.includes('total') || t.includes('juntou')) return "💡 Dica: Qual operação básica usamos para juntar? (+)";
     if(t.includes('perdeu') || t.includes('deu') || t.includes('sobrou') || t.includes('gastou')) return "💡 Dica: Qual operação tira uma quantidade? (-)";
     if(t.includes('cada caixa') || t.includes('pacotes')) return "💡 Dica: Vários grupos iguais? Use a multiplicação (x)!";
     if(t.includes('dividiu') || t.includes('organizou') || t.includes('distribuiu')) return "💡 Dica: Divida igualmente com a divisão (÷).";
-    return "💡 Dica: Leia com calma e arme a conta.";
+    return "💡 Dica: Leia com calma, anote os dados na lousa e arme a conta.";
   } else {
-    if(item.type === '+') return "💡 Dica: Comece pela direita. Se passar de 9, sobe 1!";
+    if(item.type === '+') return "💡 Dica: Comece pela direita (unidade). Se passar de 9, sobe 1!";
     if(item.type === '-') return "💡 Dica: O número de cima é menor? Peça emprestado ao vizinho!";
     if(item.type === 'x') return "💡 Dica: Multiplique sempre começando pela unidade.";
     if(item.type === '÷') return "💡 Dica: Teste na tabuada quantas vezes o divisor cabe no dividendo sem sobrar resto!";
   }
-  return "💡 Dica: Arme a continha na lousa!";
+  return "💡 Dica: Use a lousa para fazer seu rascunho passo a passo!";
 }
 
 function autoCalcManual(){
@@ -1476,6 +2323,7 @@ function createManualProblem(){
   let newItem = {
     id: String(Date.now() + Math.random()),
     subject: 'matematica',
+    gradeLevel: "",
     isProblem: false,
     isManual: true,
     type: op,
@@ -1504,51 +2352,138 @@ function createManualProblem(){
 function generateProblemBatch(){
   playClickSound();
   currentProblemBatch = [];
+  let grade = parseInt(document.getElementById('probGrade').value, 10) || 5;
   let diff = document.getElementById('probDifficulty').value;
-  let nomes = ['Pedro', 'Maria', 'Lucas', 'Sophia', 'Ana', 'João', 'Julia', 'Carlos', 'Beatriz', 'Gabriel'];
-  let itens = ['balas', 'figurinhas', 'livros', 'bombons', 'laranjas', 'canetas', 'pães', 'adesivos', 'lápis'];
+  let nomes = ['Pedro', 'Maria', 'Lucas', 'Sophia', 'Ana Laura', 'João', 'Julia', 'Carlos', 'Beatriz', 'Gabriel', 'Mariana', 'Rafael'];
+  let itens = ['balas', 'figurinhas', 'livros', 'bombons', 'laranjas', 'canetas', 'pães', 'adesivos', 'lápis', 'moedas', 'cartas'];
   
   for(let i=0; i<10; i++){
     let nome = nomes[Math.floor(Math.random() * nomes.length)];
     let item = itens[Math.floor(Math.random() * itens.length)];
-    let tipo = Math.floor(Math.random() * 4);
     let text = '', expected = 0;
-    let min = 10, max = 50;
-    if(diff === 'medium') { min = 30; max = 150; }
-    if(diff === 'hard') { min = 100; max = 500; }
 
-    if(tipo === 0){
-      let n1 = Math.floor(Math.random() * max) + min; let n2 = Math.floor(Math.random() * max) + min;
-      text = `${nome} tinha ${n1} ${item} e ganhou mais ${n2} ${item}. Com quantos ${item} ${nome} ficou no total?`; expected = n1 + n2;
-    } else if(tipo === 1){
-      let n1 = Math.floor(Math.random() * max) + min + 20; let n2 = Math.floor(Math.random() * (n1 - 5)) + 5;
-      text = `${nome} tinha ${n1} ${item} e deu ${n2} ${item} para o colega. Quantos ${item} ${nome} tem agora?`; expected = n1 - n2;
-    } else if(tipo === 2){
-      let n1 = diff === 'easy' ? (Math.floor(Math.random() * 6) + 2) : (Math.floor(Math.random() * 15) + 5);
-      let n2 = diff === 'easy' ? (Math.floor(Math.random() * 6) + 2) : (Math.floor(Math.random() * 10) + 3);
-      text = `${nome} comprou ${n1} caixas. Cada caixa tem ${n2} ${item}. Quantos ${item} há no total?`; expected = n1 * n2;
+    if(grade <= 2){
+      let tipo = Math.floor(Math.random() * 3);
+      let max = grade === 1 ? (diff === 'easy' ? 10 : 18) : (diff === 'easy' ? 25 : 60);
+      if(tipo === 0){
+        let n1 = Math.floor(Math.random() * max) + 2;
+        let n2 = Math.floor(Math.random() * max) + 1;
+        text = `${nome} tinha ${n1} ${item} e ganhou mais ${n2}. Com quantos ${item} ${nome} ficou ao todo?`;
+        expected = n1 + n2;
+      } else if(tipo === 1){
+        let n1 = Math.floor(Math.random() * max) + 6;
+        let n2 = Math.floor(Math.random() * (n1 - 2)) + 1;
+        text = `${nome} tinha ${n1} ${item} e deu ${n2} para um amigo. Quantos ${item} sobraram?`;
+        expected = n1 - n2;
+      } else {
+        let n1 = Math.floor(Math.random() * 8) + 2;
+        text = `${nome} tem ${n1} ${item} e ${nomes[(i+1)%nomes.length]} tem o DOBRO dessa quantidade. Quantos ${item} o amigo tem?`;
+        expected = n1 * 2;
+      }
+    } else if(grade <= 5){
+      let tipo = Math.floor(Math.random() * 4);
+      let min = grade === 3 ? 10 : (grade === 4 ? 20 : 30);
+      let max = grade === 3 ? 60 : (grade === 4 ? 120 : 250);
+      if(diff === 'hard') { min *= 2; max *= 3; }
+
+      if(tipo === 0){
+        let n1 = Math.floor(Math.random() * max) + min; let n2 = Math.floor(Math.random() * max) + min;
+        text = `${nome} tinha ${n1} ${item} e ganhou mais ${n2} ${item}. Com quantos ${item} ${nome} ficou no total?`; expected = n1 + n2;
+      } else if(tipo === 1){
+        let n1 = Math.floor(Math.random() * max) + min + 20; let n2 = Math.floor(Math.random() * (n1 - 5)) + 5;
+        text = `${nome} tinha ${n1} ${item} e deu ${n2} ${item} para o colega. Quantos ${item} ${nome} tem agora?`; expected = n1 - n2;
+      } else if(tipo === 2){
+        let n1 = diff === 'easy' ? (Math.floor(Math.random() * 6) + 2) : (Math.floor(Math.random() * 15) + 4);
+        let n2 = diff === 'easy' ? (Math.floor(Math.random() * 6) + 2) : (Math.floor(Math.random() * 10) + 3);
+        text = `${nome} comprou ${n1} caixas. Cada caixa tem ${n2} ${item}. Quantos ${item} há no total?`; expected = n1 * n2;
+      } else {
+        let div = diff === 'easy' ? (Math.floor(Math.random() * 4) + 2) : (Math.floor(Math.random() * 8) + 2);
+        let q = diff === 'easy' ? (Math.floor(Math.random() * 10) + 5) : (Math.floor(Math.random() * 30) + 10);
+        let total = div * q;
+        text = `${nome} organizou ${total} ${item} igualmente em ${div} prateleiras. Quantos ${item} ficaram em cada prateleira?`; expected = q;
+      }
+    } else if(grade <= 7){
+      let tipo = Math.floor(Math.random() * 4);
+      if(tipo === 0){
+        let pcts = [10, 20, 25, 50];
+        let p = pcts[Math.floor(Math.random() * pcts.length)];
+        let base = (Math.floor(Math.random() * 8) + 2) * 100;
+        let desc = (base * p) / 100;
+        text = `Uma bicicleta custa R$ ${base},00. Na compra à vista há ${p}% de desconto. Qual será o valor final com desconto (em reais)?`;
+        expected = base - desc;
+      } else if(tipo === 1){
+        let t1 = -(Math.floor(Math.random() * 8) + 2);
+        let subiu = Math.floor(Math.random() * 15) + 6;
+        text = `De madrugada, os termômetros marcavam ${t1}°C. Durante a tarde, a temperatura subiu ${subiu}°C. Qual temperatura foi registrada à tarde?`;
+        expected = t1 + subiu;
+      } else if(tipo === 2){
+        let den = [2, 3, 4, 5][Math.floor(Math.random() * 4)];
+        let res = (Math.floor(Math.random() * 12) + 4) * 5;
+        let total = den * res;
+        text = `De uma coleção de ${total} ${item}, ${nome} já organizou 1/${den} (um ${den === 2 ? 'meio' : (den === 3 ? 'terço' : (den === 4 ? 'quarto' : 'quinto'))}). Quantos ${item} já foram organizados?`;
+        expected = res;
+      } else {
+        let dist = (Math.floor(Math.random() * 5) + 2) * 60;
+        let horas = Math.floor(Math.random() * 3) + 2;
+        text = `Um carro percorreu ${dist * horas} km em ${horas} horas mantendo velocidade constante. Qual foi a velocidade média (em km/h)?`;
+        expected = dist;
+      }
     } else {
-      let div = diff === 'easy' ? (Math.floor(Math.random() * 4) + 2) : (Math.floor(Math.random() * 7) + 2);
-      let q = diff === 'easy' ? (Math.floor(Math.random() * 10) + 5) : (Math.floor(Math.random() * 30) + 10);
-      let total = div * q;
-      text = `${nome} organizou ${total} ${item} em ${div} prateleiras. Quantos ${item} em cada prateleira?`; expected = q;
+      let tipo = Math.floor(Math.random() * 3);
+      if(tipo === 0){
+        let cap = (Math.floor(Math.random() * 8) + 2) * 500;
+        let taxa = 2;
+        let meses = Math.floor(Math.random() * 5) + 2;
+        let juros = (cap * taxa * meses) / 100;
+        text = `${nome} aplicou R$ ${cap},00 a juros simples de ${taxa}% ao mês durante ${meses} meses. Quanto recebeu APENAS de juros (em reais)?`;
+        expected = juros;
+      } else if(tipo === 1){
+        let xVal = Math.floor(Math.random() * 12) + 4;
+        let soma = Math.floor(Math.random() * 15) + 5;
+        let total = (3 * xVal) + soma;
+        text = `O triplo de um número somado com ${soma} é igual a ${total}. Qual é esse número?`;
+        expected = xVal;
+      } else {
+        let mult = Math.floor(Math.random() * 4) + 1;
+        let c1 = 3 * mult, c2 = 4 * mult, hip = 5 * mult;
+        text = `Um triângulo retângulo possui catetos medindo ${c1} cm e ${c2} cm. Qual é a medida da hipotenusa (em cm)?`;
+        expected = hip;
+      }
     }
 
-    let newItem = { id: String(Date.now() + Math.random()), subject: 'matematica', isProblem: true, title: text, expected: expected, work: "", studentAnswer: "", status: "pending", timeSpent: 0, createdAt: new Date().toISOString() };
+    let newItem = {
+      id: String(Date.now() + Math.random()),
+      subject: 'matematica',
+      gradeLevel: String(grade),
+      isProblem: true,
+      title: text,
+      expected: expected,
+      work: "",
+      studentAnswer: "",
+      status: "pending",
+      timeSpent: 0,
+      createdAt: new Date().toISOString()
+    };
     newItem.hint = getAutomaticHint(newItem);
     newItem.searchQuery = getYouTubeSearchQuery(newItem);
     currentProblemBatch.push(newItem);
   }
-  renderProblemBatchPreview();
+  renderProblemBatchPreview(grade);
 }
 
-function removeProblemBatchItem(index){ playClickSound(); currentProblemBatch.splice(index, 1); renderProblemBatchPreview(); }
+function removeProblemBatchItem(index){
+  playClickSound();
+  let grade = currentProblemBatch[index] ? currentProblemBatch[index].gradeLevel : document.getElementById('probGrade').value;
+  currentProblemBatch.splice(index, 1);
+  renderProblemBatchPreview(grade);
+}
 
-function renderProblemBatchPreview(){
+function renderProblemBatchPreview(grade){
   let container = document.getElementById('problemBatchPreview');
   if(!currentProblemBatch.length){ container.innerHTML = '<p class="muted">Nenhum lote gerado.</p>'; return; }
+  let gLabel = getGradeLabel(grade || currentProblemBatch[0].gradeLevel);
   container.innerHTML = `
-    <h3 style="font-size:15px; color:#0277bd; margin-bottom:8px;">Revise os ${currentProblemBatch.length} Probleminhas Gerados:</h3>
+    <h3 style="font-size:15px; color:#0277bd; margin-bottom:8px;">Revise os ${currentProblemBatch.length} Probleminhas (${gLabel}):</h3>
     <div style="max-height:220px; overflow-y:auto; border:1px solid #b9e2fc; border-radius:12px; padding:10px; background:var(--card-bg);">
       ${currentProblemBatch.map((item, idx) => `
         <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid rgba(0,0,0,0.05); gap:10px;">
@@ -1558,7 +2493,7 @@ function renderProblemBatchPreview(){
       `).join('')}
     </div>
     <div class="actions" style="margin-top:12px;">
-      <button type="button" class="primary" style="background:#2e7d32; width:100%;" onclick="sendProblemBatchToStudent()">🚀 Enviar Probleminhas (${currentProblemBatch.length})</button>
+      <button type="button" class="primary" style="background:#2e7d32; width:100%;" onclick="sendProblemBatchToStudent()">🚀 Enviar Probleminhas do ${gLabel} (${currentProblemBatch.length})</button>
     </div>
   `;
 }
@@ -1575,77 +2510,160 @@ function sendProblemBatchToStudent(){
 function generateBatch(){
   playClickSound();
   currentBatch = [];
+  let grade = parseInt(document.getElementById('calcGrade').value, 10) || 5;
   let diff = document.getElementById('calcDifficulty').value;
   let selectedOp = document.getElementById('calcType').value;
-  let ops = selectedOp === 'all' ? ['÷', 'x', '-', '+'] : [selectedOp];
+
+  let defaultOps = ['÷', 'x', '-', '+'];
+  if(grade === 1) defaultOps = ['+', '-'];
+  else if(grade === 2) defaultOps = ['+', '-', 'x'];
+  else if(grade >= 6) defaultOps = ['÷', 'x', '-', '+', 'extra'];
+
+  let ops = selectedOp === 'all' ? defaultOps : [selectedOp];
 
   for(let i=0; i<10; i++){
     let opMode = ops[Math.floor(Math.random() * ops.length)];
-    let n1, n2, expected;
+    let n1 = 0, n2 = 0, expected = 0, customTitle = "";
 
-    if(opMode === '÷') {
-      if(diff === 'easy') {
-        n2 = Math.floor(Math.random() * 8) + 2;
-        expected = Math.floor(Math.random() * 10) + 2;
+    if(opMode === 'extra'){
+      if(grade <= 6){
+        let mode6 = Math.floor(Math.random() * 3);
+        if(mode6 === 0){
+          let base = Math.floor(Math.random() * 9) + 2;
+          let exp = diff === 'hard' ? 3 : 2;
+          customTitle = `Calcule a potência: ${base}${exp === 2 ? '²' : '³'}`;
+          expected = Math.pow(base, exp);
+        } else if(mode6 === 1){
+          let pct = [10, 20, 25, 50][Math.floor(Math.random() * 4)];
+          let val = (Math.floor(Math.random() * 9) + 1) * 100;
+          customTitle = `Quanto é ${pct}% de ${val}?`;
+          expected = (val * pct) / 100;
+        } else {
+          let a = Math.floor(Math.random() * 15) + 5;
+          let b = Math.floor(Math.random() * 6) + 2;
+          let c = Math.floor(Math.random() * 4) + 2;
+          customTitle = `Resolva a expressão: (${a} + ${b}) × ${c}`;
+          expected = (a + b) * c;
+        }
+      } else if(grade === 7){
+        if(Math.random() < 0.5){
+          let a = -(Math.floor(Math.random() * 25) + 5);
+          let b = Math.floor(Math.random() * 40) + 10;
+          customTitle = `Resolva com números inteiros: (${a}) + ${b}`;
+          expected = a + b;
+        } else {
+          let x = Math.floor(Math.random() * 15) + 3;
+          let b = Math.floor(Math.random() * 20) + 4;
+          customTitle = `Descubra o valor de x:  x + ${b} = ${x + b}`;
+          expected = x;
+        }
+      } else {
+        if(Math.random() < 0.5){
+          let r = Math.floor(Math.random() * 14) + 3;
+          customTitle = `Calcule a raiz quadrada: √${r * r}`;
+          expected = r;
+        } else {
+          let x = Math.floor(Math.random() * 12) + 2;
+          let a = Math.floor(Math.random() * 4) + 2;
+          let b = Math.floor(Math.random() * 15) + 1;
+          customTitle = `Resolva a equação: ${a}x - ${b} = ${(a * x) - b}`;
+          expected = x;
+        }
+      }
+    } else if(opMode === '÷') {
+      if(grade <= 3 || diff === 'easy') {
+        n2 = Math.floor(Math.random() * 7) + 2;
+        expected = Math.floor(Math.random() * 9) + 2;
         n1 = n2 * expected;
-      } else if(diff === 'medium') {
+      } else if(grade <= 5 || diff === 'medium') {
         n2 = Math.floor(Math.random() * 10) + 2;
         expected = Math.floor(Math.random() * 30) + 10;
         n1 = n2 * expected;
       } else {
-        n2 = Math.floor(Math.random() * 8) + 3;
+        n2 = Math.floor(Math.random() * 14) + 4;
         expected = Math.floor(Math.random() * 200) + 50;
         n1 = n2 * expected;
       }
     } else if(opMode === 'x') {
-      if(diff === 'easy') {
+      if(grade <= 2) {
+        n1 = Math.floor(Math.random() * 9) + 1;
+        n2 = Math.floor(Math.random() * 4) + 2;
+      } else if(grade === 3 || diff === 'easy') {
         n1 = Math.floor(Math.random() * 10) + 2;
         n2 = Math.floor(Math.random() * 10) + 2;
-      } else if(diff === 'medium') {
+      } else if(grade <= 5 || diff === 'medium') {
         n1 = Math.floor(Math.random() * 50) + 10;
         n2 = Math.floor(Math.random() * 9) + 2;
       } else {
-        n1 = Math.floor(Math.random() * 200) + 20;
-        n2 = Math.floor(Math.random() * 20) + 5;
+        n1 = Math.floor(Math.random() * 250) + 25;
+        n2 = Math.floor(Math.random() * 25) + 6;
       }
       expected = n1 * n2;
     } else if(opMode === '+') {
-      if(diff === 'easy') { n1 = Math.floor(Math.random() * 50) + 10; n2 = Math.floor(Math.random() * 50) + 10; }
-      else if(diff === 'medium') { n1 = Math.floor(Math.random() * 500) + 100; n2 = Math.floor(Math.random() * 500) + 100; }
-      else { n1 = Math.floor(Math.random() * 2000) + 500; n2 = Math.floor(Math.random() * 2000) + 500; }
+      if(grade === 1) { n1 = Math.floor(Math.random() * 10) + 1; n2 = Math.floor(Math.random() * 10) + 1; }
+      else if(grade === 2) { n1 = Math.floor(Math.random() * 45) + 5; n2 = Math.floor(Math.random() * 45) + 5; }
+      else if(grade === 3 || diff === 'easy') { n1 = Math.floor(Math.random() * 80) + 10; n2 = Math.floor(Math.random() * 80) + 10; }
+      else if(grade <= 5 || diff === 'medium') { n1 = Math.floor(Math.random() * 500) + 100; n2 = Math.floor(Math.random() * 500) + 100; }
+      else { n1 = Math.floor(Math.random() * 3000) + 500; n2 = Math.floor(Math.random() * 3000) + 500; }
       expected = n1 + n2;
     } else if(opMode === '-') {
-      if(diff === 'easy') { n1 = Math.floor(Math.random() * 80) + 20; n2 = Math.floor(Math.random() * n1) + 1; }
-      else if(diff === 'medium') { n1 = Math.floor(Math.random() * 800) + 200; n2 = Math.floor(Math.random() * n1) + 10; }
-      else { n1 = Math.floor(Math.random() * 5000) + 1000; n2 = Math.floor(Math.random() * n1) + 100; }
+      if(grade === 1) { n1 = Math.floor(Math.random() * 15) + 5; n2 = Math.floor(Math.random() * n1) + 1; }
+      else if(grade === 2) { n1 = Math.floor(Math.random() * 70) + 15; n2 = Math.floor(Math.random() * n1) + 1; }
+      else if(grade === 3 || diff === 'easy') { n1 = Math.floor(Math.random() * 120) + 20; n2 = Math.floor(Math.random() * n1) + 1; }
+      else if(grade <= 5 || diff === 'medium') { n1 = Math.floor(Math.random() * 800) + 200; n2 = Math.floor(Math.random() * n1) + 10; }
+      else { n1 = Math.floor(Math.random() * 6000) + 1000; n2 = Math.floor(Math.random() * n1) + 100; }
       expected = n1 - n2;
     }
 
-    let newItem = { id: String(Date.now() + Math.random()), subject: 'matematica', isProblem: false, type: opMode, n1, n2, expected, work: "", studentAnswer: "", status: "pending", timeSpent: 0, createdAt: new Date().toISOString() };
+    let newItem = {
+      id: String(Date.now() + Math.random()),
+      subject: 'matematica',
+      gradeLevel: String(grade),
+      isProblem: Boolean(customTitle),
+      title: customTitle || "",
+      type: customTitle ? 'extra' : opMode,
+      n1,
+      n2,
+      expected,
+      work: "",
+      studentAnswer: "",
+      status: "pending",
+      timeSpent: 0,
+      createdAt: new Date().toISOString()
+    };
     newItem.hint = getAutomaticHint(newItem);
     newItem.searchQuery = getYouTubeSearchQuery(newItem);
     currentBatch.push(newItem);
   }
-  renderBatchPreview();
+  renderBatchPreview(grade);
 }
 
-function removeBatchItem(index){ playClickSound(); currentBatch.splice(index, 1); renderBatchPreview(); }
+function removeBatchItem(index){
+  playClickSound();
+  let grade = currentBatch[index] ? currentBatch[index].gradeLevel : document.getElementById('calcGrade').value;
+  currentBatch.splice(index, 1);
+  renderBatchPreview(grade);
+}
 
-function renderBatchPreview(){
+function renderBatchPreview(grade){
   let container = document.getElementById('batchPreviewContainer');
   if(!currentBatch.length){ container.innerHTML = '<p class="muted">Nenhum lote gerado.</p>'; return; }
+  let gLabel = getGradeLabel(grade || currentBatch[0].gradeLevel);
   container.innerHTML = `
-    <h3 style="font-size:15px; color:#0277bd; margin-bottom:8px;">Revise as ${currentBatch.length} Contas:</h3>
+    <h3 style="font-size:15px; color:#0277bd; margin-bottom:8px;">Revise as ${currentBatch.length} Contas (${gLabel}):</h3>
     <div style="max-height:220px; overflow-y:auto; border:1px solid #b9e2fc; border-radius:12px; padding:10px; background:var(--card-bg);">
-      ${currentBatch.map((item, idx) => `
+      ${currentBatch.map((item, idx) => {
+        let label = item.title ? item.title : `${formatBR(item.n1)} ${item.type} ${formatBR(item.n2)}`;
+        return `
         <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; border-bottom:1px solid rgba(0,0,0,0.05);">
-          <span><b>${idx+1}.</b> ${formatBR(item.n1)} ${item.type} ${formatBR(item.n2)} <span style="color:#16a085; font-size:12px; font-weight:bold;">(= ${formatBR(item.expected)})</span></span>
+          <span><b>${idx+1}.</b> ${label} <span style="color:#16a085; font-size:12px; font-weight:bold;">(= ${formatBR(item.expected)})</span></span>
           <button type="button" class="warn" style="padding:4px 10px; font-size:12px;" onclick="removeBatchItem(${idx})">Remover</button>
         </div>
-      `).join('')}
+      `;
+      }).join('')}
     </div>
     <div class="actions" style="margin-top:12px;">
-      <button type="button" class="primary" style="background:#2e7d32; width:100%;" onclick="sendBatchToStudent()">🚀 Enviar Lote de Contas</button>
+      <button type="button" class="primary" style="background:#2e7d32; width:100%;" onclick="sendBatchToStudent()">🚀 Enviar Contas do ${gLabel} (${currentBatch.length})</button>
     </div>
   `;
 }
@@ -1758,7 +2776,8 @@ function updateProgressUI(){
 function renderLists(){
   let pPending = document.getElementById('parentListPending');
   let pOutros = document.getElementById('parentList');
-  let s = document.getElementById('studentList');
+  let sPending = document.getElementById('studentListPending');
+  let sCompleted = document.getElementById('studentListCompleted');
   
   if(pPending && pOutros){
     let pendentes = state.items.filter(x => x.status === 'submitted');
@@ -1769,7 +2788,8 @@ function renderLists(){
     } else {
       pPending.innerHTML = pendentes.map(x => {
         let meta = getSubjectMeta(x.subject);
-        let badge = `<span class="subject-badge" style="background:${meta.bg}; color:${meta.color};">${meta.label}</span><br>`;
+        let gPill = x.gradeLevel ? `<span class="grade-pill">${x.gradeLevel}º Ano</span>` : '';
+        let badge = `<span class="subject-badge" style="background:${meta.bg}; color:${meta.color};">${meta.label}</span>${gPill}<br>`;
         let desc = x.isProblem || x.title ? x.title : `${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
         if(x.prize) desc += ` <span style="color:#d81b60; font-weight:bold;">(🎁 Brinde: ${x.prize})</span>`;
         let mathAns = `<span style="background:#e8f8f5; color:#16a085; padding:2px 8px; border-radius:6px; font-weight:bold; border:1px solid #a3e4d7;">⚡ Gabarito: ${formatBR(x.expected)}</span>`;
@@ -1793,7 +2813,8 @@ function renderLists(){
     } else {
       pOutros.innerHTML = outros.map(x => {
         let meta = getSubjectMeta(x.subject);
-        let badge = `<span class="subject-badge" style="background:${meta.bg}; color:${meta.color};">${meta.label}</span> `;
+        let gPill = x.gradeLevel ? `<span class="grade-pill">${x.gradeLevel}º Ano</span>` : '';
+        let badge = `<span class="subject-badge" style="background:${meta.bg}; color:${meta.color};">${meta.label}</span>${gPill} `;
         let desc = x.isProblem || x.title ? x.title : `${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
         if(x.prize) desc += ` <span style="color:#d81b60; font-weight:bold;">(🎁 Brinde: ${x.prize})</span>`;
         let mathAns = `<span style="font-size:12px; color:#555;">(Gabarito: <b>${formatBR(x.expected)}</b>)</span>`;
@@ -1816,17 +2837,20 @@ function renderLists(){
     }
   }
   
-  if(s){
+  if(sPending && sCompleted){
     let filterEl = document.getElementById('studentSubjectFilter');
     let subjFilter = filterEl ? filterEl.value : 'all';
-    let filteredItems = state.items.filter(x => x.status !== 'correct' && (subjFilter === 'all' || (x.subject || 'matematica') === subjFilter));
+    
+    let pendingItems = state.items.filter(x => x.status !== 'correct' && (subjFilter === 'all' || (x.subject || 'matematica') === subjFilter));
+    let completedItems = state.items.filter(x => x.status === 'correct' && (subjFilter === 'all' || (x.subject || 'matematica') === subjFilter));
 
-    if(!filteredItems.length){
-      s.innerHTML='<p class="muted" style="text-align:center; padding:15px;">🎉 Tudo concluído por aqui! Aguarde novas tarefas.</p>';
+    if(!pendingItems.length){
+      sPending.innerHTML='<p class="muted" style="text-align:center; padding:10px;">🎉 Nenhum desafio pendente por aqui!</p>';
     } else {
-      s.innerHTML = filteredItems.map(x => {
+      sPending.innerHTML = pendingItems.map(x => {
         let meta = getSubjectMeta(x.subject);
-        let badge = `<span class="subject-badge" style="background:${meta.bg}; color:${meta.color};">${meta.label}</span><br>`;
+        let gPill = x.gradeLevel ? `<span class="grade-pill">${x.gradeLevel}º Ano</span>` : '';
+        let badge = `<span class="subject-badge" style="background:${meta.bg}; color:${meta.color};">${meta.label}</span>${gPill}<br>`;
         let desc = x.isProblem || x.title ? x.title : `${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
         let itemClass = "listitem";
         
@@ -1837,7 +2861,7 @@ function renderLists(){
         
         if(x.status === 'submitted') {
           return `<div class="listitem" style="background:#f3e5f5; border-color:#ce93d8; color:#333;">
-            <div>${badge}<b>${desc}</b><div style="color:#8e24aa; font-weight:bold; margin-top:4px;">⏳ Aguardando correção...</div></div>
+            <div>${badge}<b>${desc}</b><div style="color:#8e24aa; font-weight:bold; margin-top:4px;">⏳ Aguardando correção do professor...</div></div>
           </div>`;
         } else if (x.status === 'incorrect') {
           return `<div class="listitem" style="background:#ffebee; border-color:#ef9a9a; color:#333;">
@@ -1850,6 +2874,20 @@ function renderLists(){
             <button type="button" class="primary" onclick="playClickSound(); openStudentChallenge('${x.id}')">Responder 🧑‍🏫</button>
           </div>`;
         }
+      }).join('');
+    }
+
+    if(!completedItems.length){
+      sCompleted.innerHTML='<p class="muted" style="text-align:center; padding:10px;">Nenhum exercício concluído ainda nesta categoria.</p>';
+    } else {
+      sCompleted.innerHTML = completedItems.map(x => {
+        let meta = getSubjectMeta(x.subject);
+        let gPill = x.gradeLevel ? `<span class="grade-pill">${x.gradeLevel}º Ano</span>` : '';
+        let badge = `<span class="subject-badge" style="background:${meta.bg}; color:${meta.color};">${meta.label}</span>${gPill}`;
+        let desc = x.isProblem || x.title ? x.title : `${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
+        return `<div class="listitem" style="background:#ffffff; border-color:#c8e6c9; opacity:0.85;">
+          <div>${badge} <b style="text-decoration:line-through; color:#555;">${desc}</b><div style="color:#2e7d32; font-size:12px; font-weight:bold; margin-top:2px;">⭐ Concluído e Certo (+10⭐)</div></div>
+        </div>`;
       }).join('');
     }
   }
@@ -1865,7 +2903,6 @@ function openStudentChallenge(id){
   let x = state.items.find(v => String(v.id) === String(id));
   if(!x) return;
 
-  // GARANTE QUE QUALQUER TAREFA DE MATEMÁTICA (CONTA OU PROBLEMINHA DE QUALQUER OPERAÇÃO) ABRE A LOUSA DE TELA CHEIA
   if(!x.subject || x.subject === 'matematica'){
     openChalkboard(id);
   } else {
@@ -1885,14 +2922,25 @@ function openTheoryModal(id){
   badgeEl.style.background = meta.bg;
   badgeEl.style.color = meta.color;
 
+  let gradeBadge = document.getElementById('theoryGradeBadge');
+  if(gradeBadge){
+    if(x.gradeLevel){
+      gradeBadge.textContent = `${x.gradeLevel}º Ano`;
+      gradeBadge.classList.remove('hidden');
+    } else {
+      gradeBadge.classList.add('hidden');
+    }
+  }
+
   document.getElementById('theoryQuestionTitle').textContent = x.title;
   
   let container = document.getElementById('theoryOptionsContainer');
   let shuffledOpts = [...(x.options || [])].sort(() => 0.5 - Math.random());
   
-  container.innerHTML = shuffledOpts.map(opt => `
-    <button type="button" class="theory-option-btn" onclick="playClickSound(); submitTheoryAnswer('${opt.replace(/'/g, "\\'")}')">${opt}</button>
-  `).join('');
+  container.innerHTML = shuffledOpts.map(opt => {
+    let safeAttr = String(opt).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+    return `<button type="button" class="theory-option-btn" data-opt="${safeAttr}" onclick="playClickSound(); submitTheoryAnswer(this.getAttribute('data-opt'))">${opt}</button>`;
+  }).join('');
 
   document.getElementById('theoryModal').classList.remove('hidden');
 }
@@ -1910,7 +2958,7 @@ function showTheoryHint(){
 
 function openTheoryYouTube(){
   if(!activeTheoryItem) return;
-  let url = `https://www.youtube.com/results?search_query=${encodeURIComponent(activeTheoryItem.searchQuery || "aula 5 ano")}`;
+  let url = `https://www.youtube.com/results?search_query=${encodeURIComponent(activeTheoryItem.searchQuery || "aula ensino fundamental")}`;
   window.open(url, '_blank');
 }
 
@@ -1936,9 +2984,9 @@ function openChalkboard(id){
   if(!x) return;
 
   let meta = getSubjectMeta(x.subject);
-  document.getElementById('cbProblemLabel').textContent = x.prize ? `🎁 Valendo (${x.prize}):` : `${meta.label}:`;
+  let gradeTxt = x.gradeLevel ? ` (${x.gradeLevel}º Ano)` : '';
+  document.getElementById('cbProblemLabel').textContent = x.prize ? `🎁 Valendo (${x.prize}):` : `${meta.label}${gradeTxt}:`;
   
-  // EXIBE PERFEITAMENTE O PROBLEMINHA OU A CONTA NA BARRA SUPERIOR DA LOUSA
   let titleText = x.title ? x.title : `${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
   document.getElementById('cbProblemTitle').textContent = titleText;
   
@@ -1949,7 +2997,6 @@ function openChalkboard(id){
   }
 
   let ansInput = document.getElementById('cbDirectAnswer');
-  ansInput.setAttribute('inputmode', 'numeric');
   ansInput.placeholder = "Ex: 12";
   
   if(!x.hint) x.hint = getAutomaticHint(x);
@@ -2004,7 +3051,7 @@ function startTabuadaQuiz(){
 
 function generateQuizQuestion(){
   let mode = document.getElementById('trainTableNum').value;
-  let num = mode === 'random' ? Math.floor(Math.random() * 9) + 2 : parseInt(mode);
+  let num = mode === 'random' ? Math.floor(Math.random() * 10) + 1 : parseInt(mode);
   let val2 = Math.floor(Math.random() * 10) + 1;
   quizData.num = num; quizData.val2 = val2; quizData.expected = num * val2;
   document.getElementById('quizQuestion').textContent = `Quanto é ${num} × ${val2}?`;
@@ -2065,7 +3112,7 @@ function setupCbCanvas(itemX){
   cbCanvas.onpointerdown = e => {
     cbDrawing = true; cbCanvas.setPointerCapture(e.pointerId);
     hasDrawnOnBoard = true; 
-    cbSnapshots.push(cbCanvas.toDataURL('image/png'));
+    cbSnapshots.push(cbCanvas.toDataURL('image/jpeg', 0.55));
     if(cbSnapshots.length > 8) cbSnapshots.shift(); 
     let r = cbCanvas.getBoundingClientRect();
     cbCtx.beginPath(); cbCtx.moveTo(e.clientX - r.left, e.clientY - r.top);
@@ -2101,7 +3148,7 @@ function cbUndo(){
 }
 function cbClear(){ 
   if(!confirm('Limpar lousa?')) return; 
-  cbSnapshots.push(cbCanvas.toDataURL('image/png'));
+  cbSnapshots.push(cbCanvas.toDataURL('image/jpeg', 0.55));
   cbCtx.fillStyle = '#1b4332'; cbCtx.fillRect(0, 0, cbCanvas.width, cbCanvas.height);
   hasDrawnOnBoard = false; 
 }
@@ -2115,7 +3162,7 @@ function submitToDad(){
   if(!rawVal){ alert('Digite a resposta antes de entregar!'); return; }
 
   x.studentAnswer = rawVal;
-  x.work = hasDrawnOnBoard ? cbCanvas.toDataURL('image/png') : ""; 
+  x.work = hasDrawnOnBoard ? cbCanvas.toDataURL('image/jpeg', 0.55) : ""; 
   x.status = 'submitted'; 
   if(timerInterval) clearInterval(timerInterval);
   x.timeSpent = timerSeconds; 
@@ -2140,7 +3187,8 @@ function viewWork(id){
   if(queueLabel) queueLabel.textContent = x.status === 'submitted' ? `📋 Pendentes na fila: ${pendentesCount}` : '';
   
   let meta = getSubjectMeta(x.subject);
-  document.getElementById('modalTitle').textContent = `Correção — ${meta.label}`;
+  let gradeTxt = x.gradeLevel ? ` (${x.gradeLevel}º Ano)` : '';
+  document.getElementById('modalTitle').textContent = `Correção — ${meta.label}${gradeTxt}`;
   let titleHeader = x.isProblem || x.title ? x.title : `${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
   if(x.prize) titleHeader += ` (🎁 Brinde: ${x.prize})`;
   document.getElementById('parentProblemHeader').textContent = titleHeader;
@@ -2159,7 +3207,7 @@ function viewWork(id){
   document.getElementById('btnQuickRight').onclick = function() { markAsCorrect(id, true); };
   document.getElementById('btnQuickWrong').onclick = function() { markAsIncorrect(id, true); };
   
-  document.getElementById('quickCorrectBar').style.display = (x.status !== 'submitted') ? 'flex' : 'flex';
+  document.getElementById('quickCorrectBar').style.display = 'flex';
 
   let canvasWrapper = document.getElementById('parentCanvasWrapper');
   if(x.work && typeof x.work === 'string' && x.work.startsWith('data:image')){
