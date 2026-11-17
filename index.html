@@ -28,6 +28,7 @@ button.primary,button.soft,button.warn,button.success{border:0;border-radius:12p
 .tab-btn.active{background:var(--header-grad);color:#fff}
 .subject-badge{display:inline-block;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:800;margin-bottom:4px;text-transform:uppercase}
 .grade-pill{display:inline-block;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:800;background:#fff3e0;color:#e65100;border:1px solid #ffcc80;margin-left:5px}
+.count-pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:800;margin-left:6px;vertical-align:middle}
 .listitem{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;margin:8px 0}
 .listitem.submitted{background:#fffde7;border-color:#fbc02d;color:#333}
 .hidden{display:none!important}
@@ -169,10 +170,10 @@ button.primary,button.soft,button.warn,button.success{border:0;border-radius:12p
   </div>
 </div>
 
-<!-- PAINEL DO PROFESSOR -->
+<!-- PAINEL DO PROFESSOR (PAI) -->
 <section id="parentPanel" class="hidden">
   <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-    <div><h2 id="parentPanelTitle" style="margin:0">👨‍🏫 Sala do Professor</h2><p class="muted" style="margin:3px 0 0">Tarefas finalizadas somem após 5 dias para manter o app leve, mantendo estrelas e histórico.</p></div>
+    <div><h2 id="parentPanelTitle" style="margin:0">👨‍🏫 Sala do Professor</h2><p class="muted" style="margin:3px 0 0">Acompanhe separadamente o que falta fazer, o que aguarda correção e o que já foi finalizado.</p></div>
     <button type="button" class="warn" onclick="logout()">Sair</button>
   </div>
 
@@ -198,22 +199,25 @@ button.primary,button.soft,button.warn,button.success{border:0;border-radius:12p
   <div id="tabContent_geral" class="parent-tab-section">
     <!-- 1. AGUARDANDO CORREÇÃO -->
     <div class="card" style="background:#fffde7;border:3px solid #fbc02d">
-      <h2 style="color:#f57f17">⚠️ 1. Aguardando Sua Correção</h2>
+      <h2 style="color:#f57f17">⚠️ 1. Aguardando Sua Correção <span id="badgeParentPending" class="count-pill" style="background:#fbc02d;color:#333">0</span></h2>
+      <p class="muted" style="margin-top:-4px">Tarefas que ela já respondeu e enviou para você corrigir:</p>
       <div id="parentListPending"></div>
     </div>
 
-    <!-- 2. PENDENTES / EM ANDAMENTO COM O ALUNO -->
-    <div class="card" style="background:#f3f8ff;border:2px solid #90caf9">
-      <h2 style="color:#1565c0">⏳ 2. Enviadas / Pendentes com o Aluno (Não Feitas)</h2>
+    <!-- 2. O QUE ELA TEM PARA FAZER AINDA (PENDENTES / NÃO FEITAS) -->
+    <div class="card" style="background:#f3f8ff;border:2px solid #64b5f6">
+      <h2 style="color:#1565c0">⏳ 2. O que ela tem para fazer ainda (Não Feitas) <span id="badgeParentActive" class="count-pill" style="background:#bbdefb;color:#0d47a1">0</span></h2>
+      <p class="muted" style="margin-top:-4px">Tarefas enviadas que ainda estão no caderno dela aguardando resposta:</p>
       <div id="parentListActive"></div>
     </div>
 
-    <!-- 3. FINALIZADAS (ÚLTIMOS 5 DIAS) -->
-    <div class="card" style="background:#f4fbf7;border:2px solid #a5d6a7">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px">
-        <h2 style="color:#2e7d32;margin:0">✅ 3. Finalizadas / Corrigidas (Últimos 5 Dias)</h2>
+    <!-- 3. O QUE ELA JÁ FEZ (FINALIZADAS NOS ÚLTIMOS 5 DIAS) -->
+    <div class="card" style="background:#f4fbf7;border:2px solid #81c784">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:4px">
+        <h2 style="color:#2e7d32;margin:0">✅ 3. O que ela já fez / Finalizadas (Últimos 5 Dias) <span id="badgeParentDone" class="count-pill" style="background:#c8e6c9;color:#1b5e20">0</span></h2>
         <button type="button" class="soft" style="padding:6px 12px;font-size:12px" onclick="window.print()">🖨️ Imprimir</button>
       </div>
+      <p class="muted" style="margin-top:0">Somem desta lista automaticamente após 5 dias, mantendo estrelas e placar:</p>
       <div id="parentListDone"></div>
     </div>
 
@@ -289,7 +293,7 @@ button.primary,button.soft,button.warn,button.success{border:0;border-radius:12p
     </div>
   </div>
 
-  <!-- ABAS TEÓRICAS (10 SORTEADAS DE CENTENAS DE VARIAÇÕES) -->
+  <!-- ABAS TEÓRICAS -->
   <div id="tabContent_portugues" class="parent-tab-section hidden">
     <div class="card" style="background:#f3e5f5;border-color:#ce93d8">
       <h2 style="color:#7b1fa2">📚 Gerador de Português (10 sorteadas)</h2>
@@ -389,8 +393,9 @@ button.primary,button.soft,button.warn,button.success{border:0;border-radius:12p
   </div>
 </section>
 
-<!-- PAINEL DO ALUNO -->
+<!-- PAINEL DO ALUNO (SOPHIA) -->
 <section id="studentPanel" class="hidden">
+  <!-- CABEÇALHO DO ALUNO -->
   <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
     <div><h2 id="studentPanelTitle" style="margin:0">⭐ Caderno da Sophia</h2><p class="muted" style="margin:3px 0 0">🔥 Ofensiva: <b id="streakCount" style="color:#d81b60">0</b> dias seguidos!</p></div>
     <div style="display:flex;gap:8px;align-items:center">
@@ -401,48 +406,27 @@ button.primary,button.soft,button.warn,button.success{border:0;border-radius:12p
     </div>
   </div>
 
+  <!-- 1. PRÊMIOS, METAS E MEDALHAS LOGO NO TOPO -->
+  <div class="goal-card">
+    <div class="goal-title">🎁 Seus Prêmios e Metas (<span id="displayStars">0</span> ⭐) — <span id="sophiaPatentBadge">Recruta 🎯</span></div>
+    <div id="studentRewardsContainer"></div>
+    <div style="margin-top:12px;padding-top:10px;border-top:1px dashed #ffb300">
+      <div style="font-size:14px;font-weight:800;color:#01579b;margin-bottom:6px">🏆 Medalhas Conquistadas:</div>
+      <div id="studentBadgesContainer" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"></div>
+    </div>
+  </div>
+
   <div id="studentScreenTimeCard" class="card" style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border-color:#4caf50;text-align:center">
     <div style="font-weight:800;color:#2e7d32">📱 Meta de 1h de Tela: <span id="screenProgressCount" style="color:#d81b60;font-size:18px">0</span> / 10 acertos (Total: <b id="screenHoursTotal">0</b>h)</div>
     <div class="progress-container" style="border-color:#4caf50"><div id="screenProgressBar" class="progress-bar" style="background:#43a047"></div><div id="screenProgressText" class="progress-text" style="color:#1b5e20">0%</div></div>
   </div>
 
-  <div class="goal-card">
-    <div class="goal-title">🎁 Suas Metas (<span id="displayStars">0</span> ⭐) — <span id="sophiaPatentBadge">Recruta 🎯</span></div>
-    <div id="studentRewardsContainer"></div>
-  </div>
-
-  <!-- FILTRO DE MATÉRIA -->
-  <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
-    <select id="studentSubjectFilter" onchange="renderLists()" style="width:auto;padding:8px 12px;font-weight:700">
-      <option value="all">Todas as Matérias</option><option value="matematica">🔢 Matemática</option><option value="portugues">📚 Português</option>
-      <option value="geografia">🌍 Geografia</option><option value="historia">🏛️ História</option><option value="ciencias">🔬 Ciências</option><option value="ingles">🇺🇸 Inglês</option>
-    </select>
-  </div>
-
-  <!-- 1. PARA FAZER -->
-  <div class="card" style="border:3px solid #ffb300;background:#fffdf7">
-    <h2 style="color:#e65100">🎯 1. Para Fazer / Refazer</h2>
-    <div id="studentListPending"></div>
-  </div>
-
-  <!-- 2. AGUARDANDO CORREÇÃO -->
-  <div class="card" style="border:2px solid #ce93d8;background:#fcf7ff">
-    <h2 style="color:#7b1fa2">⏳ 2. Aguardando Professor Corrigir</h2>
-    <div id="studentListSubmitted"></div>
-  </div>
-
-  <!-- 3. CONCLUÍDAS (ÚLTIMOS 5 DIAS) -->
-  <div class="card" style="border:2px solid #a5d6a7;background:#f4fbf7">
-    <h2 style="color:#2e7d32">✨ 3. Finalizadas / Corrigidas (Últimos 5 Dias)</h2>
-    <div id="studentListCompleted"></div>
-  </div>
-
-  <!-- TREINO RELÂMPAGO -->
-  <div class="card" style="background:#e0f2f1;border-color:#26a69a">
+  <!-- 2. TREINO RELÂMPAGO DE TABUADA BEM EM CIMA -->
+  <div class="card" style="background:linear-gradient(135deg,#e0f2f1,#fff8e1);border:2px solid #26a69a">
     <h2 style="color:#00796b">🧠 Treino Relâmpago de Tabuada (+5⭐ por acerto)</h2>
     <div class="row">
-      <select id="trainTableNum"><option value="2">Tabuada do 2</option><option value="3">Tabuada do 3</option><option value="4">Tabuada do 4</option><option value="5">Tabuada do 5</option><option value="6">Tabuada do 6</option><option value="7" selected>Tabuada do 7</option><option value="8">Tabuada do 8</option><option value="9">Tabuada do 9</option><option value="random">🌟 Misturadas</option></select>
-      <button type="button" class="primary" style="background:#26a69a" onclick="startTabuadaQuiz()">🎮 Começar Desafio</button>
+      <select id="trainTableNum"><option value="2">Tabuada do 2</option><option value="3">Tabuada do 3</option><option value="4">Tabuada do 4</option><option value="5">Tabuada do 5</option><option value="6">Tabuada do 6</option><option value="7" selected>Tabuada do 7</option><option value="8">Tabuada do 8</option><option value="9">Tabuada do 9</option><option value="random">🌟 Todas Misturadas</option></select>
+      <button type="button" class="primary" style="background:#26a69a" onclick="startTabuadaQuiz()">🎮 Treinar Tabuada Agora</button>
     </div>
     <div id="tabuadaQuizBox" class="hidden" style="background:#fff;border:2px solid #26a69a;border-radius:12px;padding:12px;text-align:center;margin-top:10px">
       <div id="quizQuestion" style="font-size:22px;font-weight:900;color:#00796b;margin-bottom:8px"></div>
@@ -454,9 +438,30 @@ button.primary,button.soft,button.warn,button.success{border:0;border-radius:12p
     </div>
   </div>
 
-  <div class="card" style="background:#e3f2fd;border-color:#90caf9">
-    <div class="goal-title" style="color:#01579b">🏆 Medalhas Desbloqueadas</div>
-    <div id="studentBadgesContainer" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"></div>
+  <!-- FILTRO DE MATÉRIA -->
+  <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
+    <select id="studentSubjectFilter" onchange="renderLists()" style="width:auto;padding:8px 12px;font-weight:700">
+      <option value="all">Todas as Matérias</option><option value="matematica">🔢 Matemática</option><option value="portugues">📚 Português</option>
+      <option value="geografia">🌍 Geografia</option><option value="historia">🏛️ História</option><option value="ciencias">🔬 Ciências</option><option value="ingles">🇺🇸 Inglês</option>
+    </select>
+  </div>
+
+  <!-- 3. PARA FAZER -->
+  <div class="card" style="border:3px solid #ffb300;background:#fffdf7">
+    <h2 style="color:#e65100">🎯 1. Para Fazer / Refazer</h2>
+    <div id="studentListPending"></div>
+  </div>
+
+  <!-- 4. AGUARDANDO CORREÇÃO -->
+  <div class="card" style="border:2px solid #ce93d8;background:#fcf7ff">
+    <h2 style="color:#7b1fa2">⏳ 2. Aguardando Professor Corrigir</h2>
+    <div id="studentListSubmitted"></div>
+  </div>
+
+  <!-- 5. CONCLUÍDAS (ÚLTIMOS 5 DIAS) -->
+  <div class="card" style="border:2px solid #a5d6a7;background:#f4fbf7">
+    <h2 style="color:#2e7d32">✨ 3. Finalizadas / Corrigidas (Últimos 5 Dias)</h2>
+    <div id="studentListCompleted"></div>
   </div>
 </section>
 </main>
@@ -515,7 +520,6 @@ function cleanOldTasks(){
   let changed = false;
   if(!state.statsHistory) state.statsHistory = {correct:0, incorrect:0, days:[0,0,0,0,0,0,0]};
 
-  // Garante que o placar permanente nunca seja menor que os itens atuais
   let curCorrect = state.items.filter(x=>x.status==='correct').length;
   let curIncorrect = state.items.filter(x=>x.status==='incorrect').length;
   if(state.statsHistory.correct < curCorrect){ state.statsHistory.correct = curCorrect; changed = true; }
@@ -526,12 +530,10 @@ function cleanOldTasks(){
     let refDateStr = item.correctedAt || item.createdAt;
     let ageMs = refDateStr ? (now - new Date(refDateStr).getTime()) : 0;
 
-    // Remove atividades já corrigidas/finalizadas com mais de 5 dias
     if(item.status === 'correct' && ageMs > FIVE_DAYS_MS){
       changed = true;
       return;
     }
-    // Se alguma tarefa antiga ainda tiver desenho de lousa > 5 dias, limpa apenas o desenho
     if(item.work && ageMs > FIVE_DAYS_MS){
       item.work = "";
       changed = true;
@@ -728,7 +730,7 @@ function markAsCorrect(id,fromModal=false){
   let x=state.items.find(v=>String(v.id)===String(id)); if(!x)return;
   x.status='correct';
   x.correctedAt=new Date().toISOString();
-  x.work=""; // Apaga o desenho da lousa após correção para economizar espaço
+  x.work="";
   state.stars=(state.stars||0)+10;
 
   if(!state.statsHistory)state.statsHistory={correct:0,incorrect:0,days:[0,0,0,0,0,0,0]};
@@ -1030,9 +1032,9 @@ function updateProgressUI(){
   }).join('');
 }
 
-// RENDERIZAÇÃO SEPARADA DAS LISTAS
+// RENDERIZAÇÃO SEPARADA DAS LISTAS (PROFESSOR E ALUNO)
 function renderLists(){
-  // PAINEL DO PROFESSOR (3 LISTAS SEPARADAS)
+  // PAINEL DO PROFESSOR (3 LISTAS SEPARADAS COM CONTADORES)
   let pSub=document.getElementById('parentListPending');
   let pAct=document.getElementById('parentListActive');
   let pDone=document.getElementById('parentListDone');
@@ -1041,6 +1043,10 @@ function renderLists(){
     let submitted = state.items.filter(x=>x.status==='submitted');
     let activeTasks = state.items.filter(x=>x.status==='pending'||x.status==='incorrect');
     let doneTasks = state.items.filter(x=>x.status==='correct');
+
+    let bSub=document.getElementById('badgeParentPending'); if(bSub)bSub.textContent=submitted.length;
+    let bAct=document.getElementById('badgeParentActive'); if(bAct)bAct.textContent=activeTasks.length;
+    let bDone=document.getElementById('badgeParentDone'); if(bDone)bDone.textContent=doneTasks.length;
 
     pSub.innerHTML = !submitted.length ? '<p class="muted">Nenhuma tarefa aguardando correção.</p>' : submitted.map(x=>{
       let m=getSubjectMeta(x.subject), gp=x.gradeLevel?`<span class="grade-pill">${x.gradeLevel}º Ano</span>`:'';
@@ -1058,7 +1064,7 @@ function renderLists(){
       </div>`;
     }).join('');
 
-    pAct.innerHTML = !activeTasks.length ? '<p class="muted">Nenhuma tarefa pendente com o aluno.</p>' : activeTasks.map(x=>{
+    pAct.innerHTML = !activeTasks.length ? '<p class="muted">Ela já respondeu tudo! Nenhuma tarefa pendente.</p>' : activeTasks.map(x=>{
       let m=getSubjectMeta(x.subject), gp=x.gradeLevel?`<span class="grade-pill">${x.gradeLevel}º Ano</span>`:'';
       let desc=x.title||`${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
       let stTag=x.status==='incorrect'?'<span style="color:#c62828;font-weight:700"> (Devolvida para refazer)</span>':'';
@@ -1072,7 +1078,7 @@ function renderLists(){
       let m=getSubjectMeta(x.subject), gp=x.gradeLevel?`<span class="grade-pill">${x.gradeLevel}º Ano</span>`:'';
       let desc=x.title||`${formatBR(x.n1)} ${x.type} ${formatBR(x.n2)}`;
       return `<div class="listitem" style="opacity:.85">
-        <div><span class="subject-badge" style="background:${m.bg};color:${m.color}">${m.label}</span>${gp} <b>${desc}</b> — <span style="color:#2e7d32;font-weight:700">⭐ Corrigida (+10⭐)</span></div>
+        <div><span class="subject-badge" style="background:${m.bg};color:${m.color}">${m.label}</span>${gp} <b>${desc}</b> — <span style="color:#2e7d32;font-weight:700">⭐ Finalizada (+10⭐)</span></div>
         <button type="button" class="warn" style="padding:4px 8px;font-size:12px" onclick="removeItem('${x.id}')">Excluir</button>
       </div>`;
     }).join('');
